@@ -92,7 +92,7 @@ class Volume(ImageElement):
     def getSize(self) -> int:
         return self._header.getVolumeSize()
 
-    def getSortedFileKeys(self):
+    def getSortedFileKeys(self) -> list:
         return sorted(self._files, key=lambda key: int(key, 16))
 
     def toString(self, lineWidth: int = 100) -> str:
@@ -120,7 +120,7 @@ class Volume(ImageElement):
             fileOffset = int(key, 16)
             file = self._files.get(key)
 
-            assert currentOffset <= fileOffset, "Volume content overflow for offset {} with fileOffset {}".format(hex(fileOffset), hex(fileOffset))
+            assert currentOffset <= fileOffset, "Volume content overflow for offset {} with fileOffset {}".format(hex(currentOffset), hex(fileOffset))
 
             # Paddings between files
             outputBinary = fillBinaryTill(outputBinary, fileOffset)
