@@ -3,16 +3,27 @@ from UtkBase.interfaces.serializable import serializable
 
 
 class File(serializable):
+    """
+    Basic File implementation
+    made up of a valid header and an otherwise unspecified binary content.
+    Paddings and Raw-Files are the obvious files that qualify.
+    """
+
     @classmethod
     def fromBinary(cls, binary: bytes, header: FileHeader = None) -> 'File':
         """
-        Basic File implementation
+
         :param binary:
         :param header:
         :return:
         """
+
         if header is None:
             header = FileHeader.fromBinary(binary)
+
+        assert header is not None, "No FileHeader from binary: {}".format(
+            binary[:256]
+        )
 
         FILE_SIZE = header.getFileSize()
         HEADER_SIZE = header.getSize()

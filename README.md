@@ -3,12 +3,13 @@
 An object-oriented package, framework and collection of tools for and around firmware like UEFI images and bios files. 
 
 Heavily influenced by the famous [UEFITool by LongSoft](https://github.com/LongSoft/UEFITool "UEFITool Github repo") and [PSPTool by PSPReverse](https://github.com/PSPReverse/PSPTool "PSPTool Github repo").
-
+Noteworthy as well: [uefi-firmware-parser](https://github.com/theopolis/uefi-firmware-parser "Github repo")
 ## Roadmap
 
 In no particular order
 
 - [x] Initial shallow implementation down to the UEFI volume level 
+- [x] Rough implementation down to UEFI files and sections, even compressed ones
 - [ ] Full implementation down to UEFI files and sections
 - [ ] Strings search in framework
 - [ ] add JSON serialization via toJson() methods
