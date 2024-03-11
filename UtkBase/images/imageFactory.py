@@ -1,6 +1,7 @@
 from typing import List
 
 from UtkBase.images.genericImage import GenericImage
+from UtkBase.images.image import Image
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.paddings.paddingFactory import PaddingFactory
 from UtkBase.images.volumes.volumeFactory import VolumeFactory
@@ -9,7 +10,7 @@ from UtkBase.images.volumes.volumeFactory import VolumeFactory
 class ImageFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes) -> GenericImage:
+    def fromBinary(binary: bytes) -> Image:
         """
         Constructs an image from the given binary by making a list of the images content.
         The List is made by searching for volumes first and filling the gaps with padding objects.
