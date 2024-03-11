@@ -1,6 +1,6 @@
 import struct
 
-from UtkBase import GuidDatabase
+
 from UtkBase.interfaces.serializable import serializable
 
 
@@ -33,6 +33,7 @@ class UefiGuid(serializable):
         return 16
 
     def getName(self) -> str:
+        from UtkBase import GuidDatabase
         """
         Retrieves a possible name for this GUID from the GUID Database.
         :return: Possible name for this GUID, default is "" to not clutter up output.
