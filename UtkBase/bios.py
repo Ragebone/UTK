@@ -13,13 +13,14 @@ class Bios(serializable):
     def fromBinary(cls, binary: bytes, capsuleHeader: CapsuleHeader = None) -> 'Bios':
 
         if capsuleHeader is None:
-            capsuleHeader = CapsuleHeaderFactory.fromBinary(binary)
-
-        if capsuleHeader is not None:
-            binary = binary[capsuleHeader.getSize():]
+            capsuleHeader: CapsuleHeader = CapsuleHeaderFactory.fromBinary(binary)
 
         images: List[Image] = []
-        offset = 0
+
+        offset: int = 0
+        if capsuleHeader is not None:
+            offset = capsuleHeader.getSize()
+
         LENGTH_OF_BINARY = len(binary)
         while offset < LENGTH_OF_BINARY:
             IMAGE_BINARY = binary[offset:]
