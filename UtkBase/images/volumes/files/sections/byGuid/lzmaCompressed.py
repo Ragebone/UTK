@@ -1,11 +1,14 @@
 import logging
+import lzma
+
 from lzma import LZMADecompressor, FORMAT_ALONE
+
 
 from UtkBase.images.volumes.files.sections.byGuid.headerExtension import HeaderExtension
 from UtkBase.images.volumes.files.sections.section import Section
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
-from UtkBase.utility import alignOffset
+from UtkBase.utility import alignOffset, fillBinaryTill
 
 SECTION_ALIGNMENT = 4
 
@@ -13,7 +16,7 @@ SECTION_ALIGNMENT = 4
 class LzmaCompressedSection(Section):
 
     @classmethod
-    def process(cls, binary: bytes, header: SectionHeader, headerExtension=None) -> 'LZMACompressed':
+    def process(cls, binary: bytes, header: SectionHeader, headerExtension=None) -> 'Section':
         """
              Create a GuidedLzma from the given binary
              :param binary: Full binary including all headers and extensions
@@ -89,5 +92,34 @@ class LzmaCompressedSection(Section):
 
         outputBinary = self._header.serialize()
         outputBinary += self._headerExtension.serialize()
-        outputBinary += self._binary
+
+        uncompressedBinary = bytes()
+        sortedSections = self.getSortedSectionOffsets()
+        for key in sortedSections:
+            currentOffset = len(uncompressedBinary)
+            sectionOffset = int(key, 16)
+            section = self._sections.get(key)
+
+            assert currentOffset <= sectionOffset, "Section content overflow for offset {} with sectionOffset {}".format(
+                hex(currentOffset), hex(sectionOffset)
+            )
+
+            # Paddings between sections
+            uncompressedBinary = fillBinaryTill(uncompressedBinary, sectionOffset, b'\x00')
+
+            sectionBinary = section.serialize()
+            EXPECTED_SECTION_SIZE = section.getSize()
+            BINARY_SIZE = len(sectionBinary)
+            assert BINARY_SIZE == EXPECTED_SECTION_SIZE, "Section size missmatch for offset {} with size {}, expected {}".format(
+                hex(sectionOffset), hex(BINARY_SIZE), hex(EXPECTED_SECTION_SIZE)
+            )
+            uncompressedBinary += sectionBinary
+
+        # supposedly, Level = 9, fb = 273.
+        # The closest size to what it previously was, seems to be preset 5
+        # TODO this breaks the serialization equals tests
+        compresedBinary = lzma.compress(uncompressedBinary, format=FORMAT_ALONE, check=-1, preset=5, filters=None)
+
+        outputBinary += compresedBinary
+
         return outputBinary
