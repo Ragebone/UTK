@@ -7,10 +7,19 @@ from UtkBase.images.imageFactory import ImageFactory
 from UtkBase.interfaces.serializable import serializable
 
 
-class Bios(serializable):
+class BiosFile(serializable):
 
     @classmethod
-    def fromBinary(cls, binary: bytes, capsuleHeader: CapsuleHeader = None) -> 'Bios':
+    def fromFile(cls, filePath: str) -> 'BiosFile':
+        fileHandle = open(filePath, 'rb')
+        BINARY = fileHandle.read()
+        fileHandle.close()
+
+        bios = BiosFile.fromBinary(BINARY)
+        return bios
+
+    @classmethod
+    def fromBinary(cls, binary: bytes, capsuleHeader: CapsuleHeader = None) -> 'BiosFile':
 
         if capsuleHeader is None:
             capsuleHeader: CapsuleHeader = CapsuleHeaderFactory.fromBinary(binary)

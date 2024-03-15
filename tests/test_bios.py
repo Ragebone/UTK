@@ -1,7 +1,7 @@
 import traceback
 from unittest import TestCase
 
-from UtkBase.bios import Bios
+from UtkBase.biosFile import BiosFile
 from UtkBase.utility import diffBinary
 from tests import TEST_BIOS_FILE_PATHS
 
@@ -25,7 +25,7 @@ class TestBios(TestCase):
             fileHandle.close()
 
             try:
-                bios = Bios.fromBinary(BINARY)
+                bios = BiosFile.fromBinary(BINARY)
             except Exception as ex:
                 success = False
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
