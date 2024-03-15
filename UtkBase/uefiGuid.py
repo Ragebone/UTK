@@ -32,13 +32,13 @@ class UefiGuid(serializable):
     def getSize(self) -> int:
         return 16
 
-    def getName(self) -> str:
+    def getName(self, whenUnknown: str = "") -> str:
         from UtkBase import GuidDatabase
         """
         Retrieves a possible name for this GUID from the GUID Database.
         :return: Possible name for this GUID, default is "" to not clutter up output.
         """
-        return GuidDatabase.getNameFromGuidString(self.guidString_read_only, "")
+        return GuidDatabase.getNameFromGuidString(self.guidString_read_only, whenUnknown)
 
     def toString(self) -> str:
         """Return: Read Only string of the GUID"""
