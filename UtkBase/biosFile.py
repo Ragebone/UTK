@@ -8,9 +8,31 @@ from UtkBase.interfaces.serializable import serializable
 
 
 class BiosFile(serializable):
+    """
+    Represents the Motherboards Bios- or rather UEFI-Image -files as they are delivered by the OEM.
+    Formats vary with this supporting binary formats like '.bin' and '.rom' as well as '.CAP'.
+    The binary contains at least one, lets call it "Firmware" or "UEFI" 'image'.
+    Encapsulated *-files like '.CAP' start with a 'capsuleHeader' preceding the 'images'.
+
+    Main entry point for using the framework with a motherboards BiosFile.
+    Simply put:
+        bios = BiosFile.fromFilepath('Path/to/file')
+    :or
+        bios = BiosFile.fromBinary(fileHandle.read())
+
+    Serializable; Use bios.serialize() to get the orignial or new / changed binary back.
+    """
 
     @classmethod
-    def fromFile(cls, filePath: str) -> 'BiosFile':
+    def fromFilepath(cls, filePath: str) -> 'BiosFile':
+        """
+        Open and build a BiosFile from the given Path.
+        Used as the main and easy entry point to the framework.
+        Does not catch, handle exceptions yourself!
+        :param filePath: FilePath as a string
+        :return: BiosFile or Errors
+        """
+
         fileHandle = open(filePath, 'rb')
         BINARY = fileHandle.read()
         fileHandle.close()
@@ -20,7 +42,15 @@ class BiosFile(serializable):
 
     @classmethod
     def fromBinary(cls, binary: bytes, capsuleHeader: CapsuleHeader = None) -> 'BiosFile':
+        """
+        Build a BiosFile from the given binary.
+        Optional CapsuleHeader can be passed in case it was already built previously.
+        Does not catch, handle exceptions yourself!
 
+        :param binary: Bytes to build the BiosFile from
+        :param capsuleHeader: Optional, previously built CapsuleHeader to not waste that
+        :return: BiosFile or Errors
+        """
         if capsuleHeader is None:
             capsuleHeader: CapsuleHeader = CapsuleHeaderFactory.fromBinary(binary)
 
@@ -44,9 +74,20 @@ class BiosFile(serializable):
         self._images: List[Image] = [] if images is None else images
 
     def getImages(self) -> List[Image]:
+        """
+        Get a copy of all images contained in the BiosFile.
+
+        :return: Copied List of images
+        """
         return self._images.copy()
 
     def getSize(self) -> int:
+        """
+        Get the biosFiles Size in bytes.
+        Has to be calculated from its content every time in case something changed.
+
+        :return: Size
+        """
         size = 0
         if self._capsuleHeader is not None:
             size += self._capsuleHeader.getSize()
@@ -74,6 +115,7 @@ class BiosFile(serializable):
         return outString
 
     def serialize(self) -> bytes:
+        """ Serializable """
         binary = bytes()
 
         if self._capsuleHeader is not None:
