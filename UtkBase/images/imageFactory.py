@@ -15,9 +15,9 @@ class ImageFactory:
         Constructs an image from the given binary by making a list of the images content.
         The List is made by searching for volumes first and filling the gaps with padding objects.
 
-        Is supposed to decide on whether it is a generic, amd or intel based image
+        Is supposed to decide on whether it is a generic, AMD or intel based image
 
-        :param binary: Byytes to construct the image from
+        :param binary: Bytes to construct the image from
         :return: GenericImage; TODO implement more variants
         """
         imageElements: List[ImageElement] = []

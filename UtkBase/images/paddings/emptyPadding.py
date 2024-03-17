@@ -2,9 +2,22 @@ from UtkBase.images.imageElement import ImageElement
 
 
 class EmptyPadding(ImageElement):
+    """
+    Class to represent empty paddings in UEFI images.
+    Empty meaning they only contain 0xFFs.
+    Have no structures or headers identifying them.
+    """
 
     @classmethod
     def fromBinary(cls, binary, offset):
+        """
+        Creates an EmptyPadding object from the binary
+        Discard binary since it is just 0xFFs.
+        Stores the amount bytes instead.
+        :param binary:
+        :param offset:
+        :return:
+        """
         length = len(binary)
         return cls(length, offset)
 

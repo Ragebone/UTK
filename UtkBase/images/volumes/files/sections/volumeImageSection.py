@@ -4,6 +4,10 @@ from UtkBase.images.volumes.volume import Volume
 
 
 class VolumeImageSection(Section):
+    """
+    A section that contains a UEFI Volume.
+
+    """
     @classmethod
     def process(cls, binary: bytes, header: SectionHeader) -> 'VolumeImageSection':
         """

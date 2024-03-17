@@ -33,6 +33,6 @@ class GuidDefinedSectionFactory:
         guidedSectionClass = _guidDefinedSectionMapping.get(sectionGuid, None)
         assert guidedSectionClass is not None, "Section defined by GUID with GUID {} is still unknown and not implemented".format(sectionGuid)
 
-        # TODO  well,  the HeaderExtension should be handed onwards, otherwise it is wasted here and has to be rebuild. Not bad welp.
+        # TODO  well,  the HeaderExtension should be passed onwards, otherwise it is wasted here and has to be rebuild. Not bad welp.
         section = guidedSectionClass.fromBinary(binary, sectionHeader)
         return section
