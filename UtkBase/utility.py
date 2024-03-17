@@ -27,9 +27,8 @@ def diffBinary(binA: bytes, binB: bytes) -> bool:
         a = binA[offset]
         b = binB[offset]
 
-        offset += 1
-
         if a == b:
+            offset += 1
             continue
 
         equals = False
