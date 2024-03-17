@@ -1,4 +1,5 @@
 from UtkBase.images.imageElement import ImageElement
+from UtkBase.utility import binaryIsEmpty
 
 
 class EmptyPadding(ImageElement):
@@ -19,6 +20,7 @@ class EmptyPadding(ImageElement):
         :return:
         """
         length = len(binary)
+        assert binaryIsEmpty(binary), "Binary must be 0xFFs for empty padding"
         return cls(length, offset)
 
     def __init__(self, length, offset):
