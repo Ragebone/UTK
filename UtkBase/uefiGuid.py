@@ -6,7 +6,18 @@ from UtkBase.interfaces.serializable import serializable
 
 class UefiGuid(serializable):
     """
-    UEFI GUID implementation
+    UEFI GUID implementation.
+    A 128-Bit, 16-Byte unsigned integer.
+    Commonly written as multiple smaller numbers;
+
+    32-Bit, unsigned integer
+    2x 16-bit unsigned integer
+    8 Byte individual bytes
+    Random numbers for example:
+    {0xDEADBEEF, 0x1234, 0x5678,  {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE 0xFF}}
+    Beware that this representation does not easily match the string-representation like:
+    TODO execute the below thing and add the string representation here.
+    myUefiGuid = UefiGuid(0xDEADBEEF, 0x1234, 0x5678, b'\x12\x34\x56\x78\x9A\xBC\xDE\xFF')
     """
 
     @classmethod
@@ -15,7 +26,7 @@ class UefiGuid(serializable):
 
     @classmethod
     def fromBinary(cls, binary: bytes) -> 'UefiGuid':
-        assert len(binary) == 16, "UefiGuid needs 16 bytes, got {}".format(len(binary))
+        assert len(binary) == 16, "UefiGuid needs 16 bytes, got {}; {}".format(len(binary), binary.hex().upper())
         return cls(*cls._struct().unpack(binary))
 
     def __init__(self, data1: int, data2: int, data3: int, data4: bytes):
@@ -30,6 +41,7 @@ class UefiGuid(serializable):
         )
 
     def getSize(self) -> int:
+        """Size of the UEFI GUID; 16 bytes, 128-Bits"""
         return 16
 
     def getName(self, whenUnknown: str = "") -> str:
@@ -45,4 +57,5 @@ class UefiGuid(serializable):
         return self.guidString_read_only
 
     def serialize(self) -> bytes:
+        """ Serializable """
         return self._struct().pack(self._data1, self._data2, self._data3, self._data4)
