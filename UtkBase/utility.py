@@ -1,3 +1,4 @@
+import struct
 
 
 def binaryIsEmpty(binary: bytes) -> bool:
@@ -88,3 +89,22 @@ def alignOffsetDown(offset: int, alignment: int) -> int:
     invertedMask = mask.__invert__()
     newAddress = offset & invertedMask
     return newAddress
+
+
+# https://github.com/LongSoft/UEFITool/blob/c5508535c135612dc921ae0d38eb0cfaae2d33d4/common/utility.cpp#L402
+def calculateChecksum16(binary):
+    """
+    Quickly ripped CRC 16 implementation from the UEFITool.
+    Technically this should* be crc16-cii something, something but i did not get that working as expected.
+
+    :param binary: the bytes to calculate the checksum from
+    :return: the checksum
+    """
+    bufferSize = len(binary)
+    counter = 0
+    index = 0
+    while index < bufferSize:
+        value, = struct.unpack("<H", binary[index:index + 2])
+        counter = 0xFFFF & (counter + value)
+        index += 2
+    return 0xFFFF & (0x10000 - counter)
