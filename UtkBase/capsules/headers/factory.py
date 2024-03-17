@@ -1,5 +1,6 @@
-from UtkBase.capsuleHeaders.amiAptioCapsuleHeader import AmiAptioCapsuleHeader
-from UtkBase.capsuleHeaders.efiCapsuleHeader import EfiCapsuleHeader
+from UtkBase.capsules.headers.amiAptio import AmiAptioCapsuleHeader
+from UtkBase.capsules.headers.efi import EfiCapsuleHeader
+from UtkBase.capsules.headers.toshiba import ToshibaCapsuleHeader
 
 EFI_FMP_CAPSULE_GUID = b'\xED\xD5\xCB\x6D\x2D\xE8\x44\x4C\xBD\xA1\x71\x94\x19\x9A\xD9\x2A'                           # Standard FMP capsule GUID
 EFI_CAPSULE_GUID = b'\xBD\x86\x66\x3B\x76\x0D\x30\x40\xB7\x0E\xB5\x51\x9E\x2F\xC5\xA0'                               # 6DCBD5ED-E82D-4C44-BDA1-7194199AD92A
@@ -48,8 +49,7 @@ class CapsuleHeaderFactory:
             return EfiCapsuleHeader.fromBinary(binary)
 
         if capsuleId == TOSHIBA_CAPSULE_GUID:
-            # TODO parse Toshiba specific capsule Header
-            return None
+            return ToshibaCapsuleHeader.fromBinary(binary)
 
         if capsuleId in [APTIO_SIGNED_CAPSULE_GUID, APTIO_UNSIGNED_CAPSULE_GUID]:
             return AmiAptioCapsuleHeader.fromBinary(binary)

@@ -10,5 +10,13 @@ class CapsuleHeader(serializable, abc.ABC):
         pass
 
     @abc.abstractmethod
-    def toString(self) -> str:
+    def getCapsuleSize(self) -> int:
+        pass
+
+    @abc.abstractmethod
+    def getEncapsulatedImageSize(self) -> int:
+        pass
+
+    @abc.abstractmethod
+    def toJson(self, depth: int = 0) -> str:
         pass

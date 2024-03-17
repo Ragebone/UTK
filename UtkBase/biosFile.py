@@ -1,7 +1,7 @@
 from typing import List
 
-from UtkBase.capsuleHeaders.capsuleHeaderFactory import CapsuleHeaderFactory
-from UtkBase.interfaces.capsuleheader import CapsuleHeader
+from UtkBase.capsules.capsule import Capsule
+from UtkBase.capsules.factory import CapsuleFactory
 from UtkBase.images.image import Image
 from UtkBase.images.imageFactory import ImageFactory
 from UtkBase.interfaces.serializable import serializable
@@ -41,7 +41,7 @@ class BiosFile(serializable):
         return bios
 
     @classmethod
-    def fromBinary(cls, binary: bytes, capsuleHeader: CapsuleHeader = None) -> 'BiosFile':
+    def fromBinary(cls, binary: bytes, capsule: Capsule = None) -> 'BiosFile':
         """
         Build a BiosFile from the given binary.
         Optional CapsuleHeader can be passed in case it was already built previously.
@@ -51,14 +51,14 @@ class BiosFile(serializable):
         :param capsuleHeader: Optional, previously built CapsuleHeader to not waste that
         :return: BiosFile or Errors
         """
-        if capsuleHeader is None:
-            capsuleHeader: CapsuleHeader = CapsuleHeaderFactory.fromBinary(binary)
+        if capsule is None:
+            capsule: Capsule = CapsuleFactory.fromBinary(binary)
 
         images: List[Image] = []
 
         offset: int = 0
-        if capsuleHeader is not None:
-            offset = capsuleHeader.getSize()
+        if capsule is not None:
+            offset = capsule.getSize()
 
         LENGTH_OF_BINARY = len(binary)
         while offset < LENGTH_OF_BINARY:
@@ -67,10 +67,10 @@ class BiosFile(serializable):
             images.append(image)
             offset += image.getSize()
 
-        return cls(capsuleHeader, images)
+        return cls(capsule, images)
 
-    def __init__(self, capsuleHeader: CapsuleHeader = None, images: List[Image] = None):
-        self._capsuleHeader: CapsuleHeader = capsuleHeader
+    def __init__(self, capsule: Capsule = None, images: List[Image] = None):
+        self._capsule: Capsule = capsule
         self._images: List[Image] = [] if images is None else images
 
     def getImages(self) -> List[Image]:
@@ -89,8 +89,8 @@ class BiosFile(serializable):
         :return: Size
         """
         size = 0
-        if self._capsuleHeader is not None:
-            size += self._capsuleHeader.getSize()
+        if self._capsule is not None:
+            size += self._capsule.getSize()
         for image in self.getImages():
             size += image.getSize()
         return size
@@ -99,12 +99,12 @@ class BiosFile(serializable):
         line = u'\u2500' * lineWidth + "\n"
         fileOffset = 0x00
         outString = ""
-        if self._capsuleHeader is not None:
+        if self._capsule is not None:
             outString += "{:<15} {:<20}\n".format("File offset", "Capsule type")
-            outString += "{:<15} {:<20}\n".format(hex(fileOffset), self._capsuleHeader.__class__.__name__)
-            outString += self._capsuleHeader.toString()
+            outString += "{:<15} {:<20}\n".format(hex(fileOffset), self._capsule.__class__.__name__)
+            outString += self._capsule.toString()
             outString += line
-            fileOffset += self._capsuleHeader.getSize()
+            fileOffset += self._capsule.getSize()
 
         for image in self._images:
             if image is not None:
@@ -118,8 +118,8 @@ class BiosFile(serializable):
         """ Serializable """
         binary = bytes()
 
-        if self._capsuleHeader is not None:
-            binary += self._capsuleHeader.serialize()
+        if self._capsule is not None:
+            binary += self._capsule.serialize()
 
         for image in self._images:
             imageBinary = image.serialize()
