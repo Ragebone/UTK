@@ -30,23 +30,26 @@ In no particular order
 
 - [x] Initial shallow implementation down to the UEFI volume level 
 - [x] Rough implementation down to UEFI files and sections, even compressed ones
-- [ ] Full UEFI implementation on par with UEFITool
-  - Some parts are still horrible
-  - More Capsule-Headers need supporting 
-    - Fully understand, parse and use those headers
-  - More Volumes, file-systems, and other specifics are still needed
-
-- [ ] Full implementation down to decompression and compression
-  - Blocked by proper LZMA compression of LZMA compressed Sections
-  
-- [ ] Proper Capsule handling with an interface and multiple Classes for the different capsules and then sub structures
-
 - [x] Basic-ish documentation in README.md files
 - [x] UEFI GUID database and name support
+- [x] Intermediate format; Python Dictionaries with `toDict(self) -> dict[str, Any]`
+- [x] ~~Intermediate format JSON serialization via toJson() methods~~
+- [ ] Full UEFI implementation on par with UEFITool
+      - Some parts are still horrible
+      - More Capsule-Headers need supporting 
+  - Fully understand, parse and use those headers
+      - More Volumes, file-systems, and other specifics are still needed
+- [ ] Full implementation down to decompression and compression
+      - Blocked by proper compression of LZMA compressed Sections
+        Compressing is easy, but does it work still work?
+        the new compressed binary is completely different to the previous one.
+        That breaks the tests at minimum.
+
+- [ ] Proper Capsule handling with an interface and multiple Classes for the different capsules and then sub structures
+
 - [ ] (Flash) Offset remembering and pass through in fromBinary() 
 - [ ] GUID management framework
 - [ ] Strings search in framework
-- [ ] JSON serialization via toJson() methods
 - [ ] Deterministic export to and import from a directory structure
 - [ ] Implement UEFI checksum calculations and verification
   - [x] Implement UEFI volume-header crc16 calculations
@@ -65,7 +68,7 @@ In no particular order
 - [ ] HII capability
 - [ ] PCD capability
 - [ ] NVAR Capability
-- [ ] Address and referencing framework
+- [ ] Address and referencing framework  References is what it is gona be called, probably
 - [ ] Support for emulation and further automation
 - [ ] Package release for easy usage
 - [ ] Support advanced firmware analysis
@@ -80,6 +83,11 @@ In no particular order
   - Extract something specific
   - Rebuild 
   - Replace something(s) by its GUID
+  - Unlocking hidden bios options
+    - Unlocking AMD CBS for instance
+  - Adding new settings / menus to the UEFI user interface
+  - Changing default bios settings
+  - 
   - Others? 
 
 ### Roadmap-ed use-cases 
