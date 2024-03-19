@@ -3,6 +3,7 @@ from typing import Any
 
 from UtkBase.images.volumes.files.file import File
 from UtkBase.images.volumes.files.fileHeader import FileHeader
+from UtkBase.images.volumes.files.sections.section import Section
 from UtkBase.images.volumes.files.sections.sectionFactory import SectionFactory
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import alignOffset, fillBinaryTill
@@ -27,7 +28,7 @@ class SectionedFile(File):
         offset = HEADER_SIZE
         while offset < FILE_SIZE:
             sectionBinary = binary[offset:]
-            section = SectionFactory.fromBinary(sectionBinary)
+            section: Section = SectionFactory.fromBinary(sectionBinary)
             sections[hex(offset)] = section
 
             SECTION_SIZE = section.getSize()
@@ -48,7 +49,7 @@ class SectionedFile(File):
         return file
 
     @classmethod
-    def process(cls, header: FileHeader, binary: bytes, sections: dict) -> tuple:
+    def process(cls, header: FileHeader, binary: bytes, sections: dict[str, Section]) -> tuple:
         """
         ClosedDoor / openDoor processing functionality
         Allows subclasses to implement checking and handling differences specific to them
