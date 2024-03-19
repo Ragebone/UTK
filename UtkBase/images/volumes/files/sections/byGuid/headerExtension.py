@@ -1,11 +1,11 @@
 import struct
 from typing import Any
 
-from UtkBase.interfaces.serializable import serializable
+from UtkBase.interfaces.serializable import serializable, serializeAsJsonFile
 from UtkBase.uefiGuid import UefiGuid
 
 
-class HeaderExtension(serializable):
+class HeaderExtension(serializable, serializeAsJsonFile):
     @classmethod
     def _struct(cls):
         return struct.Struct('<16s H H')

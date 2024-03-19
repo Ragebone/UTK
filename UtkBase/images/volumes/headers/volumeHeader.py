@@ -1,11 +1,12 @@
 import struct
 from typing import Any
 
+from UtkBase.interfaces.serializable import serializable, serializeAsJsonFile
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import calculateChecksum16
 
 
-class VolumeHeader:
+class VolumeHeader(serializable, serializeAsJsonFile):
     """
     Represents the header at the start of a UEFI Volume.
     The header consists of a structure and the so called Block-Map.

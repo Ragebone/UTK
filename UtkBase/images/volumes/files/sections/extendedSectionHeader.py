@@ -2,9 +2,10 @@ import struct
 from typing import Any
 
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
+from UtkBase.interfaces.serializable import serializeAsJsonFile
 
 
-class ExtendedSectionHeader(SectionHeader):
+class ExtendedSectionHeader(SectionHeader, serializeAsJsonFile):
     """
     # https://github.com/tianocore/edk2/blob/beafabdae49c873adecdb7511dbebe9d4ff5c8f0/MdePkg/Include/Pi/PiFirmwareFile.h#L252C30-L252C30
     """

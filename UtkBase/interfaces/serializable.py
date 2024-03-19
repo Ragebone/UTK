@@ -12,3 +12,6 @@ class serializable(abc.ABC):
     def toDict(self) -> dict[str, Any]:
         pass
 
+
+class serializeAsJsonFile(abc.ABC):
+    pass
