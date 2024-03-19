@@ -1,5 +1,7 @@
 import logging
+
 from lzma import LZMADecompressor, FORMAT_ALONE
+from typing import Any
 
 from UtkBase.images.volumes.files.sections.byGuid.headerExtension import HeaderExtension
 from UtkBase.images.volumes.files.sections.section import Section
@@ -74,6 +76,15 @@ class LzmaCompressedSection(Section):
 
     def getSortedSectionOffsets(self) -> list:
         return sorted(self._sections, key=lambda key: int(key, 16))
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "sectionHeader": self._header,
+            "headerExtension": self._headerExtension,
+            "sections": self._sections,
+            "binary": self._binary
+        }
 
     def toString(self) -> str:
         outputString = self._header.toString()

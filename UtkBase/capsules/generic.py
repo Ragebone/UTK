@@ -1,4 +1,4 @@
-import textwrap
+from typing import Any
 
 from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.headers.factory import CapsuleHeaderFactory
@@ -28,24 +28,12 @@ class GenericCapsule(Capsule):
     def getImageSize(self) -> int:
         return self._header.getEncapsulatedImageSize()
 
-    def toJson(self, depth: int = 0) -> str:
-        """
-
-        :param depth: if depth is  smaller than 0, just return your class-name or as minimal info as possible.
-        :return: A Json string
-        """
-        if depth < 0:
-            return f'{{"ClassName": "{self.__class__.__name__}"}}'
-
-        jsonString: str = textwrap.dedent(
-            f"""
-            {{
-                "ClassName": "{self.__class__.__name__}",
-                "CapsuleHeader": {self._header.toJson(depth - 1)}
-            }}       
-            """
-        )
-        return jsonString
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "capsuleHeader": self._header,
+            "binary": self._binary
+        }
 
     def serialize(self) -> bytes:
         # TODO proper serialization so that modifications can be useful

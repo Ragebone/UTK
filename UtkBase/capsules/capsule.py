@@ -14,7 +14,3 @@ class Capsule(serializable, abc.ABC):
     @abc.abstractmethod
     def getImageSize(self) -> int:
         pass
-
-    @abc.abstractmethod
-    def toJson(self, depth: int = 0) -> str:
-        pass

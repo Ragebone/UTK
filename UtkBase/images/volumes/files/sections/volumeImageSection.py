@@ -1,3 +1,5 @@
+from typing import Any
+
 from UtkBase.images.volumes.files.sections.section import Section
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.volume import Volume
@@ -40,6 +42,13 @@ class VolumeImageSection(Section):
         # TODO make sure the size here is the correct size
         # Like the uncompressed and not the compressed or something
         return self._header.getSectionSize()
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "sectionHeader": self._header,
+            "volume": self._volume
+        }
 
     def toString(self) -> str:
         outputString = self._header.toString()

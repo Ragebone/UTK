@@ -1,5 +1,5 @@
 import struct
-import textwrap
+from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import calculateChecksum16
@@ -130,6 +130,20 @@ class VolumeHeader:
     def getExternalHeaderOffset(self) -> int:
         """Offset the External Header Structure is located at"""
         return self._externalHeaderOffset
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guid": self._guid,
+            "volumeSize": self._volumeSize,
+            "attributeMask": self._attributeMask,
+            "headerSize": self._headerSize,
+            "checksum": self._checksum,
+            "externalHeaderOffset": self._externalHeaderOffset,
+            "reserved": self._reserved,
+            "revision": self._revision,
+            "blockMapBinary": self._blockMapBinary
+        }
 
     def toString(self) -> str:
         outputString = "{:<40} {:<15} {:<10} {:<15} {:<15} {:<15}\n".format(

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.factory import CapsuleFactory
@@ -94,6 +94,13 @@ class BiosFile(serializable):
         for image in self.getImages():
             size += image.getSize()
         return size
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "capsule": self._capsule,
+            "images": self._images
+        }
 
     def toString(self, lineWidth: int = 100) -> str:
         line = u'\u2500' * lineWidth + "\n"

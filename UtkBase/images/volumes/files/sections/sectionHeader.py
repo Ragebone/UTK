@@ -1,4 +1,5 @@
 import struct
+from typing import Any
 
 from UtkBase.images.volumes.files.sections.type import SectionType
 from UtkBase.interfaces.serializable import serializable
@@ -35,6 +36,13 @@ class SectionHeader(serializable):
 
     def getSectionType(self) -> SectionType:
         return self._sectionType
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "sectionSize": self._sectionSize,
+            "sectionType": self._sectionType
+        }
 
     def toString(self) -> str:
         return "Section Size: {}, Type: {}\n".format(hex(self._sectionSize), hex(self._sectionType.value))

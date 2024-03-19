@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from UtkBase.images.volumes.files.file import File
 from UtkBase.images.volumes.files.fileHeader import FileHeader
@@ -72,6 +73,13 @@ class SectionedFile(File):
 
     def getSortedSectionOffsets(self) -> list:
         return sorted(self._sections, key=lambda key: int(key, 16))
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "header": self._header,
+            "sections": self._sections
+        }
 
     def toString(self) -> str:
         return "Sectioned Uefi File"

@@ -1,5 +1,5 @@
 import struct
-
+from typing import Any
 
 from UtkBase.interfaces.serializable import serializable
 
@@ -51,6 +51,12 @@ class UefiGuid(serializable):
         :return: Possible name for this GUID, default is "" to not clutter up output.
         """
         return GuidDatabase.getNameFromGuidString(self.guidString_read_only, whenUnknown)
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guidString": self.guidString_read_only
+        }
 
     def toString(self) -> str:
         """Return: Read Only string of the GUID"""

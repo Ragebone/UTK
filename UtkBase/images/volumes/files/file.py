@@ -1,3 +1,5 @@
+from typing import Any
+
 from UtkBase.images.volumes.files.fileHeader import FileHeader
 from UtkBase.interfaces.serializable import serializable
 
@@ -43,6 +45,13 @@ class File(serializable):
 
     def getSize(self) -> int:
         return self._header.getFileSize()
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "fileHeader": self._header,
+            "binary": self._binary
+        }
 
     def toString(self) -> str:
         return "{}".format(self._header.toString())

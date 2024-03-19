@@ -1,4 +1,5 @@
 import struct
+from typing import Any
 
 from UtkBase.images.volumes.files.type import EfiFirmwareFileType
 from UtkBase.interfaces.serializable import serializable
@@ -44,6 +45,17 @@ class FileHeader(serializable):
 
     def getFileSize(self) -> int:
         return self._fileSize
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guid": self._guid,
+            "integrityCheck": self._integrityCheck,
+            "fileType": self._fileType,
+            "attributes": self._attributes,
+            "fileSize": self._fileSize,
+            "state": self._state
+        }
 
     def toString(self) -> str:
         return "{:<40} type: {:<10} size: {:<15} state: {:5} tString {:25}\n".format(self._guid.toString(), hex(self._fileType.value), hex(self._fileSize), hex(self._state), self._fileType.name)

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.image import Image
@@ -42,6 +42,12 @@ class GenericImage(Image):
             if imageElement is not None:
                 size += imageElement.getSize()
         return size
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "content": self._contents
+        }
 
     def toString(self) -> str:
         imageOffset = 0x00

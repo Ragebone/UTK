@@ -1,3 +1,5 @@
+from typing import Any
+
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.utility import binaryIsEmpty
 
@@ -32,6 +34,13 @@ class EmptyPadding(ImageElement):
 
     def getSize(self) -> int:
         return self._length
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "size": self._length,
+            "offset": self._offset
+        }
 
     def toString(self):
         return ""

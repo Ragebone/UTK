@@ -1,5 +1,5 @@
 import struct
-import textwrap
+from typing import Any
 
 from UtkBase.capsules.headers.header import CapsuleHeader
 from UtkBase.uefiGuid import UefiGuid
@@ -56,29 +56,17 @@ class AmiAptioCapsuleHeader(CapsuleHeader):
     def getEncapsulatedImageSize(self) -> int:
         return self._capsuleImageSize
 
-    def toJson(self, depth: int = 0) -> str:
-        """
-
-        :param depth: if depth is  smaller than 0, just return your class-name or as minimal info as possible.
-        :return: A Json string
-        """
-        if depth < 0:
-            return f'{{"ClassName": "{self.__class__.__name__}"}}'
-
-        jsonString: str = textwrap.dedent(
-            f"""
-            {{
-                "ClassName": "{self.__class__.__name__}",
-                "GUID": "{self._capsuleGuid.toString()}",
-                "CapsuleSize": "{hex(self._capsuleSize)}",
-                "Flags": "{hex(self._flags)}",
-                "CapsuleImageSize": "{hex(self._capsuleImageSize)}",
-                "RomImageOffset": "{hex(self._romImageOffset)}",
-                "RomLayoutOffset": "{hex(self._romLayoutOffset)}"
-            }}       
-            """
-        )
-        return jsonString
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guid": self._capsuleGuid,
+            "capsuleSize": self._capsuleSize,
+            "flags": self._flags,
+            "capsuleImageSize": self._capsuleImageSize,
+            "romImageOffset": self._romImageOffset,
+            "romLayoutOffset": self._romLayoutOffset,
+            "trailingCapsuleBinary": self._trailingCapsuleBinary
+        }
 
     def toString(self):
         outString = "{:<40} {:<20} {:<20} {:<20} {:<20} {:<20}\n".format(

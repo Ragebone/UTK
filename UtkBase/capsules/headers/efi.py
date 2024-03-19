@@ -1,4 +1,5 @@
 import struct
+from typing import Any
 
 
 class EfiCapsuleHeader:
@@ -19,6 +20,15 @@ class EfiCapsuleHeader:
 
     def getSize(self):
         return self._headerSize
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guid": self._capsuleGuid,
+            "capsuleSize": self._headerSize,
+            "flags": self._flags,
+            "capsuleImageSize": self._capsuleImageSize
+        }
 
     def serialize(self):
         binary = self._struct().pack(self._capsuleGuid, self._headerSize, self._flags, self._capsuleImageSize)

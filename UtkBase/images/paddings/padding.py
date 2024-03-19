@@ -1,3 +1,5 @@
+from typing import Any
+
 from UtkBase.images.imageElement import ImageElement
 
 
@@ -16,6 +18,14 @@ class Padding(ImageElement):
 
     def getSize(self) -> int:
         return self._size
+
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "size": self._size,
+            "offset": self._offset,
+            "binary": self._binary
+        }
 
     def toString(self):
         return ""

@@ -1,4 +1,5 @@
 import struct
+from typing import Any
 
 from UtkBase.interfaces.serializable import serializable
 from UtkBase.uefiGuid import UefiGuid
@@ -33,10 +34,18 @@ class ExternalVolumeHeader(serializable):
     def getSize(self) -> int:
         return self._struct().size
 
-    def serialize(self) -> bytes:
-        return self._struct().pack(self._volumeGuid.serialize(), self._headerSize, self._unknown)
+    def toDict(self) -> dict[str, Any]:
+        return {
+            "class": self.__class__.__name__,
+            "guid": self._volumeGuid,
+            "headerSize": self._headerSize,
+            "unknown": self._unknown
+        }
 
     def toString(self) -> str:
         outString = "{:<20} {:<10} {:<10}\n".format("Ex. HeaderGuid", "Ex. HeaderSize", "Unknown")
         outString += "{:<20} {:<10} {:<10}\n".format(self._volumeGuid.toString(), hex(self._headerSize), hex(self._unknown))
         return outString
+
+    def serialize(self) -> bytes:
+        return self._struct().pack(self._volumeGuid.serialize(), self._headerSize, self._unknown)
