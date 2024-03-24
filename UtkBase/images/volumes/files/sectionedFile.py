@@ -8,10 +8,23 @@ from UtkBase.images.volumes.files.sections.sectionFactory import SectionFactory
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import alignOffset, fillBinaryTill
 
+
+# To what byte-count to align sections to.
+# The default seems to be 4, it could vary though
 SECTION_ALIGNMENT = 4
+
+# The different possible padding values between sections.
+# Sections seem to be padded with 0s instead of 0xFF as are UEFI volumes and most other things
+SECTION_PADDINGS = [b'\x00\x00\x00', b'\x00\x00', b'\x00']
 
 
 class SectionedFile(File):
+    """
+    A file containing sections.
+
+    TODO add references to other implementations.
+    """
+
     @classmethod
     def fromBinary(cls, binary: bytes, header=None) -> 'SectionedFile':
         if header is None:
@@ -38,7 +51,7 @@ class SectionedFile(File):
             paddingBinary = binary[SECTION_END:ALIGNED_OFFSET]
 
             if len(paddingBinary) > 0:
-                if paddingBinary not in [b'\x00\x00\x00', b'\x00\x00', b'\x00']:
+                if paddingBinary not in SECTION_PADDINGS:
                     logging.error("Padding between sections is not empty, discarding: {}".format(paddingBinary.hex().upper()))
 
             offset = ALIGNED_OFFSET
