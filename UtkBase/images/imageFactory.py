@@ -7,6 +7,9 @@ from UtkBase.images.paddings.paddingFactory import PaddingFactory
 from UtkBase.images.volumes.volumeFactory import VolumeFactory
 
 
+VOLUME_START_TO_SIGNATURE_OFFSET = 40
+
+
 class ImageFactory:
 
     @staticmethod
@@ -25,7 +28,7 @@ class ImageFactory:
         IMAGE_LENGTH = len(binary)
         offset = 0
         while offset < IMAGE_LENGTH:
-            NEXT_VOLUME_OFFSET = binary.find(b'_FVH', offset) - 40
+            NEXT_VOLUME_OFFSET = binary.find(b'_FVH', offset) - VOLUME_START_TO_SIGNATURE_OFFSET
 
             if NEXT_VOLUME_OFFSET < 0:
                 # No, or last volume in image trailed by padding
