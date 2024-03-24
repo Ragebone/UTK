@@ -41,22 +41,24 @@ class BiosFile(Serializable):
         return bios
 
     @classmethod
-    def fromBinary(cls, binary: bytes, capsule: Capsule = None) -> 'BiosFile':
+    def fromBinary(cls, binary: bytes, capsule: Capsule = None, offset: int = 0) -> 'BiosFile':
         """
         Build a BiosFile from the given binary.
         Optional CapsuleHeader can be passed in case it was already built previously.
         Does not catch, handle exceptions yourself!
 
         :param binary: Bytes to build the BiosFile from
-        :param capsuleHeader: Optional, previously built CapsuleHeader to not waste that
+        :param capsule: Optional, previously built Capsule to not waste that
+        :param offset: Optional int offset where the BiosFile is located at inside the binary.
+        Defaults to 0 since the "BiosFile" is the file.
         :return: BiosFile or Errors
         """
+
         if capsule is None:
-            capsule: Capsule = CapsuleFactory.fromBinary(binary)
+            capsule: Capsule = CapsuleFactory.fromBinary(binary, offset)
 
         images: List[Image] = []
 
-        offset: int = 0
         if capsule is not None:
             offset = capsule.getSize()
 
@@ -69,7 +71,10 @@ class BiosFile(Serializable):
 
         return cls(capsule, images)
 
-    def __init__(self, capsule: Capsule = None, images: List[Image] = None):
+    def __init__(self, capsule: Capsule = None, images: List[Image] = None, offset: int = 0):
+
+        # informative offset
+        self._offset: int = offset
         self._capsule: Capsule = capsule
         self._images: List[Image] = [] if images is None else images
 
@@ -98,6 +103,7 @@ class BiosFile(Serializable):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "capsule": self._capsule,
             "images": self._images
         }
