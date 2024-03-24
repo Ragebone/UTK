@@ -2,10 +2,10 @@ import struct
 from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
-from interfaces import Serializable
+from interfaces import Header
 
 
-class HeaderExtension(Serializable):
+class HeaderExtension(Header):
     @classmethod
     def _struct(cls):
         return struct.Struct('<16s H H')
