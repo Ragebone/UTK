@@ -26,7 +26,7 @@ class SectionedFile(File):
     """
 
     @classmethod
-    def fromBinary(cls, binary: bytes, header=None) -> 'SectionedFile':
+    def fromBinary(cls, binary: bytes, header=None, fileOffset: int = 0) -> 'SectionedFile':
         if header is None:
             header = FileHeader.fromBinary(binary)
 
@@ -57,12 +57,12 @@ class SectionedFile(File):
             offset = ALIGNED_OFFSET
 
         # Add closedDoor / openDoor processing functionality
-        arguments = cls.process(header, binary, sections)
+        arguments = cls.process(header, binary, sections, fileOffset)
         file = cls(*arguments)
         return file
 
     @classmethod
-    def process(cls, header: FileHeader, binary: bytes, sections: dict[str, Section]) -> tuple:
+    def process(cls, header: FileHeader, binary: bytes, sections: dict[str, Section], fileOffset: int = 0) -> tuple:
         """
         ClosedDoor / openDoor processing functionality
         Allows subclasses to implement checking and handling differences specific to them
@@ -71,12 +71,13 @@ class SectionedFile(File):
         :param header:
         :param binary:
         :param sections:
+        :param fileOffset:
         :return:
         """
-        return header, binary, sections
+        return header, binary, sections, fileOffset
 
-    def __init__(self, header: FileHeader, binary: bytes, sections=None):
-        super().__init__(header, binary)
+    def __init__(self, header: FileHeader, binary: bytes, sections=None, fileOffset: int = 0):
+        super().__init__(header, binary, fileOffset)
         self._sections = {} if sections is None else sections
 
     def getSize(self) -> int:
@@ -91,6 +92,7 @@ class SectionedFile(File):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "header": self._header,
             "sections": self._sections
         }

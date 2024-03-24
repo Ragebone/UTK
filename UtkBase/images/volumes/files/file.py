@@ -12,12 +12,17 @@ class File(Serializable):
     """
 
     @classmethod
-    def fromBinary(cls, binary: bytes, header: FileHeader = None) -> 'File':
+    def fromBinary(cls, binary: bytes, header: FileHeader = None, fileOffset: int = 0) -> 'File':
         """
+        Construct a more generic File from the given binary.
+        Content gets stored as raw bytes and no further parsing is done
 
-        :param binary:
-        :param header:
-        :return:
+        Asserts on error.
+
+        :param binary: Bytes to construct everything from
+        :param header: Optional previously built header
+        :param fileOffset: Optional informational offset of the file inside the volume
+        :return: The File
         """
 
         if header is None:
@@ -36,10 +41,13 @@ class File(Serializable):
         BINARY_SIZE = len(binary)
         assert BINARY_SIZE == FILE_SIZE - HEADER_SIZE, "File size {} missmatch with binary size {}".format(hex(FILE_SIZE), hex(BINARY_SIZE))
 
-        file = cls(header, binary)
+        file = cls(header, binary, fileOffset)
         return file
 
-    def __init__(self, header: FileHeader, binary: bytes):
+    def __init__(self, header: FileHeader, binary: bytes, fileOffset: int = 0):
+
+        # informational offset
+        self._offset = fileOffset
         self._header = header
         self._binary = binary
 
@@ -49,6 +57,7 @@ class File(Serializable):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "fileHeader": self._header,
             "binary": self._binary
         }

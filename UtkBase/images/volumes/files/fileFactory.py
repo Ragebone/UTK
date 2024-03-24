@@ -27,7 +27,7 @@ SECTIONED_FILE_TYPES = [
 
 class FileFactory:
     @staticmethod
-    def fromBinary(binary: bytes):
+    def fromBinary(binary: bytes, fileOffset: int = 0) -> File:
         """
 
         :param binary:
@@ -50,12 +50,12 @@ class FileFactory:
 
         if FILE_TYPE in SECTIONED_FILE_TYPES:
             try:
-                sectionedFile = SectionedFile.fromBinary(binary, fileHeader)
+                sectionedFile = SectionedFile.fromBinary(binary, fileHeader, fileOffset)
                 return sectionedFile
             except Exception as ex:
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 print("Falling back to generic file that does not parse sections")
 
         # TODO implement marking files as a Fallback in case there was an issue building SectionedFiles
-        file = File.fromBinary(binary, fileHeader)
+        file = File.fromBinary(binary, fileHeader, fileOffset)
         return file

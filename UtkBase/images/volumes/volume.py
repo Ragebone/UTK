@@ -60,7 +60,7 @@ class Volume(ImageElement):
         offset = CONTENT_START_OFFSET
         while offset < VOLUME_SIZE:
             fileBinary = VOLUME_BINARY[offset:]
-            file = FileFactory.fromBinary(fileBinary)
+            file = FileFactory.fromBinary(fileBinary, offset)
 
             if file is None:
                 break
