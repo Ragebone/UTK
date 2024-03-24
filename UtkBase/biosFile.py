@@ -20,7 +20,7 @@ class BiosFile(Serializable):
     :or
         bios = BiosFile.fromBinary(fileHandle.read())
 
-    Serializable; Use bios.serialize() to get the orignial or new / changed binary back.
+    Serializable; Use bios.serialize() to get the original or new / changed binary back.
     """
 
     @classmethod
@@ -41,7 +41,7 @@ class BiosFile(Serializable):
         return bios
 
     @classmethod
-    def fromBinary(cls, binary: bytes, capsule: Capsule = None, offset: int = 0) -> 'BiosFile':
+    def fromBinary(cls, binary: bytes, capsule: Capsule = None, fileOffset: int = 0) -> 'BiosFile':
         """
         Build a BiosFile from the given binary.
         Optional CapsuleHeader can be passed in case it was already built previously.
@@ -49,27 +49,28 @@ class BiosFile(Serializable):
 
         :param binary: Bytes to build the BiosFile from
         :param capsule: Optional, previously built Capsule to not waste that
-        :param offset: Optional int offset where the BiosFile is located at inside the binary.
+        :param fileOffset: Optional int offset where the BiosFile is located at inside the binary.
         Defaults to 0 since the "BiosFile" is the file.
         :return: BiosFile or Errors
         """
 
         if capsule is None:
-            capsule: Capsule = CapsuleFactory.fromBinary(binary, offset)
+            capsule: Capsule = CapsuleFactory.fromBinary(binary, fileOffset)
 
         images: List[Image] = []
 
+        imageOffset = 0
         if capsule is not None:
-            offset = capsule.getSize()
+            imageOffset = capsule.getSize()
 
         LENGTH_OF_BINARY = len(binary)
-        while offset < LENGTH_OF_BINARY:
-            IMAGE_BINARY = binary[offset:]
-            image = ImageFactory.fromBinary(IMAGE_BINARY)
+        while imageOffset < LENGTH_OF_BINARY:
+            IMAGE_BINARY = binary[imageOffset:]
+            image = ImageFactory.fromBinary(IMAGE_BINARY, imageOffset)
             images.append(image)
-            offset += image.getSize()
+            imageOffset += image.getSize()
 
-        return cls(capsule, images)
+        return cls(capsule, images, fileOffset)
 
     def __init__(self, capsule: Capsule = None, images: List[Image] = None, offset: int = 0):
 

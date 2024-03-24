@@ -18,19 +18,23 @@ class GenericImage(Image):
     """
 
     @classmethod
-    def fromImageElements(cls, contents: List[ImageElement]) -> Image:
+    def fromImageElements(cls, contents: List[ImageElement], imageOffset: int = 0) -> Image:
         """
         Construct a generic image from a list of UEFI based ImageElements
         :param contents: List of UEFI volumes, paddings, those are ImageElements
+        :param imageOffset: Optional informative offset for where the Image is inside the parent
         :return: An GenericImage object
         """
-        return cls(contents)
+        return cls(contents, imageOffset)
 
     @classmethod
     def fromDict(cls, dictionary: dict) -> 'GenericImage':
         return cls(dictionary.get('content', []))
 
-    def __init__(self, contents=None):
+    def __init__(self, contents=None, imageOffset: int = 0):
+
+        # Informational offset
+        self._offset = imageOffset
         # TODO consider making this a dictionary with the key being the offset inside the image
         self._contents: List[ImageElement] = [] if contents is None else contents
 
@@ -50,6 +54,7 @@ class GenericImage(Image):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "content": self._contents
         }
 

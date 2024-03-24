@@ -13,14 +13,15 @@ VOLUME_START_TO_SIGNATURE_OFFSET = 40
 class ImageFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes) -> Image:
+    def fromBinary(binary: bytes, imageOffset: int = 0) -> Image:
         """
         Constructs an image from the given binary by making a list of the images content.
         The List is made by searching for volumes first and filling the gaps with padding objects.
 
         Is supposed to decide on whether it is a generic, AMD or intel based image
 
-        :param binary: Bytes to construct the image from
+        :param binary: Bytes to construct the image from.
+        :param imageOffset: Optional informative offset where the Image is located inside the parent.
         :return: GenericImage; TODO implement more variants
         """
         imageElements: List[ImageElement] = []
@@ -53,6 +54,6 @@ class ImageFactory:
             offset += volume.getSize()
 
         # TODO more then GenericImages
-        uefiImage = GenericImage.fromImageElements(imageElements)
+        uefiImage = GenericImage.fromImageElements(imageElements, imageOffset)
 
         return uefiImage
