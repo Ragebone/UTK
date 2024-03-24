@@ -1,8 +1,11 @@
 import struct
 from typing import Any
 
+from UtkBase.capsules.headers.headerInterface import CapsuleHeader
 
-class EfiCapsuleHeader:
+
+class EfiCapsuleHeader(CapsuleHeader):
+
     @classmethod
     def _struct(cls):
         return struct.Struct('<16sIII')     # CapsuleGuid HeaderSize Flags CapsuleImageSize
@@ -19,7 +22,15 @@ class EfiCapsuleHeader:
         self._capsuleImageSize = capsuleImageSize
 
     def getSize(self):
+        # TODO switch to the struct size?
         return self._headerSize
+
+    def getCapsuleSize(self) -> int:
+        # TODO verify correctness
+        return self._headerSize
+
+    def getEncapsulatedImageSize(self) -> int:
+        return self._capsuleImageSize
 
     def toDict(self) -> dict[str, Any]:
         return {

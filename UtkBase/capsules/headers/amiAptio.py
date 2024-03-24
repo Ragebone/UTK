@@ -1,7 +1,7 @@
 import struct
 from typing import Any
 
-from UtkBase.capsules.headers.header import CapsuleHeader
+from UtkBase.capsules.headers.headerInterface import CapsuleHeader
 from UtkBase.uefiGuid import UefiGuid
 
 

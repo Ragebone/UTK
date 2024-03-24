@@ -1,5 +1,6 @@
 from UtkBase.capsules.headers.amiAptio import AmiAptioCapsuleHeader
 from UtkBase.capsules.headers.efi import EfiCapsuleHeader
+from UtkBase.capsules.headers.headerInterface import CapsuleHeader
 from UtkBase.capsules.headers.toshiba import ToshibaCapsuleHeader
 
 EFI_FMP_CAPSULE_GUID = b'\xED\xD5\xCB\x6D\x2D\xE8\x44\x4C\xBD\xA1\x71\x94\x19\x9A\xD9\x2A'                           # Standard FMP capsule GUID
@@ -36,7 +37,7 @@ class CapsuleHeaderFactory:
     Reference https://github.com/LongSoft/UEFITool/blob/b8567d32cc158eb68d900d9a161e92889e643627/common/ffsparser.cpp#L142
     """
     @staticmethod
-    def fromBinary(binary: bytes):
+    def fromBinary(binary: bytes) -> CapsuleHeader:
         """
         TODO make this not be horrible
         TODO detect and create a CapsuleHeader

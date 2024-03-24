@@ -1,9 +1,9 @@
 import abc
 
-from interfaces import Serializable
+from interfaces import Header
 
 
-class CapsuleHeader(Serializable, abc.ABC):
+class CapsuleHeader(Header, abc.ABC):
 
     @abc.abstractmethod
     def getSize(self) -> int:

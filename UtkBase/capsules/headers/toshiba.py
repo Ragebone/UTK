@@ -1,10 +1,11 @@
 import struct
 from typing import Any
 
+from UtkBase.capsules.headers.headerInterface import CapsuleHeader
 from UtkBase.uefiGuid import UefiGuid
 
 
-class ToshibaCapsuleHeader:
+class ToshibaCapsuleHeader(CapsuleHeader):
     """
     A Toshiba capsule header implementation
     TODO add reference to the UEFITool or other references
