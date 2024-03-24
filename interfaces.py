@@ -40,3 +40,15 @@ class Serializable(abc.ABC):
         :return: Dictionary of the objects attributes
         """
         pass
+
+
+class Header(Serializable, abc.ABC):
+    """
+    Interface / abstract class to identify objects that are considered "headers".
+
+    Usefully for extracting or printing headers differently.
+    For choosing "strategies" depending on such types.
+
+    Intended to be the one thing all headers have in common
+    """
+    pass
