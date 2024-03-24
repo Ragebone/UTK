@@ -13,16 +13,21 @@ FILE_ALIGNMENT = 0x08
 
 class Volume(ImageElement):
     """
+    UEFI volume implementation.
 
+    Volumes have a clear header with the easily identifiable magic '_FVH'.
+    Can contain additional headers or so called header-extensions.
+
+    And then contain "Files" inside a "FileSystem"
     """
 
     @classmethod
-    def fromBinary(cls, binary: bytes, volumeOffset: int, header: VolumeHeader = None) -> 'Volume':
+    def fromBinary(cls, binary: bytes, header: VolumeHeader = None, volumeOffset: int = 0) -> 'Volume':
         """
 
         :param binary: Possibly unlimited binary containing more than just the volume
-        :param volumeOffset: Offset the volume is located at in the image
-        :param header:
+        :param header: Optional previously parsed VolumeHeader
+        :param volumeOffset: Optional informative offset the volume is located at in the image
         :return:
         """
         if header is None:
@@ -75,11 +80,13 @@ class Volume(ImageElement):
             # This should be the case when the loop above has reached a "Volume free Space"
             # At the end of the volume, filled just with FFs
 
-        volume = cls(volumeOffset, header, binaryBetweenHeaders, externalHeader, files)
+        volume = cls(header, binaryBetweenHeaders, externalHeader, files, volumeOffset)
 
         return volume
 
-    def __init__(self, offset: int, header: VolumeHeader, binaryBetweenHeaders: bytes, externalHeader: ExternalVolumeHeader, files: dict[str, File]):
+    def __init__(self, header: VolumeHeader, binaryBetweenHeaders: bytes, externalHeader: ExternalVolumeHeader, files: dict[str, File], offset: int = 0):
+
+        # informational offset
         self._offset: int = offset
         self._header: VolumeHeader = header
         self._binaryBetweenHeaders: bytes = binaryBetweenHeaders
