@@ -45,6 +45,7 @@ In no particular order
         the new compressed binary is completely different to the previous one.
         That breaks the tests at minimum.
 
+- [ ] Full feature parity to the amdfwtool used by / for coreboot 
 - [ ] Proper Capsule handling with an interface and multiple Classes for the different capsules and then sub structures
 
 - [ ] (Flash) Offset remembering and pass through in fromBinary() 
