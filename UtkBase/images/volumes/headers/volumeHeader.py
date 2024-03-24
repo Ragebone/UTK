@@ -3,10 +3,10 @@ from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import calculateChecksum16
-from interfaces import Serializable
+from interfaces import Header
 
 
-class VolumeHeader(Serializable):
+class VolumeHeader(Header):
     """
     Represents the header at the start of a UEFI Volume.
     The header consists of a structure and the so called Block-Map.

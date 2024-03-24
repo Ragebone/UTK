@@ -2,10 +2,10 @@ import struct
 from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
-from interfaces import Serializable
+from interfaces import Header
 
 
-class ExternalVolumeHeader(Serializable):
+class ExternalVolumeHeader(Header):
     @staticmethod
     def _struct() -> struct:
         return struct.Struct('<16s I I')
