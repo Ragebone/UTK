@@ -26,6 +26,10 @@ class GenericImage(Image):
         """
         return cls(contents)
 
+    @classmethod
+    def fromDict(cls, dictionary: dict) -> 'GenericImage':
+        return cls(dictionary.get('content', []))
+
     def __init__(self, contents=None):
         # TODO consider making this a dictionary with the key being the offset inside the image
         self._contents: List[ImageElement] = [] if contents is None else contents
