@@ -1,6 +1,7 @@
 from UtkBase.images.volumes.files.sections.byGuid.headerExtension import HeaderExtension
 from UtkBase.images.volumes.files.sections.byGuid.lzmaCompressed import LzmaCompressedSection
 from UtkBase.images.volumes.files.sections.section import Section
+from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
 
 # TODO other Sections and verification that those sections here work correctly
@@ -21,10 +22,10 @@ _guidDefinedSectionMapping = {
 class GuidDefinedSectionFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes, sectionHeader=None) -> Section:
+    def fromBinary(binary: bytes, sectionHeader: SectionHeader = None) -> Section:
 
         if sectionHeader is None:
-            sectionHeader = SectionHeaderFactory.fromBinary(binary)
+            sectionHeader: SectionHeader = SectionHeaderFactory.fromBinary(binary)
 
         HEADER_SIZE = sectionHeader.getSize()
         headerExtension = HeaderExtension.fromBinary(binary[HEADER_SIZE:])

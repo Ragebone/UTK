@@ -15,7 +15,7 @@ SECTION_ALIGNMENT = 4
 class LzmaCompressedSection(Section):
 
     @classmethod
-    def process(cls, binary: bytes, header: SectionHeader, headerExtension=None) -> 'LZMACompressed':
+    def process(cls, binary: bytes, header: SectionHeader, headerExtension: HeaderExtension = None) -> 'LZMACompressed':
         """
              Create a GuidedLzma from the given binary
              :param binary: Full binary including all headers and extensions
