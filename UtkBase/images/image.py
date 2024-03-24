@@ -2,10 +2,10 @@ import abc
 from typing import List
 
 from UtkBase.images.imageElement import ImageElement
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class Image(serializable, abc.ABC):
+class Image(Serializable, abc.ABC):
     """
     Interface for UEFI Image implementations
     """

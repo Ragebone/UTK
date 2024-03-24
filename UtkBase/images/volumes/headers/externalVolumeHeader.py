@@ -1,11 +1,11 @@
 import struct
 from typing import Any
 
-from UtkBase.interfaces.serializable import serializable, serializeAsJsonFile
 from UtkBase.uefiGuid import UefiGuid
+from interfaces import Serializable
 
 
-class ExternalVolumeHeader(serializable, serializeAsJsonFile):
+class ExternalVolumeHeader(Serializable):
     @staticmethod
     def _struct() -> struct:
         return struct.Struct('<16s I I')

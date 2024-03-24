@@ -1,10 +1,10 @@
 import struct
 from typing import Any
 
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class UefiGuid(serializable):
+class UefiGuid(Serializable):
     """
     UEFI GUID implementation.
     A 128-Bit, 16-Byte unsigned integer.

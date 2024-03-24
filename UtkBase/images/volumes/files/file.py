@@ -1,10 +1,10 @@
 from typing import Any
 
 from UtkBase.images.volumes.files.fileHeader import FileHeader
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class File(serializable):
+class File(Serializable):
     """
     Basic File implementation
     made up of a valid header and an otherwise unspecified binary content.

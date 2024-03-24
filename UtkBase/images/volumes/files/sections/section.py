@@ -2,10 +2,10 @@ from typing import Any
 
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class Section(serializable):
+class Section(Serializable):
     @classmethod
     def fromBinary(cls, binary: bytes, header: SectionHeader = None) -> 'Section':
         if header is None:

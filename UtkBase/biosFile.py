@@ -4,10 +4,10 @@ from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.factory import CapsuleFactory
 from UtkBase.images.image import Image
 from UtkBase.images.imageFactory import ImageFactory
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class BiosFile(serializable):
+class BiosFile(Serializable):
     """
     Represents the Motherboards Bios- or rather UEFI-Image -files as they are delivered by the OEM.
     Formats vary with this supporting binary formats like '.bin' and '.rom' as well as '.CAP'.

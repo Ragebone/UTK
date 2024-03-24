@@ -1,9 +1,9 @@
 import abc
 
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class Capsule(serializable, abc.ABC):
+class Capsule(Serializable, abc.ABC):
     """
     Interface for all Capsul implementations
     """

@@ -2,10 +2,10 @@ import struct
 from typing import Any
 
 from UtkBase.images.volumes.files.sections.type import SectionType
-from UtkBase.interfaces.serializable import serializable, serializeAsJsonFile
+from interfaces import Serializable
 
 
-class SectionHeader(serializable, serializeAsJsonFile):
+class SectionHeader(Serializable):
     """
     # TODO Add version 2 headers:
     # https://github.com/LongSoft/UEFITool/blob/bf93a5eacc900de3b2665f0bbe52d116aa1fba25/common/ffsparser.cpp#L2297

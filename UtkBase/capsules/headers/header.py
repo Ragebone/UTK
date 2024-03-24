@@ -1,9 +1,9 @@
 import abc
 
-from UtkBase.interfaces.serializable import serializable, serializeAsJsonFile
+from interfaces import Serializable
 
 
-class CapsuleHeader(serializable, serializeAsJsonFile, abc.ABC):
+class CapsuleHeader(Serializable, abc.ABC):
 
     @abc.abstractmethod
     def getSize(self) -> int:

@@ -1,9 +1,9 @@
 import abc
 
-from UtkBase.interfaces.serializable import serializable
+from interfaces import Serializable
 
 
-class ImageElement(serializable, abc.ABC):
+class ImageElement(Serializable, abc.ABC):
     """
     Interface for elements contained directly within the UEFI image.
     Mainly Paddings and UEFI volumes.
