@@ -3,10 +3,10 @@ from typing import Any
 
 from UtkBase.images.volumes.files.type import EfiFirmwareFileType
 from UtkBase.uefiGuid import UefiGuid
-from interfaces import Serializable
+from interfaces import Header
 
 
-class FileHeader(Serializable):
+class FileHeader(Header):
     """
     References
     # https://github.com/LongSoft/UEFITool/blob/036be8d3bc9afb49fc9186aa5e5142df98b76586/common/basetypes.h#L181
