@@ -22,7 +22,7 @@ _guidDefinedSectionMapping = {
 class GuidDefinedSectionFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes, sectionHeader: SectionHeader = None) -> Section:
+    def fromBinary(binary: bytes, sectionHeader: SectionHeader = None, sectionOffset: int = 0) -> Section:
 
         if sectionHeader is None:
             sectionHeader: SectionHeader = SectionHeaderFactory.fromBinary(binary)
@@ -35,5 +35,5 @@ class GuidDefinedSectionFactory:
         assert guidedSectionClass is not None, "Section defined by GUID with GUID {} is still unknown and not implemented".format(sectionGuid)
 
         # TODO  well,  the HeaderExtension should be passed onwards, otherwise it is wasted here and has to be rebuild. Not bad welp.
-        section = guidedSectionClass.fromBinary(binary, sectionHeader)
+        section = guidedSectionClass.fromBinary(binary, sectionHeader, sectionOffset, headerExtension)
         return section

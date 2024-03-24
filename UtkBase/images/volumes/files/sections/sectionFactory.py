@@ -10,7 +10,7 @@ from UtkBase.images.volumes.files.sections.volumeImageSection import VolumeImage
 class SectionFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes) -> Section:
+    def fromBinary(binary: bytes, sectionOffset: int = 0) -> Section:
         sectionHeader = SectionHeaderFactory.fromBinary(binary)
 
         SECTION_TYPE: SectionType = sectionHeader.getSectionType()
@@ -32,5 +32,5 @@ class SectionFactory:
             sectionClass = VolumeImageSection
 
         # TODO specific section implementations that allow for more capability
-        section = sectionClass.fromBinary(binary, sectionHeader)
+        section = sectionClass.fromBinary(binary, sectionHeader, sectionOffset)
         return section

@@ -11,7 +11,7 @@ class VolumeImageSection(Section):
 
     """
     @classmethod
-    def process(cls, binary: bytes, header: SectionHeader) -> 'VolumeImageSection':
+    def process(cls, binary: bytes, header: SectionHeader, sectionOffset: int = 0) -> 'VolumeImageSection':
         """
         Closed door / open door
         continued construction from  fromBinary() inheriting from Section
@@ -20,6 +20,7 @@ class VolumeImageSection(Section):
 
         :param binary:
         :param header:
+        :param sectionOffset: Optional informational offset
         :return:
         """
         HEADER_SIZE = header.getSize()
@@ -30,10 +31,10 @@ class VolumeImageSection(Section):
         offset = 0x00  # Bogus, because decompressed and start of section.
         uefiVolume = VolumeFactory.fromBinary(binaryWithoutHeader, offset)
 
-        return cls(binaryWithoutHeader, header, uefiVolume)
+        return cls(binaryWithoutHeader, header, uefiVolume, sectionOffset)
 
-    def __init__(self, binary: bytes, header: SectionHeader, uefiVolume: Volume):
-        super().__init__(binary, header)
+    def __init__(self, binary: bytes, header: SectionHeader, uefiVolume: Volume, sectionOffset: int = 0):
+        super().__init__(binary, header, sectionOffset)
 
         assert uefiVolume is not None, "{} must be constructed with an UEFI Volume".format(self.__class__.__name__)
         self._volume = uefiVolume

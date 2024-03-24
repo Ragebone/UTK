@@ -41,7 +41,7 @@ class SectionedFile(File):
         offset = HEADER_SIZE
         while offset < FILE_SIZE:
             sectionBinary = binary[offset:]
-            section: Section = SectionFactory.fromBinary(sectionBinary)
+            section: Section = SectionFactory.fromBinary(sectionBinary, offset)
             sections[hex(offset)] = section
 
             SECTION_SIZE = section.getSize()

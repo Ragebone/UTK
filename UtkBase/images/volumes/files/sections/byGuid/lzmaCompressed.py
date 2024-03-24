@@ -15,11 +15,12 @@ SECTION_ALIGNMENT = 4
 class LzmaCompressedSection(Section):
 
     @classmethod
-    def process(cls, binary: bytes, header: SectionHeader, headerExtension: HeaderExtension = None) -> 'LZMACompressed':
+    def process(cls, binary: bytes, header: SectionHeader, sectionOffset: int = 0, headerExtension: HeaderExtension = None) -> 'LZMACompressed':
         """
              Create a GuidedLzma from the given binary
              :param binary: Full binary including all headers and extensions
              :param header:
+             :param sectionOffset:
              :param headerExtension:
              :return:
          """
@@ -63,11 +64,11 @@ class LzmaCompressedSection(Section):
 
             offset = ALIGNED_OFFSET
 
-        lzmaCompressedSection = cls(binaryWithoutHeaders, header, headerExtension, sections)
+        lzmaCompressedSection = cls(binaryWithoutHeaders, header, headerExtension, sections, sectionOffset=sectionOffset)
         return lzmaCompressedSection
 
-    def __init__(self, binary: bytes, header: SectionHeader, headerExtension: HeaderExtension, sections: dict):
-        super().__init__(binary, header)
+    def __init__(self, binary: bytes, header: SectionHeader, headerExtension: HeaderExtension, sections: dict, sectionOffset: int = 0):
+        super().__init__(binary, header, sectionOffset)
         self._headerExtension = headerExtension
         self._sections = sections
 
@@ -80,6 +81,7 @@ class LzmaCompressedSection(Section):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "sectionHeader": self._header,
             "headerExtension": self._headerExtension,
             "sections": self._sections,

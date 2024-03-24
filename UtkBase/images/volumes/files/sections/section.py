@@ -7,7 +7,21 @@ from interfaces import Serializable
 
 class Section(Serializable):
     @classmethod
-    def fromBinary(cls, binary: bytes, header: SectionHeader = None) -> 'Section':
+    def fromBinary(cls, binary: bytes, header: SectionHeader = None, sectionOffset: int = 0, *kwargs) -> 'Section':
+        """
+        Construct a Section* from the given binary.
+        This is function is pretty Generic and does not distinguish anything.
+
+        It can be any type of Section with "cls.process(...)" handling the Class specific parsing
+
+        :param binary: Bytes to build the Section from
+        :param header: Optional previously constructed SectionHeader
+        :param sectionOffset: Optional informational offset where the section is within the File
+        :param kwargs: Additional unspecified keyword arguments to pass to the process function
+        Arguments for the specific Section implementation it is going to be.
+        Probably a GUID Defined Section with a HeaderExtension
+        :return: The built Section
+        """
         if header is None:
             header = SectionHeaderFactory.fromBinary(binary)
 
@@ -17,17 +31,18 @@ class Section(Serializable):
         assert BINARY_SIZE == SECTION_SIZE, "{} has a differing amount of bytes. Expected: {} Got: {}".format(cls.__name__, hex(SECTION_SIZE), hex(BINARY_SIZE))
 
         # Closed door / open door
-        section = cls.process(binary, header)
+        section = cls.process(binary, header, sectionOffset, *kwargs)
         return section
 
     @classmethod
-    def process(cls, binary: bytes, header: SectionHeader) -> 'Section':
+    def process(cls, binary: bytes, header: SectionHeader, sectionOffset: int = 0, *kwargs) -> 'Section':
         HEADER_SIZE = header.getSize()
         binaryWithoutHeader = binary[HEADER_SIZE:]
 
-        return cls(binaryWithoutHeader, header)
+        return cls(binaryWithoutHeader, header, sectionOffset)
 
-    def __init__(self, binary: bytes, header: SectionHeader):
+    def __init__(self, binary: bytes, header: SectionHeader, sectionOffset: int = 0):
+        self._offset = sectionOffset
         self._binary = binary
         self._header = header
 
@@ -37,6 +52,7 @@ class Section(Serializable):
     def toDict(self) -> dict[str, Any]:
         return {
             "class": self.__class__.__name__,
+            "offset": self._offset,
             "sectionHeader": self._header,
             "binary": self._binary
         }
