@@ -17,5 +17,5 @@ class VolumeFactory:
             hex(offset), binary[:0xFF].upper().hex()
         )
 
-        volume = Volume.fromBinary(binary, offset, header)
+        volume = Volume.fromBinary(binary, header, offset)
         return volume
