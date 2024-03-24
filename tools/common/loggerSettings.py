@@ -4,7 +4,7 @@ import logging
 def addLoggingFlags(argParser):
     argParser.add_argument("-v", "--verbose", required=False, action='store_true', help="Verbose Output")
     argParser.add_argument("-vv", "--verboseVerbose", required=False, action='store_true', help="super Verbose Output")
-    argParser.add_argument("-ulf", "--useLogFile", required=False, action='store_true', help="Enables logging to a file and sets the loglevel to info")
+    argParser.add_argument("-ulf", "--useLogFile", required=False, action='store_true', help="Enables logging to a file")
 
 
 def applyLogSettings(arguments: dict):
