@@ -48,7 +48,6 @@ class FileHeader(Header):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "guid": self._guid,
             "integrityCheck": self._integrityCheck,
             "fileType": self._fileType,

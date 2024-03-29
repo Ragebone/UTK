@@ -103,7 +103,6 @@ class BiosFile(Serializable):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "offset": self._offset,
             "capsule": self._capsule,
             "images": self._images

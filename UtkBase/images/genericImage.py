@@ -53,7 +53,6 @@ class GenericImage(Image):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "offset": self._offset,
             "content": self._contents
         }

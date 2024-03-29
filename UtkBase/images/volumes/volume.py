@@ -104,7 +104,6 @@ class Volume(ImageElement):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "offset": self._offset,
             "headers": self._header,
             "binaryBetweenHeaders": self._binaryBetweenHeaders,

@@ -134,7 +134,6 @@ class VolumeHeader(Header):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "guid": self._guid,
             "volumeSize": self._volumeSize,
             "attributeMask": self._attributeMask,

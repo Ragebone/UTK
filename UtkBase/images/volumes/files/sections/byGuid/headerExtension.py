@@ -31,7 +31,6 @@ class HeaderExtension(Header):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "guid": self._guid,
             "dataOffset": self._dataOffset,
             "attributes": self._attributes

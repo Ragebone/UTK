@@ -39,7 +39,6 @@ class SectionHeader(Header):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "sectionSize": self._sectionSize,
             "sectionType": self._sectionType
         }

@@ -37,7 +37,6 @@ class EmptyPadding(ImageElement):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "size": self._length,
             "offset": self._offset
         }

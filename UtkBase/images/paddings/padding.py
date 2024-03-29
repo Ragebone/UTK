@@ -21,7 +21,6 @@ class Padding(ImageElement):
 
     def toDict(self) -> dict[str, Any]:
         return {
-            "class": self.__class__.__name__,
             "size": self._size,
             "offset": self._offset,
             "binary": self._binary
