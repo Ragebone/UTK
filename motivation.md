@@ -7,7 +7,7 @@ This trys to answer why this is the project is the project that it is.
 Because most of the information, references and other software like the PSPTool, were available in python.
 Additionally, because it is widespread and rather easy to get into.
 
-## Why not contribute or add things other projects?
+## Why not contribute or add things to other projects?
 
 Possibly, contributions to other projects may arise from this project.
 But when faced with the struggles of finding into firmware, UEFI and other things,
