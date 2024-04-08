@@ -51,6 +51,12 @@ class GenericImage(Image):
                 size += imageElement.getSize()
         return size
 
+    def getOffset(self):
+        return self._offset
+
+    def getContents(self) -> List[ImageElement]:
+        return self._contents.copy()
+
     def toDict(self) -> dict[str, Any]:
         return {
             "offset": self._offset,

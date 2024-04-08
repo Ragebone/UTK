@@ -14,9 +14,17 @@ class Image(Serializable, abc.ABC):
     def getSize(self) -> int:
         pass
 
+    @abc.abstractmethod
+    def getOffset(self) -> int:
+        pass
+
+    @abc.abstractmethod
+    def getContents(self) -> List[ImageElement]:
+        pass
+
     @classmethod
     @abc.abstractmethod
-    def fromImageElements(cls, contents: List[ImageElement]) -> 'Image':
+    def fromImageElements(cls, contents: List[ImageElement], binary: bytes) -> 'Image':
         pass
 
     @classmethod
