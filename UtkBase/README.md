@@ -4,8 +4,10 @@ A package for a common UEFI firmware implementation.
 Tested and build for AMD Ryzen at the moment.
 Intel based images will not work right now.
 
-## Content
+`TODO` This package / module could and maybe should be named `UtkUefi`,
+to signify it implementing general UEFI  "things".
 
+## Content
 
 ```
 UtkBase
