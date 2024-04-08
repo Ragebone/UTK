@@ -102,6 +102,9 @@ class Volume(ImageElement):
     def getSortedFileKeys(self) -> list:
         return sorted(self._files, key=lambda key: int(key, 16))
 
+    def getSortedFiles(self) -> list[tuple[str, File]]:
+        return sorted(self._files.items(), key=lambda item: int(item[0], 16))
+
     def toDict(self) -> dict[str, Any]:
         return {
             "offset": self._offset,
