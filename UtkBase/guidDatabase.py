@@ -1,7 +1,5 @@
 import csv
 
-from UtkBase.uefiGuid import UefiGuid
-
 
 class GuidDatabase:
     """
