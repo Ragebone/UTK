@@ -22,6 +22,11 @@ class BiosFile(Serializable):
 
     Serializable; Use bios.serialize() to get the original or new / changed binary back.
     """
+    dontHandleExceptions = False
+
+    @staticmethod
+    def disableExceptionHandling():
+        BiosFile.dontHandleExceptions = True
 
     @classmethod
     def fromFilepath(cls, filePath: str) -> 'BiosFile':

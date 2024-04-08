@@ -53,6 +53,9 @@ class FileFactory:
                 sectionedFile = SectionedFile.fromBinary(binary, fileHeader, fileOffset)
                 return sectionedFile
             except Exception as ex:
+                from UtkBase.biosFile import BiosFile
+                if BiosFile.dontHandleExceptions:
+                    raise ex
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
                 print("Falling back to generic file that does not parse sections")
 
