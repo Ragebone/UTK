@@ -2,7 +2,7 @@ import abc
 from typing import List
 
 from UtkBase.images.imageElement import ImageElement
-from interfaces import Serializable
+from utkInterfaces import Serializable
 
 
 class Image(Serializable, abc.ABC):

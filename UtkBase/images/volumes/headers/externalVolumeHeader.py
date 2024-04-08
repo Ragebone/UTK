@@ -2,7 +2,7 @@ import struct
 from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
-from interfaces import Header
+from utkInterfaces import Header
 
 
 class ExternalVolumeHeader(Header):

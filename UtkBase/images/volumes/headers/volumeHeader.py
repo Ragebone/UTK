@@ -3,7 +3,7 @@ from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import calculateChecksum16
-from interfaces import Header
+from utkInterfaces import Header
 
 
 class VolumeHeader(Header):

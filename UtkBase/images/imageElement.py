@@ -1,7 +1,6 @@
 import abc
 
-from UtkBase.images.volumes.headers.volumeHeader import VolumeHeader
-from interfaces import Serializable
+from utkInterfaces import Serializable, Header
 
 
 class ImageElement(Serializable, abc.ABC):
@@ -21,5 +20,5 @@ class ImageElement(Serializable, abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def fromBinary(cls, binary: bytes, header: VolumeHeader = None, volumeOffset: int = 0) -> 'Volume':
+    def fromBinary(cls, binary: bytes, header: Header = None, offset: int = 0) -> 'ImageElement':
         pass

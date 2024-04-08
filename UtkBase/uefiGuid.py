@@ -1,7 +1,7 @@
 import struct
 from typing import Any
 
-from interfaces import Serializable
+from utkInterfaces import Serializable
 
 
 class UefiGuid(Serializable):

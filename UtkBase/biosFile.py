@@ -4,7 +4,7 @@ from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.factory import CapsuleFactory
 from UtkBase.images.image import Image
 from UtkBase.images.imageFactory import ImageFactory
-from interfaces import Serializable
+from utkInterfaces import Serializable
 
 
 class BiosFile(Serializable):

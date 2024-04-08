@@ -2,7 +2,7 @@ import struct
 from typing import Any
 
 from UtkBase.images.volumes.files.sections.type import SectionType
-from interfaces import Header
+from utkInterfaces import Header
 
 
 class SectionHeader(Header):

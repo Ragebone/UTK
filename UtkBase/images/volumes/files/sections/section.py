@@ -2,7 +2,7 @@ from typing import Any
 
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
-from interfaces import Serializable
+from utkInterfaces import Serializable
 
 
 class Section(Serializable):

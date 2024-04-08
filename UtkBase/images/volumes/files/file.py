@@ -1,7 +1,7 @@
 from typing import Any
 
 from UtkBase.images.volumes.files.fileHeader import FileHeader
-from interfaces import Serializable
+from utkInterfaces import Serializable
 
 
 class File(Serializable):

@@ -3,7 +3,7 @@ from typing import Any
 
 from UtkBase.images.volumes.files.type import EfiFirmwareFileType
 from UtkBase.uefiGuid import UefiGuid
-from interfaces import Header
+from utkInterfaces import Header
 
 
 class FileHeader(Header):
