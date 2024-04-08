@@ -44,7 +44,7 @@ class UefiGuid(Serializable):
         """Size of the UEFI GUID; 16 bytes, 128-Bits"""
         return 16
 
-    def getName(self, whenUnknown: str = "") -> str:
+    def getName(self, whenUnknown: Any = "") -> str:
         from UtkBase import GuidDatabase
         """
         Retrieves a possible name for this GUID from the GUID Database.
@@ -53,10 +53,13 @@ class UefiGuid(Serializable):
         return GuidDatabase.getNameFromGuidString(self.guidString_read_only, whenUnknown)
 
     def toDict(self) -> dict[str, Any]:
-        return {
-            "class": self.__class__.__name__,
-            "guidString": self.guidString_read_only
-        }
+        name = self.getName(None)
+        if name is None:
+            return {
+                "guidString": self.guidString_read_only,
+                "guidName": name
+            }
+        return {"guidString": self.guidString_read_only}
 
     def toString(self) -> str:
         """Return: Read Only string of the GUID"""
