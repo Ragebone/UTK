@@ -89,6 +89,9 @@ class SectionedFile(File):
     def getSortedSectionOffsets(self) -> list:
         return sorted(self._sections, key=lambda key: int(key, 16))
 
+    def getSortedSections(self) -> list[tuple[str, Section]]:
+        return sorted(self._sections.items(), key=lambda item: int(item[0], 16))
+
     def toDict(self) -> dict[str, Any]:
         return {
             "offset": self._offset,
