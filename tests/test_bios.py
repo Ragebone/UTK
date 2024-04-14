@@ -1,47 +1,28 @@
-import traceback
-from unittest import TestCase
+import pytest
+import glob
 
 from UtkBase.biosFile import BiosFile
 from UtkBase.utility import diffBinary
-from tests import TEST_BIOS_FILE_PATHS
 
 
-class TestBios(TestCase):
-    def test_end_to_end(self) -> None:
-        fileHandles = []
-        for filePath in TEST_BIOS_FILE_PATHS:
-            try:
-                fileHandle = open(filePath, 'rb')
-            except Exception as ex:
-                print("Could not open File at: {}".format(filePath))
-                continue
+TEST_BIOS_FILE_PATHS = glob.glob("./images/*")
 
-            fileHandles.append(fileHandle)
 
-        success = True
-        for fileHandle in fileHandles:
-            BINARY = fileHandle.read()
-            FILE_NAME = fileHandle.name
-            fileHandle.close()
+@pytest.mark.parametrize('filename', TEST_BIOS_FILE_PATHS)
+def test_bios(filename):
+    try:
+        fileHandle = open(filename, 'rb')
+    except Exception as ex:
+        print("Could not open File at: {}".format(filename))
+        assert False
 
-            try:
-                bios = BiosFile.fromBinary(BINARY)
-            except Exception as ex:
-                success = False
-                traceback.print_exception(type(ex), ex, ex.__traceback__)
-                continue
+    BINARY = fileHandle.read()
+    fileHandle.close()
 
-            try:
-                serializedBios = bios.serialize()
-            except Exception as ex:
-                success = False
-                traceback.print_exception(type(ex), ex, ex.__traceback__)
-                continue
+    BiosFile.disableExceptionHandling()
+    bios = BiosFile.fromBinary(BINARY)
+    serializedBios = bios.serialize()
 
-            print("\nDiffing: {}\n".format(FILE_NAME))
-            BINARIES_EQUAL = diffBinary(BINARY, serializedBios)
-            if not BINARIES_EQUAL:
-                success = False
-
-        assert success, "serialization failed"
-
+    assert len(BINARY) == len(serializedBios), "Length missmatch: {} where it should be {}".format(hex(len(BINARY)), hex(len(serializedBios)))
+    BINARIES_EQUAL = diffBinary(BINARY, serializedBios)
+    assert BINARIES_EQUAL, "Must equal"
