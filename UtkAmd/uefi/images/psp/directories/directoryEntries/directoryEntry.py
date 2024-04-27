@@ -58,7 +58,7 @@ class TypedDirectoryEntry(PointDirectoryEntry):
     That can't be known at the time of creation and hence needs to be set later once it is known.
     """
     @abc.abstractmethod
-    def getType(self) -> int:
+    def getEntryType(self) -> int:
         """Get the Uint8 type value identifying the Type of Entry referenced by the TypedDirectoryEntry"""
         pass
 
