@@ -5,29 +5,18 @@ from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Serializable
 
 
-class Image(Serializable, abc.ABC):
+class Image(Serializable):
     """
     Interface for UEFI Image implementations
+    Methods and functionality they all have in common
     """
 
     @abc.abstractmethod
     def getSize(self) -> int:
+        """Get the images size"""
         pass
 
     @abc.abstractmethod
     def getOffset(self) -> int:
-        pass
-
-    @abc.abstractmethod
-    def getContents(self) -> List[ImageElement]:
-        pass
-
-    @classmethod
-    @abc.abstractmethod
-    def fromImageElements(cls, contents: List[ImageElement], binary: bytes) -> 'Image':
-        pass
-
-    @classmethod
-    @abc.abstractmethod
-    def fromDict(cls, dictionary: dict) -> 'Image':
+        """Get the offset it is located at inside the BiosFile"""
         pass
