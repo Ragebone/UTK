@@ -1,5 +1,5 @@
 import abc
 
 
-class AMD(abc.ABC):
+class AMD:
     pass

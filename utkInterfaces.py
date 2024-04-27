@@ -2,7 +2,7 @@ import abc
 from typing import Any
 
 
-class Serializable(abc.ABC):
+class Serializable:
     """
     Interface for everything that is or is within actual firmware.
 
@@ -42,7 +42,7 @@ class Serializable(abc.ABC):
         pass
 
 
-class Header(Serializable, abc.ABC):
+class Header(Serializable):
     """
     Interface / abstract class to identify objects that are considered "headers".
 

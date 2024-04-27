@@ -3,7 +3,7 @@ import abc
 from utkInterfaces import Serializable, Header
 
 
-class ImageElement(Serializable, abc.ABC):
+class ImageElement(Serializable):
     """
     Interface for elements contained directly within the UEFI image.
     Mainly Paddings and UEFI volumes.
