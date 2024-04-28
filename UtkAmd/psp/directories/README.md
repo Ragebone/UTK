@@ -1,0 +1,2 @@
+# AMD PSP Directory Structures
+
