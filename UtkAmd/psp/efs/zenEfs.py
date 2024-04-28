@@ -1,7 +1,7 @@
 from _ctypes import Structure
 from ctypes import c_uint32
 
-from UtkAmd.uefi.images.psp.efs.efs import EmbeddedFirmwareStructure
+from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
 
 
 class ZenEfs(Structure, EmbeddedFirmwareStructure):

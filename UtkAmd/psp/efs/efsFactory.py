@@ -1,4 +1,4 @@
-from UtkAmd.uefi.images.psp.efs.zenEfs import ZenEfs
+from UtkAmd.psp.efs.zenEfs import ZenEfs
 
 
 class EfsFactory:

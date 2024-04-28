@@ -1,6 +1,6 @@
 import struct
 
-from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import PointDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import PointDirectoryEntry
 
 
 class ComboDirectoryEntry(PointDirectoryEntry):

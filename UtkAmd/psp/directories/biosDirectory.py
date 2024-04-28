@@ -1,5 +1,5 @@
-from UtkAmd.uefi.images.psp.directories.directory import ContentDirectory
-from UtkAmd.uefi.images.psp.directories.directoryEntries.biosDirectoryEntry import BiosDirectoryEntry
+from UtkAmd.psp.directories.directory import ContentDirectory
+from UtkAmd.psp.directories.directoryEntries.biosDirectoryEntry import BiosDirectoryEntry
 
 
 class BiosDirectory(ContentDirectory):

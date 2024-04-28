@@ -1,7 +1,7 @@
 import struct
 
-from UtkAmd.uefi.images.psp.directories.directoryEntries.biosTypeAttribute import BiosTypeAttribute
-from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.biosTypeAttribute import BiosTypeAttribute
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
 
 
 class BiosDirectoryEntry(TypedDirectoryEntry):

@@ -1,6 +1,6 @@
 import traceback
 
-from UtkAmd.firmware.firmwareBlob import FirmwareBlob
+from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
 from UtkBase.images.imageElement import ImageElement
 
 FIRMWARE_TYPE_MAPPING = {

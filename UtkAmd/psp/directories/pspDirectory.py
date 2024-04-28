@@ -1,6 +1,6 @@
-from UtkAmd.uefi.images.psp.directories.directory import ContentDirectory
-from UtkAmd.uefi.images.psp.directories.directoryEntries.pspDirectoryEntry import PspDirectoryEntry
-from UtkAmd.uefi.images.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
+from UtkAmd.psp.directories.directory import ContentDirectory
+from UtkAmd.psp.directories.directoryEntries.pspDirectoryEntry import PspDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
 
 
 class PspDirectory(ContentDirectory):

@@ -1,7 +1,7 @@
 import struct
 
-from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, RomId, Writeable
-from UtkAmd.uefi.images.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, RomId, Writeable
+from UtkAmd.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
 
 
 class PspDirectoryEntry(TypedDirectoryEntry):
