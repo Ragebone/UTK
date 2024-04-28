@@ -1,7 +1,9 @@
 import struct
 
-from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, RomId, Writeable
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.romId import RomId
 from UtkAmd.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
+from UtkAmd.psp.directories.directoryEntries.writable import Writeable
 
 
 class PspDirectoryEntry(TypedDirectoryEntry):
