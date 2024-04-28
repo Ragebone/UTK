@@ -1,11 +1,11 @@
 import abc
 from typing import List
 
-from UtkAmd.utkAmdInterfaces import AMD
+from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
 
 
-class EmbeddedFirmwareStructure(ImageElement, AMD):
+class EmbeddedFirmwareStructure(ImageElement, UtkAMD):
     """
     Interface all EFSs have to implement
     """

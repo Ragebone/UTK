@@ -1,7 +1,7 @@
 import abc
 import enum
 
-from UtkAmd.utkAmdInterfaces import AMD
+from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable
 
 
@@ -17,7 +17,7 @@ class Writeable(enum.Enum):
     Writeable = 1
 
 
-class DirectoryEntry(Serializable, AMD):
+class DirectoryEntry(Serializable, UtkAMD):
     """
     Common interface for all entries of all Directories including ComboDirectories and SoftFuseChains
     """
