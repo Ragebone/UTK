@@ -13,6 +13,7 @@ UTK
 ├── images/
 ├── tests/
 ├── tools/
+├── UtkAmd/
 ├── UtkBase/
 ├── .gitignore
 └── README.md
@@ -27,8 +28,12 @@ UTK
    and then serializes it back. 
    Fail if it differs from the original input.
 
+
 - `tools/` for any and all usefully tools or scripts doing something useful with UTK.
-   This would be the place to implement tools like the UEFITools extract patch and replace, 
+   This would be the place to implement tools like the UEFITools extract patch and replace 
+
+
+- `UtkAmd/` Directory for all AMD specific implementations.
 
 
 - `UtkBase/` Implementation of all the normal UEFI elements and functionality.
@@ -42,7 +47,8 @@ UTK
 - `REAMDE.md` The file you are currently reading.
 
 
-`UtkBase` contains python code split into at least two noteworthy responsibilities.
+`Utk****` contain at least two noteworthy responsibilities.
+
 
 ### Factories 
 
