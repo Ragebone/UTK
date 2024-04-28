@@ -1,6 +1,11 @@
-# Motivation 
+# Motivation
 
-This trys to answer why this is the project is the project that it is.
+This trys to answer why this project is as it is.
+
+## Why start and make this project?  
+
+Purely out of interest, for fun and as a hobby.
+The goal is to enable further research and exploration into the lower levels of firmware that is running on modern systems.
 
 ## Why Python? 
 
@@ -13,4 +18,6 @@ Possibly, contributions to other projects may arise from this project.
 But when faced with the struggles of finding into firmware, UEFI and other things,
 wrangling another projects codebase and architecture seemed less appealing than making one.
 
-Especially with some, lets say obtuse implementation details of the different tools around.
+Especially with some, lets say, obtuse implementation details of the different tools around.
+
+
