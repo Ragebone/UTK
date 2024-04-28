@@ -28,3 +28,12 @@ class EmbeddedFirmwareStructure(ImageElement, AMD):
         :return: List of int offsets relative to the start of the AmdImage
         """
         pass
+
+    @abc.abstractmethod
+    def getFirmwarePointers(self) -> List[int]:
+        """
+        Get List of References to possible firmware blobs
+
+        :return: List of References to possible firmware
+        """
+        pass
