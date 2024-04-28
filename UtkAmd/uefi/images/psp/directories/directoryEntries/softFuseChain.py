@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import DirectoryEntry
 
@@ -44,7 +43,7 @@ class SoftFuseChain(DirectoryEntry):
     def getSize(self) -> int:
         return self._struct().size
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "type": self._type,
             "subProgram": self._subProgram,

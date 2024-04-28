@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
 from UtkBase.utility import calculateChecksum16
@@ -132,7 +131,7 @@ class VolumeHeader(Header):
         """Offset the External Header Structure is located at"""
         return self._externalHeaderOffset
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "guid": self._guid,
             "volumeSize": self._volumeSize,

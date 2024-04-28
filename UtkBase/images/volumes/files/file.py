@@ -1,5 +1,3 @@
-from typing import Any
-
 from UtkBase.images.volumes.files.fileHeader import FileHeader
 from utkInterfaces import Serializable
 
@@ -54,7 +52,7 @@ class File(Serializable):
     def getSize(self) -> int:
         return self._header.getFileSize()
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "fileHeader": self._header,

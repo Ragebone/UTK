@@ -1,6 +1,5 @@
 from _ctypes import Structure
 from ctypes import c_uint8, c_bool
-from typing import Any
 
 from utkInterfaces import Serializable
 
@@ -33,7 +32,7 @@ class BiosTypeAttribute(Structure, Serializable):
         biosTypeAttribute = cls.from_buffer_copy(binary)
         return biosTypeAttribute
 
-    def __init__(self, *args: Any, **kw: Any):
+    def __init__(self, *args: any, **kw: any):
         """
         :param typeValue: uint8
         :param s3Reload: bool
@@ -53,7 +52,7 @@ class BiosTypeAttribute(Structure, Serializable):
     def getEntryType(self) -> int:
         return self._typeValue
 
-    def toDict(self) -> dict:
+    def toDict(self) -> dict[str, any]:
         return {
             "typeValue": self._typeValue,
             "reloadOnS3Resume": self._reloadOnS3Resume,

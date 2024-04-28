@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from utkInterfaces import Serializable
 
@@ -44,7 +43,7 @@ class UefiGuid(Serializable):
         """Size of the UEFI GUID; 16 bytes, 128-Bits"""
         return 16
 
-    def getName(self, whenUnknown: Any = "") -> str:
+    def getName(self, whenUnknown: any = "") -> str:
         from UtkBase import GuidDatabase
         """
         Retrieves a possible name for this GUID from the GUID Database.
@@ -52,7 +51,7 @@ class UefiGuid(Serializable):
         """
         return GuidDatabase.getNameFromGuidString(self.guidString_read_only, whenUnknown)
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         name = self.getName(None)
         if name is None:
             return {

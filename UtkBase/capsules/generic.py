@@ -1,5 +1,3 @@
-from typing import Any
-
 from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.headers.factory import CapsuleHeaderFactory
 from UtkBase.capsules.headers.headerInterface import CapsuleHeader
@@ -31,7 +29,7 @@ class GenericCapsule(Capsule):
     def getImageSize(self) -> int:
         return self._header.getEncapsulatedImageSize()
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "capsuleHeader": self._header,

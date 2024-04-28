@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.uefiGuid import UefiGuid
 from utkInterfaces import Header
@@ -29,7 +28,7 @@ class HeaderExtension(Header):
     def getGuidString(self) -> str:
         return self._guid.toString()
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "guid": self._guid,
             "dataOffset": self._dataOffset,

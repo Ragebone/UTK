@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, RomId, Writeable
 from UtkAmd.uefi.images.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
@@ -73,7 +72,7 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         """
         return self._entrySize
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "entryType": self._entryType,
             "entrySize": self._entrySize,

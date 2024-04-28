@@ -1,5 +1,3 @@
-from typing import List, Any
-
 from UtkBase.capsules.capsule import Capsule
 from UtkBase.capsules.factory import CapsuleFactory
 from UtkBase.images.image import Image
@@ -77,14 +75,14 @@ class BiosFile(Serializable):
 
         return cls(capsule, images, fileOffset)
 
-    def __init__(self, capsule: Capsule = None, images: List[Image] = None, offset: int = 0):
+    def __init__(self, capsule: Capsule = None, images: list[Image] = None, offset: int = 0):
 
         # informative offset
         self._offset: int = offset
         self._capsule: Capsule = capsule
-        self._images: List[Image] = [] if images is None else images
+        self._images: list[Image] = [] if images is None else images
 
-    def getImages(self) -> List[Image]:
+    def getImages(self) -> list[Image]:
         """
         Get a copy of all images contained in the BiosFile.
 
@@ -106,7 +104,7 @@ class BiosFile(Serializable):
             size += image.getSize()
         return size
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "capsule": self._capsule,

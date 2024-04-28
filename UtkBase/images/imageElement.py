@@ -20,5 +20,5 @@ class ImageElement(Serializable):
 
     @classmethod
     @abc.abstractmethod
-    def fromBinary(cls, binary: bytes, header: Header = None, offset: int = 0) -> 'ImageElement':
+    def fromBinary(cls, binary: bytes, header: Header = None, offset: int = 0, *kwargs) -> 'ImageElement':
         pass

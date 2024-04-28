@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.images.volumes.files.type import EfiFirmwareFileType
 from UtkBase.uefiGuid import UefiGuid
@@ -46,7 +45,7 @@ class FileHeader(Header):
     def getFileSize(self) -> int:
         return self._fileSize
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "guid": self._guid,
             "integrityCheck": self._integrityCheck,

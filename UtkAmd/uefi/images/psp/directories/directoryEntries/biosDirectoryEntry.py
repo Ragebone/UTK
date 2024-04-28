@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkAmd.uefi.images.psp.directories.directoryEntries.biosTypeAttribute import BiosTypeAttribute
 from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
@@ -58,7 +57,7 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         """Get the size of this BiosDirectoryEntry"""
         return BiosDirectoryEntry._struct().size
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "typeAttribute": self._typeAttribute,
             "entrySize": self._entrySize,

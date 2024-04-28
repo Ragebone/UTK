@@ -1,5 +1,3 @@
-from typing import List, Any
-
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.image import Image
 
@@ -18,7 +16,7 @@ class GenericImage(Image):
     """
 
     @classmethod
-    def fromImageElements(cls, contents: List[ImageElement], imageOffset: int = 0) -> Image:
+    def fromImageElements(cls, contents: list[ImageElement], imageOffset: int = 0) -> Image:
         """
         Construct a generic image from a list of UEFI based ImageElements
         :param contents: List of UEFI volumes, paddings, those are ImageElements
@@ -36,7 +34,7 @@ class GenericImage(Image):
         # Informational offset
         self._offset = imageOffset
         # TODO consider making this a dictionary with the key being the offset inside the image
-        self._contents: List[ImageElement] = [] if contents is None else contents
+        self._contents: list[ImageElement] = [] if contents is None else contents
 
     def getSize(self):
         """
@@ -54,10 +52,10 @@ class GenericImage(Image):
     def getOffset(self):
         return self._offset
 
-    def getContents(self) -> List[ImageElement]:
+    def getContents(self) -> list[ImageElement]:
         return self._contents.copy()
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "content": self._contents

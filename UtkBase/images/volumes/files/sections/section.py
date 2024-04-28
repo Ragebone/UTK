@@ -1,5 +1,3 @@
-from typing import Any
-
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
 from utkInterfaces import Serializable
@@ -49,7 +47,7 @@ class Section(Serializable):
     def getSize(self) -> int:
         return self._header.getSectionSize()
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "sectionHeader": self._header,

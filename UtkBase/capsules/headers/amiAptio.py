@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.capsules.headers.headerInterface import CapsuleHeader
 from UtkBase.uefiGuid import UefiGuid
@@ -56,7 +55,7 @@ class AmiAptioCapsuleHeader(CapsuleHeader):
     def getEncapsulatedImageSize(self) -> int:
         return self._capsuleImageSize
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "class": self.__class__.__name__,
             "guid": self._capsuleGuid,

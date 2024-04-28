@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkAmd.uefi.images.psp.directories.directoryEntries.directoryEntry import PointDirectoryEntry
 
@@ -37,7 +36,7 @@ class ComboDirectoryEntry(PointDirectoryEntry):
     def getSize(self):
         return ComboDirectoryEntry._struct().size
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "idSelect": self._idSelect,
             "chipId": self._chipId,

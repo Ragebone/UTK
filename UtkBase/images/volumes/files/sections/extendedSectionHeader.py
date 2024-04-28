@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 
@@ -23,7 +22,7 @@ class ExtendedSectionHeader(SectionHeader):
     def getSectionSize(self):
         return self._extendedSize
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "sectionSize": self._sectionSize,
             "sectionType": self._sectionType

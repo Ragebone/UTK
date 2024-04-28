@@ -1,5 +1,4 @@
 import struct
-from typing import Any
 
 from UtkBase.images.volumes.files.sections.type import SectionType
 from utkInterfaces import Header
@@ -37,7 +36,7 @@ class SectionHeader(Header):
     def getSectionType(self) -> SectionType:
         return self._sectionType
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "sectionSize": self._sectionSize,
             "sectionType": self._sectionType

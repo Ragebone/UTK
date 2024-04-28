@@ -1,5 +1,3 @@
-from typing import Any
-
 from UtkAmd.utkAmdInterfaces import AMD
 from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Header
@@ -35,7 +33,7 @@ class FirmwareBlob(ImageElement, AMD):
     def getOffset(self) -> int:
         return self._offset
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "type": self._firmwareType,

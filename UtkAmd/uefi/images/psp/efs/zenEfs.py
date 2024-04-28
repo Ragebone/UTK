@@ -1,6 +1,5 @@
 from _ctypes import Structure
 from ctypes import c_uint32
-from typing import Any, List
 
 from UtkAmd.uefi.images.psp.efs.efs import EmbeddedFirmwareStructure
 
@@ -42,7 +41,7 @@ class ZenEfs(Structure, EmbeddedFirmwareStructure):
         efs._offset = offset
         return efs
 
-    def __init__(self, *args: Any, **kw: Any):
+    def __init__(self, *args: any, **kw: any):
         # call to the ctypes Structure so that fields get populated correctly
         super().__init__(*args, **kw)
         assert self._signature == b'\xAA\x55\xAA\x55', "ZenEfs signature missmatch, expected {}, got {}".format(b'\xAA\x55\xAA\x55', self._signature)
@@ -51,7 +50,7 @@ class ZenEfs(Structure, EmbeddedFirmwareStructure):
     def getSize(self) -> int:
         return len(bytes(self))
 
-    def getDirectoryPointers(self) -> List[int]:
+    def getDirectoryPointers(self) -> list[int]:
         """
         Get List of References to possible Directories
         :return: List of References to possible Directories
@@ -66,7 +65,7 @@ class ZenEfs(Structure, EmbeddedFirmwareStructure):
             self._biosDirectory4,
         ]
 
-    def getFirmwarePointers(self) -> List[int]:
+    def getFirmwarePointers(self) -> list[int]:
         """
         Get List of References to possible firmware blobs
         :return: List of References to possible firmware
@@ -82,7 +81,7 @@ class ZenEfs(Structure, EmbeddedFirmwareStructure):
     def getOffset(self) -> int:
         return self._offset
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "signature": "AA55AA55",

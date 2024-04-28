@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 
 from UtkBase.images.volumes.files.file import File
 from UtkBase.images.volumes.files.fileHeader import FileHeader
@@ -92,7 +91,7 @@ class SectionedFile(File):
     def getSortedSections(self) -> list[tuple[str, Section]]:
         return sorted(self._sections.items(), key=lambda item: int(item[0], 16))
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "header": self._header,

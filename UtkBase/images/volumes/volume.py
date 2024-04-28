@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.volumes.files.file import File
@@ -105,7 +104,7 @@ class Volume(ImageElement):
     def getSortedFiles(self) -> list[tuple[str, File]]:
         return sorted(self._files.items(), key=lambda item: int(item[0], 16))
 
-    def toDict(self) -> dict[str, Any]:
+    def toDict(self) -> dict[str, any]:
         return {
             "offset": self._offset,
             "headers": self._header,
