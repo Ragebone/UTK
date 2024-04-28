@@ -34,8 +34,8 @@ Where this project is headed.
     
 - [ ] Crypto system for signature management, verification and signing
 - [ ] AMD flavored firmware handling
-  - [ ] AMD PSP EFS detection and construction
-  - [ ] AMD PSP directories
+  - [x] AMD PSP EFS detection and construction
+  - [x] AMD PSP directories
   - [ ] AMD PSP firmware
   - [ ] AMD PSP structure manipulation and rebuilding
   - [ ] AMD PSP firmware signature verification
