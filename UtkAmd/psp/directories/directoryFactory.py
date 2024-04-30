@@ -1,7 +1,7 @@
 from UtkAmd.psp.directories.biosDirectory import BiosDirectory
 from UtkAmd.psp.directories.comboDirectory import ComboDirectory
-from UtkAmd.psp.directories.comboDirectoryHeader import ComboDirectoryHeader
-from UtkAmd.psp.directories.pspDirectoryHeader import PspDirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.comboDirectoryHeader import ComboDirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.pspDirectoryHeader import PspDirectoryHeader
 from UtkAmd.psp.directories.directory import Directory
 from UtkAmd.psp.directories.pspDirectory import PspDirectory
 

@@ -1,9 +1,9 @@
 import abc
 
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
-from UtkAmd.psp.directories.pspDirectoryHeader import PspDirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.pspDirectoryHeader import PspDirectoryHeader
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import DirectoryEntry, TypedDirectoryEntry
-from UtkAmd.psp.directories.directoryHeader import DirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHeader
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.utility import binaryIsEmpty, fillBinaryTill

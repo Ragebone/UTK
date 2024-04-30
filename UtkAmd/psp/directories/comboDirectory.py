@@ -1,4 +1,4 @@
-from UtkAmd.psp.directories.comboDirectoryHeader import ComboDirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.comboDirectoryHeader import ComboDirectoryHeader
 from UtkAmd.psp.directories.directory import Directory
 from UtkAmd.psp.directories.directoryEntries.comboDirectoryEntry import ComboDirectoryEntry
 from UtkBase.utility import fillBinaryTill

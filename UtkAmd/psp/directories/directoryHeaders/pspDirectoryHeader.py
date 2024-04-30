@@ -1,6 +1,6 @@
 import struct
 
-from UtkAmd.psp.directories.directoryHeader import DirectoryHeader
+from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHeader
 
 
 class PspDirectoryHeader(DirectoryHeader):
