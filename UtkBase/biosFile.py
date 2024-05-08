@@ -60,7 +60,7 @@ class BiosFile(Serializable):
         if capsule is None:
             capsule: Capsule = CapsuleFactory.fromBinary(binary, fileOffset)
 
-        images: List[Image] = []
+        images: list[Image] = []
 
         imageOffset = 0
         if capsule is not None:
