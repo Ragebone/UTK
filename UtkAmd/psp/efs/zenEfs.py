@@ -42,10 +42,12 @@ class ZenEfs(Structure, EmbeddedFirmwareStructure):
         return efs
 
     def __init__(self, *args: any, **kw: any):
+        pass
+        # NOTE / TODO   THIS NEVER EXECUTES
         # call to the ctypes Structure so that fields get populated correctly
-        super().__init__(*args, **kw)
-        assert self._signature == b'\xAA\x55\xAA\x55', "ZenEfs signature missmatch, expected {}, got {}".format(b'\xAA\x55\xAA\x55', self._signature)
-        self._offset: int = None
+        # super().__init__(*args, **kw)
+        # assert self._signature == b'\xAA\x55\xAA\x55', "ZenEfs signature missmatch, expected {}, got {}".format(b'\xAA\x55\xAA\x55', self._signature)
+        # self._offset: int = None
 
     def getSize(self) -> int:
         return len(bytes(self))
