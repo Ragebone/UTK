@@ -1,10 +1,11 @@
 from _ctypes import Structure
 from ctypes import c_uint8, c_bool
 
+from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable
 
 
-class BiosTypeAttribute(Structure, Serializable):
+class BiosTypeAttribute(Structure, Serializable, UtkAMD):
     """
     Attribute field as is used in BiosDirectoryEntries
 
