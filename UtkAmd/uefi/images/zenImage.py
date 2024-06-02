@@ -323,7 +323,7 @@ class ZenImage(Image, UtkAMD):
         """ Serializable """
         outputBinary = bytes()
         sortedContent = self.getContent()
-        for strOffset, imageElement in sortedContent:
+        for index, (strOffset, imageElement) in enumerate(sortedContent):
             currentOffset = len(outputBinary)
             ELEMENT_OFFSET = int(strOffset, 16)
 
