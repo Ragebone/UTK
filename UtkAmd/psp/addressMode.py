@@ -3,7 +3,9 @@ import enum
 
 class AddressMode(enum.Enum):
     """
-
+    0: physical address
+    1: offset from start of flash
+    2: offset from start of directory header
     """
 
     PhysicalX86 = 0             # X86 Physical address
