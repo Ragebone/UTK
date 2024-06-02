@@ -1,5 +1,4 @@
 import abc
-from typing import List
 
 from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Serializable

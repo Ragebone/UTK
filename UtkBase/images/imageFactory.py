@@ -1,5 +1,3 @@
-from typing import List
-
 from UtkAmd.uefi.images.zenImage import ZenImage
 from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
 from UtkAmd.psp.efs.efsFactory import EfsFactory
@@ -27,7 +25,7 @@ class ImageFactory:
         :param imageOffset: Optional informative offset where the Image is located inside the parent.
         :return: GenericImage; TODO implement more variants
         """
-        imageElements: List[ImageElement] = []
+        imageElements: list[ImageElement] = []
 
         # look for specific OEM image types
 
