@@ -1,11 +1,10 @@
-from _ctypes import Structure
-from ctypes import c_uint8, c_bool
+from ctypes import c_uint8, c_bool, LittleEndianStructure
 
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable
 
 
-class BiosTypeAttribute(Structure, Serializable, UtkAMD):
+class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
     """
     Attribute field as is used in BiosDirectoryEntries
 
