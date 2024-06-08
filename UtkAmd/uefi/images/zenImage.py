@@ -3,8 +3,7 @@ import traceback
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directory import Directory
 from UtkAmd.psp.directories.directoryEntries.comboDirectoryEntry import ComboDirectoryEntry
-from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry, \
-    PointDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry, PointDirectoryEntry
 from UtkAmd.psp.directories.directoryFactory import DirectoryFactory
 from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
 from UtkAmd.utkAmdInterfaces import UtkAMD
@@ -12,6 +11,7 @@ from UtkBase.images.image import Image
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.paddings.paddingFactory import PaddingFactory
 from UtkBase.images.volumes.volumeFactory import VolumeFactory
+from utkInterfaces import Reference
 
 
 def resolveEfsToDirectories(efs: EmbeddedFirmwareStructure, imageBinary: bytes) -> list[Directory]:
@@ -25,18 +25,19 @@ def resolveEfsToDirectories(efs: EmbeddedFirmwareStructure, imageBinary: bytes) 
     """
     directories = []
 
-    # TODO  implement this with references
-    for flashOffset in efs.getDirectoryPointers():
-        if flashOffset == 0:
+    for efsReference in efs.getDirectoryPointers():
+        ABSOLUTE_OFFSET = efsReference.getAbsoluteOffset()
+
+        if ABSOLUTE_OFFSET < 1:
             continue
 
-        directoryBinary = imageBinary[flashOffset:]
+        directoryBinary = imageBinary[ABSOLUTE_OFFSET:]
         # TODO the tuple index is not so nice here, improve?
         if not DirectoryFactory.isDirectory(directoryBinary)[0]:
             continue
 
         try:
-            directory = DirectoryFactory.fromBinary(directoryBinary, flashOffset)
+            directory = DirectoryFactory.fromBinary(directoryBinary, ABSOLUTE_OFFSET)
             directories.append(directory)
         except Exception as ex:
             from UtkBase.biosFile import BiosFile
@@ -62,23 +63,20 @@ def resolveDirectoryReferences(directory: Directory, imageBinary: bytes) -> list
         if not isinstance(dirEntry, PointDirectoryEntry):
             continue
 
-        # NOT A FLASHOFFSET
-        unknownOffset = dirEntry.getEntryLocation()
-        if unknownOffset & 0xFF000000 > 0:
-            continue
-
-        flashOffset = 0x00FFFFFF & unknownOffset
+        flashOffset = dirEntry.getEntryLocation()
 
         if isinstance(dirEntry, ComboDirectoryEntry):
             directoryBinary = imageBinary[flashOffset:]
             directoryFromFlashOffset(directoryBinary, flashOffset, directories)
 
         if not isinstance(dirEntry, TypedDirectoryEntry):
+            # Soft-Fuse-Chain only?
             continue
 
         entryType = dirEntry.getEntryType()
 
         if entryType not in [0x40, 0x70]:
+            # Specific directory pointer types
             continue
 
         # TODO remove redundancy
@@ -279,20 +277,23 @@ class ZenImage(Image, UtkAMD):
             assert elementAtOffset is None, "collision at offset {}".format(hex(ELEMENT_OFFSET))
             imageElements[hex(ELEMENT_OFFSET)] = imageElement
 
-        return cls(imageElements, imageOffset)
+        # 9: UTK setup / cleanup
+        # TODO Add a "database" for all the references
+        references = {}
 
-    @classmethod
-    def fromDict(cls, dictionary: dict) -> 'ZenImage':
-        return cls(dictionary.get('content', {}))
+        return cls(imageElements, references, imageOffset)
 
-    def __init__(self, contents: dict[str, ImageElement], imageOffset: int = 0):
+    def __init__(self, contents: dict[str, ImageElement], references: dict[str, Reference], imageOffset: int = 0):
         """
         Constructor for an AMD Image
         :param contents: Must be a dictionary sorted ascending by the key being a hex(offset) string.
+        :param references: The dict to keep track of all existing and future references and changes
         :param imageOffset: Offset where the image is inside the Bios-File
         """
         self._offset = imageOffset
         self._contents: dict[str, ImageElement] = contents
+
+        self._references = references
 
     def getSize(self):
         """

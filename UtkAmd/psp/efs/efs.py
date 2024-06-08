@@ -1,6 +1,6 @@
 import abc
-from typing import List
 
+from UtkAmd.psp.efs.efsReference import EfsReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
 
@@ -21,7 +21,7 @@ class EmbeddedFirmwareStructure(ImageElement, UtkAMD):
         pass
 
     @abc.abstractmethod
-    def getDirectoryPointers(self) -> List[int]:
+    def getDirectoryPointers(self) -> list[EfsReference]:
         """
         Get a list of all the offsets pointed at by the EFS that directories could be located at.
 
@@ -30,7 +30,7 @@ class EmbeddedFirmwareStructure(ImageElement, UtkAMD):
         pass
 
     @abc.abstractmethod
-    def getFirmwarePointers(self) -> List[int]:
+    def getFirmwarePointers(self) -> list[EfsReference]:
         """
         Get List of References to possible firmware blobs
 

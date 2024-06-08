@@ -1,5 +1,6 @@
 import abc
 
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Header
 
@@ -25,6 +26,11 @@ class DirectoryHeader(Header, UtkAMD):
     @abc.abstractmethod
     def getSize(self):
         """Get the Size of the Header"""
+        pass
+
+    @abc.abstractmethod
+    def getAddressMode(self) -> AddressMode:
+        """Can to be None. Get the AddressMode of the Header which should be relevant for the hole directory"""
         pass
 
     @abc.abstractmethod

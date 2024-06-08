@@ -1,3 +1,4 @@
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.directories.directory import ContentDirectory
 from UtkAmd.psp.directories.directoryEntries.pspDirectoryEntry import PspDirectoryEntry
 from UtkAmd.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
@@ -13,7 +14,7 @@ class PspDirectory(ContentDirectory):
     """
 
     @classmethod
-    def _buildDirectoryEntry(cls, binary: bytes) -> PspDirectoryEntry:
+    def _buildDirectoryEntry(cls, binary: bytes, addressMode: AddressMode = None) -> PspDirectoryEntry:
         """
 
         :param binary:
@@ -22,4 +23,4 @@ class PspDirectory(ContentDirectory):
         dirEntryType = binary[0]                # First byte is Type
         if dirEntryType == 0x0B:
             return SoftFuseChain.fromBinary(binary)
-        return PspDirectoryEntry.fromBinary(binary)
+        return PspDirectoryEntry.fromBinary(binary, addressMode)

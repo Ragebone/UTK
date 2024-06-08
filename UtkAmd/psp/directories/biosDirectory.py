@@ -1,3 +1,4 @@
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.directories.directory import ContentDirectory
 from UtkAmd.psp.directories.directoryEntries.biosDirectoryEntry import BiosDirectoryEntry
 
@@ -12,9 +13,9 @@ class BiosDirectory(ContentDirectory):
     """
 
     @classmethod
-    def _buildDirectoryEntry(cls, binary: bytes) -> BiosDirectoryEntry:
+    def _buildDirectoryEntry(cls, binary: bytes, addressMode: AddressMode = None) -> BiosDirectoryEntry:
         """
         Private method used in directory construction.
         Closed door - Open door; for the implementations in  Directory
         """
-        return BiosDirectoryEntry.fromBinary(binary)
+        return BiosDirectoryEntry.fromBinary(binary, addressMode)

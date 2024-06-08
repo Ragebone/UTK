@@ -3,6 +3,7 @@ import enum
 import json
 import logging
 
+from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.biosFile import BiosFile
 from utkInterfaces import Serializable
@@ -39,6 +40,12 @@ def convertItemForAMD(item: any, depth: int = 0):
         return {
             "name": item.name,
             "value": item.value
+        }
+
+    if isinstance(item, ZenReference):
+        return {
+            "class": item.__class__.__name__,
+            "absoluteOffset": item.getAbsoluteOffset()
         }
 
     return item

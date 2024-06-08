@@ -1,6 +1,7 @@
 import enum
 
-from utkInterfaces import Serializable
+from UtkAmd.psp.zenReference import ZenReference
+from utkInterfaces import Serializable, Reference
 
 
 def recursiveToDict(dictionary: dict[str, any]) -> dict:
@@ -33,6 +34,8 @@ def recursiveToDict(dictionary: dict[str, any]) -> dict:
                 "value": item.value
             }
 
+        if isinstance(item, Reference):
+            newDict[key] = convertItem(item, depth=1)
     return newDict
 
 

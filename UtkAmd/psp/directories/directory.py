@@ -1,9 +1,11 @@
 import abc
 
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directoryHeaders.pspDirectoryHeader import PspDirectoryHeader
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import DirectoryEntry, TypedDirectoryEntry
 from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHeader
+from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.utility import binaryIsEmpty, fillBinaryTill
@@ -48,11 +50,12 @@ class ContentDirectory(Directory):
 
     @classmethod
     @abc.abstractmethod
-    def _buildDirectoryEntry(cls, binary: bytes) -> DirectoryEntry:
+    def _buildDirectoryEntry(cls, binary: bytes, addressMode: AddressMode = None) -> DirectoryEntry:
         """
         Build the Bios or PSP -directory specific DirectoryEntry
 
         :param binary: Binary to build the DirectoryEntry from
+        :param addressMode: Address mode to be used by the DirectoryEntry. Override the entries own
         :return: The new DirectoryEntry
         """
         pass
@@ -126,16 +129,16 @@ class ContentDirectory(Directory):
         directoryEntries = []
 
         STRUCTURE_BINARY = binary[header.getSize():CONTENT_OFFSET]
-
+        DIRECTORY_ADDRESS_MODE: AddressMode = header.getAddressMode()
         offset = 0
         NUMBER_OF_DIR_ENTRIES = header.getEntryCount()
         for index in range(NUMBER_OF_DIR_ENTRIES):
             DIR_ENTRY_BINARY = STRUCTURE_BINARY[offset:]
-            dirEntry: DirectoryEntry = cls._buildDirectoryEntry(DIR_ENTRY_BINARY)
+            dirEntry: DirectoryEntry = cls._buildDirectoryEntry(DIR_ENTRY_BINARY, DIRECTORY_ADDRESS_MODE)
 
-            # TODO this is sooo bad,  this only works if it is an absolute offset that does not need to be masked
+            # NOTE this was sooo bad,  this only worked if it was an absolute offset that does not need to be masked
             if isinstance(dirEntry, TypedDirectoryEntry):
-                entryOffset = dirEntry.getEntryLocation()
+                entryOffset = dirEntry.getEntryLocation()           # This is providing an absolute offset as this point. TODO Should be better named though
                 if not (directoryStart <= entryOffset <= directoryEnd):
                     dirEntry.setAsPointEntry()
 

@@ -1,6 +1,7 @@
 import struct
 
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import PointDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.entryReference import EntryReference
 
 
 class ComboDirectoryEntry(PointDirectoryEntry):
@@ -24,14 +25,14 @@ class ComboDirectoryEntry(PointDirectoryEntry):
         self._idSelect = idSelect
         self._chipId = chipId
 
-        self._directoryAddress = directoryAddress
+        self._directoryReference: EntryReference = EntryReference.fromOffset(directoryAddress)
 
     def isPointEntry(self):
         """Always True because ComboDirectoryEntry"""
         return True
 
     def getEntryLocation(self):
-        return self._directoryAddress
+        return self._directoryReference.getAbsoluteOffset()
 
     def getSize(self):
         return ComboDirectoryEntry._struct().size
@@ -40,8 +41,8 @@ class ComboDirectoryEntry(PointDirectoryEntry):
         return {
             "idSelect": self._idSelect,
             "chipId": self._chipId,
-            "directoryAddress": self._directoryAddress
+            "directoryReference": self._directoryReference
         }
 
     def serialize(self):
-        return ComboDirectoryEntry._struct().pack(self._idSelect, self._chipId, self._directoryAddress)
+        return ComboDirectoryEntry._struct().pack(self._idSelect, self._chipId, self._directoryReference.getOffset())

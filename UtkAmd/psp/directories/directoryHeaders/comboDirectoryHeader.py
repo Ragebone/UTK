@@ -1,5 +1,6 @@
 import struct
 
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHeader
 from UtkAmd.psp.directories.lookupMode import LookUpMode
 
@@ -9,6 +10,7 @@ class ComboDirectoryHeader(DirectoryHeader):
     Header structure of Combo-Directories.
     Directories without firmware blobs.
     """
+
 
     @classmethod
     def _struct(cls) -> struct:
@@ -28,7 +30,7 @@ class ComboDirectoryHeader(DirectoryHeader):
         lookupMode = LookUpMode(lookupModeValue)
         return cls(signature, checksum, count, lookupMode, reserved)
 
-    def __init__(self, signature: bytes, checksum: int, count: int, lookupMode: LookUpMode, reserved: int = 0):
+    def __init__(self, signature: bytes, checksum: int, count: int, lookupMode: LookUpMode, reserved: bytes = 16*b'\x00'):
         assert signature in [b'2PSP', b'2BHD'], "Unexpected signature, got {}".format(signature)
 
         self._signature = signature
@@ -45,6 +47,10 @@ class ComboDirectoryHeader(DirectoryHeader):
 
     def getSignature(self) -> bytes:
         return self._signature
+
+    def getAddressMode(self) -> AddressMode:
+        # This ComboDirectoryHeader has no AddressMode, so None it is.
+        return None
 
     def toDict(self) -> dict[str, any]:
         return {

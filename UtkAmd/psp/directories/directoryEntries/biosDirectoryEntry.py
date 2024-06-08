@@ -1,7 +1,9 @@
 import struct
 
+from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.directories.directoryEntries.biosTypeAttribute import BiosTypeAttribute
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.entryReference import EntryReference
 
 
 class BiosDirectoryEntry(TypedDirectoryEntry):
@@ -20,18 +22,18 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         return struct.Struct('<4s I Q Q')
 
     @classmethod
-    def fromBinary(cls, binary: bytes) -> 'BiosDirectoryEntry':
+    def fromBinary(cls, binary: bytes,  addressMode: AddressMode = None) -> 'BiosDirectoryEntry':
         assert binary is not None, "None as binary"
         assert len(binary) >= cls._struct().size, "Binary to short for a BiosDirectoryEntry\n{}".format(binary)
         DIR_ENTRY_BINARY = binary[:cls._struct().size]
         typeBinary, size, location, destination = cls._struct().unpack(DIR_ENTRY_BINARY)
         biosTypeAttribute: BiosTypeAttribute = BiosTypeAttribute.fromBinary(typeBinary)
-        return cls(biosTypeAttribute, size, location, destination)
+        return cls(biosTypeAttribute, size, location, destination, addressMode)
 
-    def __init__(self, typeAttribute: BiosTypeAttribute, size: int, location: int, destination: int):
+    def __init__(self, typeAttribute: BiosTypeAttribute, size: int, location: int, destination: int, addressMode: AddressMode = None):
         self._typeAttribute: BiosTypeAttribute = typeAttribute
         self._entrySize = size
-        self._entryLocation = location
+        self._entryReference: EntryReference = EntryReference.fromOffset(location, addressMode)
         self._entryDestination = destination
 
         # None FW Attributes
@@ -45,7 +47,7 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         return self._typeAttribute.getEntryType()
 
     def getEntryLocation(self) -> int:
-        return self._entryLocation
+        return self._entryReference.getAbsoluteOffset()
 
     def setAsPointEntry(self, isPointEntry: bool = True) -> None:
         self._pointEntry = isPointEntry
@@ -61,7 +63,7 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         return {
             "typeAttribute": self._typeAttribute,
             "entrySize": self._entrySize,
-            "entryLocation": self._entryLocation,
+            "entryReference": self._entryReference,
             "destination": self._entryDestination
         }
 
@@ -69,6 +71,6 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         return BiosDirectoryEntry._struct().pack(
             self._typeAttribute.serialize(),
             self._entrySize,
-            self._entryLocation,
+            self._entryReference.getOffset(),
             self._entryDestination
         )

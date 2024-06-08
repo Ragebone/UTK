@@ -1,5 +1,6 @@
 import abc
 
+from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable
 
@@ -25,7 +26,7 @@ class PointDirectoryEntry(DirectoryEntry):
     """
     @abc.abstractmethod
     def getEntryLocation(self) -> int:
-        """Get the offset / point / location / address referenced"""
+        """Get the absolute offset / point / location / address referenced"""
         pass
 
     @abc.abstractmethod
