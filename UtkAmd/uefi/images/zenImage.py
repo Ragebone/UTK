@@ -93,6 +93,11 @@ def resolveDirectoryReferences(directory: Directory, imageBinary: bytes) -> list
 
 
 def directoryFromFlashOffset(directoryBinary: bytes, flashOffset: int, foundDirectories: list[Directory]):
+
+    # TODO the tuple index is not so nice here, improve?
+    if not DirectoryFactory.isDirectory(directoryBinary)[0]:
+        return
+
     try:
         directory = DirectoryFactory.fromBinary(directoryBinary, flashOffset)
         foundDirectories.append(directory)
@@ -117,11 +122,15 @@ def resolvePointDirectoryEntries(directory: Directory, listOfImageElements: list
         if not dirEntry.isPointEntry:
             continue
 
-        # psp and bios directories and
+        # psp and bios directories as well as the PEI volume
         if dirEntry.getEntryType() in [0x40, 0x70, 0x62]:
             continue
 
-        if dirEntry.getEntrySize() == 0:
+        # TODO problematic weird directory entries who's sizes and locations don't make sense yet
+        if dirEntry.getEntryType() in [0x2A, 0x46]:
+            continue
+
+        if dirEntry.getEntrySize() < 1:
             # 0 sized APOB for instance
             # just skipp those for now
             continue
