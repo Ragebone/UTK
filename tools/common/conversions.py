@@ -71,6 +71,10 @@ def convertItem(item: any, depth: int = 0):
             "value": item.value
         }
 
+    if isinstance(item, Reference):
+        return {
+            "reference": "TODO"
+        }
     return item
 
 
