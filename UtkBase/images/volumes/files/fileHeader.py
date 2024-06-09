@@ -13,12 +13,18 @@ class FileHeader(Header):
     # https://github.com/tianocore/edk2/blob/4c8144dd665619731b6c3c19f4f1ae664b69fa4b/BaseTools/Source/C/Include/Common/PiFirmwareFile.h#L33
     """
     @classmethod
-    def _struct(cls):
+    def _struct(cls) -> struct:
         return struct.Struct('<16s H B B 3s B')
 
     @classmethod
+    def size(cls) -> int:
+        return cls._struct().size
+
+    @classmethod
     def fromBinary(cls, binary: bytes) -> 'FileHeader':
-        guidBinary, integrityCheck, intFileType, attributes, size24, state = cls._struct().unpack(binary[:cls._struct().size])
+        HEADER_BINARY = binary[:cls._struct().size]
+        assert len(HEADER_BINARY) == cls._struct().size, "Binary size missmatch"
+        guidBinary, integrityCheck, intFileType, attributes, size24, state = cls._struct().unpack(HEADER_BINARY)
         guid = UefiGuid.fromBinary(guidBinary)
         fileType = EfiFirmwareFileType(intFileType)
         fileSize, = struct.unpack('<I', size24 + b'\x00')

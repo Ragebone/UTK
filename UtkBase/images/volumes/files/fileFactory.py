@@ -34,7 +34,20 @@ class FileFactory:
         :return:
         """
         assert binary is not None, "Binary must not be None"
-        fileHeader = FileHeader.fromBinary(binary)
+
+        if len(binary) < FileHeader.size():
+            assert binaryIsEmpty(binary), "Volume should be over and filled with FFs, it seems to not be just 0xFFs"
+            return None
+
+        try:
+            fileHeader = FileHeader.fromBinary(binary)
+        except Exception as ex:
+            from UtkBase.biosFile import BiosFile
+            if BiosFile.dontHandleExceptions:
+                raise ex
+            traceback.print_exception(type(ex), ex, ex.__traceback__)
+            print("Failed parsing FileHeader from binary {}".format(binary))
+            return None
 
         FILE_SIZE = fileHeader.getFileSize()
         FILE_TYPE = fileHeader.getFileType()
