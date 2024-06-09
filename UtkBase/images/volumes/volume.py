@@ -44,12 +44,17 @@ class Volume(ImageElement):
         HEADER_SIZE = header.getSize()
         EXTERNAL_HEADER_OFFSET = header.getExternalHeaderOffset()
 
-        binaryBetweenHeaders = VOLUME_BINARY[HEADER_SIZE:EXTERNAL_HEADER_OFFSET]
+        externalHeader = None
+        binaryBetweenHeaders = b''
+        CONTENT_START_OFFSET = HEADER_SIZE
 
-        externalHeader = ExternalVolumeHeader.fromBinary(VOLUME_BINARY[EXTERNAL_HEADER_OFFSET:])
+        if EXTERNAL_HEADER_OFFSET > 0:
+            binaryBetweenHeaders = VOLUME_BINARY[HEADER_SIZE:EXTERNAL_HEADER_OFFSET]
 
-        EXTERNAL_HEADER_SIZE = externalHeader.getSize()
-        CONTENT_START_OFFSET = EXTERNAL_HEADER_OFFSET + EXTERNAL_HEADER_SIZE
+            externalHeader = ExternalVolumeHeader.fromBinary(VOLUME_BINARY[EXTERNAL_HEADER_OFFSET:])
+
+            EXTERNAL_HEADER_SIZE = externalHeader.getSize()
+            CONTENT_START_OFFSET = EXTERNAL_HEADER_OFFSET + EXTERNAL_HEADER_SIZE
 
         files: dict[str, File] = {}
 
@@ -129,11 +134,13 @@ class Volume(ImageElement):
 
     def serialize(self) -> bytes:
         outputBinary = self._header.serialize()
-        outputBinary += self._binaryBetweenHeaders
-        outputBinary += self._externalHeader.serialize()
+
+        if self._externalHeader is not None:
+            outputBinary += self._binaryBetweenHeaders
+            outputBinary += self._externalHeader.serialize()
 
         sortedFileKeys = self.getSortedFileKeys()
-        for key in sortedFileKeys:
+        for index, key in enumerate(sortedFileKeys):
             currentOffset = len(outputBinary)
             fileOffset = int(key, 16)
             file = self._files.get(key)
