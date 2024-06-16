@@ -19,3 +19,7 @@ class Image(Serializable):
     def getOffset(self) -> int:
         """Get the offset it is located at inside the BiosFile"""
         pass
+
+    @abc.abstractmethod
+    def getContent(self) -> list[tuple[str, ImageElement]]:
+        pass
