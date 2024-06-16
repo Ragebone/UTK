@@ -118,6 +118,7 @@ class ContentDirectory(Directory):
     @classmethod
     def buildDirectoryEntries(cls, binary: bytes, header: DirectoryHeader, directoryStart: int, directoryEnd: int) -> tuple[list[DirectoryEntry], bytes]:
         """
+        TODO answer why is this a class method and whether it should be private
         Builds / Parses the DirectoryEntries
 
         :param binary: Binary to parse from, starting at the first DirectoryEntry
