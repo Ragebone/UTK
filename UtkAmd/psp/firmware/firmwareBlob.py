@@ -1,3 +1,4 @@
+from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Header
@@ -10,7 +11,7 @@ class FirmwareBlob(ImageElement, UtkAMD):
     """
 
     @classmethod
-    def fromBinary(cls, binary: bytes, header: Header = None, offset: int = 0, firmwareType: int = 0xFF) -> 'ImageElement':
+    def fromBinary(cls, binary: bytes, header: Header = None, offset: int = 0, firmwareType: FirmwareType = None) -> 'Firmware':
         """
         Construct a FirmwareBlob from the given binary
         The given binary has to contain everything including the header.
@@ -21,7 +22,8 @@ class FirmwareBlob(ImageElement, UtkAMD):
         """
         return cls(offset, binary, firmwareType)
 
-    def __init__(self, offset: int, binary: bytes, firmwareType: int = 0xFF):
+    def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType):
+        assert firmwareType is not None, "firmwareType can't be None"
         self._offset = offset
         self._firmwareType = firmwareType
         self._binary: bytes = binary

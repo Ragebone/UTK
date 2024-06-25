@@ -1,11 +1,12 @@
 import struct
 
 from UtkAmd.psp.addressMode import AddressMode
-from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry
 from UtkAmd.psp.directories.directoryEntries.entryReference import EntryReference
 from UtkAmd.psp.directories.directoryEntries.romId import RomId
 from UtkAmd.psp.directories.directoryEntries.softFuseChain import SoftFuseChain
 from UtkAmd.psp.directories.directoryEntries.writable import Writeable
+from UtkAmd.psp.firmwareTypes import FirmwareType
 
 
 class PspDirectoryEntry(TypedDirectoryEntry):
@@ -25,10 +26,11 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         return struct.Struct('<BBHIQ')
 
     @classmethod
-    def _buildDirectoryEntry(cls, binary: bytes) -> 'PspDirectoryEntry':
-        dirEntryType = binary[0]                # First byte is Type
+    def _buildDirectoryEntry(cls, binary: bytes) -> 'DirectoryEntry':
+        dirEntryTypeInt = binary[0]                # First byte is Type value as Int
+        dirEntryType: FirmwareType = FirmwareType(dirEntryTypeInt)
 
-        if dirEntryType == 0x0B:
+        if dirEntryType == FirmwareType.AMD_SOFT_FUSE_CHAIN_01:
             softFuseChain = SoftFuseChain.fromBinary(binary)
             return softFuseChain
 
@@ -41,7 +43,7 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         return cls(*cls._struct().unpack(binary[:cls._struct().size]), addressMode)
 
     def __init__(self, entryType: int, subProgram: int, byteGroup: int, entrySize: int, offset: int, addressMode: AddressMode = None):
-        self._entryType = entryType
+        self._entryType: FirmwareType = FirmwareType(entryType)
         self._entrySize = entrySize
         # TODO make this a nice type thing bitfield as it is with the BiosTypeAttribute
         self._subProgram = subProgram
@@ -67,7 +69,7 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         """Get structure size"""
         return PspDirectoryEntry._struct().size
 
-    def getEntryType(self) -> int:
+    def getEntryType(self) -> FirmwareType:
         return self._entryType
 
     def getEntryLocation(self) -> int:
@@ -97,7 +99,7 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         # byteGroup = (self._reserved & 0xFF80) + ((self._instance << 3) & 0x78) + ((self._writeable.value & 0x1) << 2) + (self._romId.value & 0x01)
 
         binary = self._struct().pack(
-            self._entryType,
+            self._entryType.value,
             self._subProgram,
             self._byteGroup,
             self._entrySize,

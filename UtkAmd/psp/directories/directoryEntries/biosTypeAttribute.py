@@ -13,7 +13,7 @@ class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
     """
 
     _fields_ = [
-        ("_typeValue", c_uint8, 8),
+        # ("_typeValue", c_uint8, 8),           # Implemented seperately
         ("_reloadOnS3Resume", c_bool, 1),
         ("_reserved", c_uint8, 7),
         ("_isBiosResetImage", c_bool, 1),
@@ -34,7 +34,6 @@ class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
 
     def __init__(self, *args: any, **kw: any):
         """
-        :param typeValue: uint8
         :param s3Reload: bool
         :param reserved1: uint8
         :param biosResetImage: bool
@@ -49,12 +48,9 @@ class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
         """
         super().__init__(*args, **kw)
 
-    def getEntryType(self) -> int:
-        return self._typeValue
-
     def toDict(self) -> dict[str, any]:
         return {
-            "typeValue": self._typeValue,
+            # "typeValue": self._typeValue,
             "reloadOnS3Resume": self._reloadOnS3Resume,
             "reserved": self._reserved,
             "biosResetImage": self._isBiosResetImage,

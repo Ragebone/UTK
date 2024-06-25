@@ -1,5 +1,6 @@
 import abc
 
+from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable
@@ -46,7 +47,7 @@ class TypedDirectoryEntry(PointDirectoryEntry):
     That can't be known at the time of creation and hence needs to be set later once it is known.
     """
     @abc.abstractmethod
-    def getEntryType(self) -> int:
+    def getEntryType(self) -> FirmwareType:
         """Get the Uint8 type value identifying the Type of Entry referenced by the TypedDirectoryEntry"""
         pass
 

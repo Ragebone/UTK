@@ -1,6 +1,7 @@
 import traceback
 
 from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
+from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkBase.images.imageElement import ImageElement
 
 FIRMWARE_TYPE_MAPPING = {
@@ -17,7 +18,7 @@ class FirmwareFactory:
     """
 
     @staticmethod
-    def fromBinary(firmwareType: int, binary: bytes, offset: int) -> ImageElement:
+    def fromBinary(firmwareType: FirmwareType, binary: bytes, offset: int) -> ImageElement:
         """
         Construct some AMD PSP specific firmware from the given binary
 
