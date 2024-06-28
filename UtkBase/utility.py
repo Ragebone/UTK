@@ -21,6 +21,7 @@ def diffBinary(binA: bytes, binB: bytes) -> bool:
     :param binB:
     :return:
     """
+    from UtkBase.biosFile import BiosFile
     equals = True
     offset = 0
     while offset < len(binA) and offset < len(binB):
@@ -31,8 +32,10 @@ def diffBinary(binA: bytes, binB: bytes) -> bool:
             offset += 1
             continue
 
+        if BiosFile.dontHandleExceptions:
+            assert False, ""
         equals = False
-        print("Offset: {} dec: {}\nA: {}\nB: {}\n".format(hex(offset), offset, binA[offset:offset+256], binB[offset:offset+256]))
+        print("Offset: {} dec: {}\nA: {}\nB: {}\n".format(hex(offset), offset, binA[:offset+8], binB[:offset+8]))
         offset += 256
 
     return equals
