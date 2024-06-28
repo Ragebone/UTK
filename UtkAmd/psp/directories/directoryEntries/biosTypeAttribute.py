@@ -8,12 +8,12 @@ class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
     """
     Attribute field as is used in BiosDirectoryEntries
 
-    Source for this extensive and specific structure in the OpenSIL AGCL-R:
+    Source of this extensive and specific structure in the OpenSIL AGCL-R:
     https://github.com/openSIL/AGCL-R/blob/c1789df006acab5e1ac1c52ec114c3de2230f54b/AgesaPkg/Include/AmdPspDirectory.h#L268
     """
 
     _fields_ = [
-        # ("_typeValue", c_uint8, 8),           # Implemented seperately
+        # ("_typeValue", c_uint8, 8),           # Implemented separately
         ("_reloadOnS3Resume", c_bool, 1),
         ("_reserved", c_uint8, 7),
         ("_isBiosResetImage", c_bool, 1),
