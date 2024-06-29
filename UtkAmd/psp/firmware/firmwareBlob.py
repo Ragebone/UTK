@@ -1,10 +1,10 @@
+from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Header
 
 
-class FirmwareBlob(ImageElement, UtkAMD):
+class FirmwareBlob(Firmware, UtkAMD):
     """
     Generic class for handling all AMD Zen specific firmware.
     This is just meant to be a generic implementation to do nothing further with the firmware.
