@@ -1,5 +1,6 @@
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.utility import binaryIsEmpty
+from utkInterfaces import Reference
 
 
 class EmptyPadding(ImageElement):
@@ -26,6 +27,14 @@ class EmptyPadding(ImageElement):
     def __init__(self, length, offset):
         self._length = length
         self._offset = offset
+
+        self._references: list[Reference] = []
+
+    def registerReference(self, reference: Reference) -> None:
+        self._references.append(reference)
+
+    def getReferences(self) -> list[Reference]:
+        return self._references
 
     def getOffset(self) -> int:
         return self._offset

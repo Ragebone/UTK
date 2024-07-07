@@ -1,4 +1,5 @@
 from UtkBase.images.imageElement import ImageElement
+from utkInterfaces import Reference
 
 
 class Padding(ImageElement):
@@ -10,6 +11,14 @@ class Padding(ImageElement):
         self._binary = binary
         self._size = len(binary)
         self._offset = offset
+
+        self._references: list[Reference] = []
+
+    def registerReference(self, reference: Reference) -> None:
+        self._references.append(reference)
+
+    def getReferences(self) -> list[Reference]:
+        return self._references
 
     def getOffset(self) -> int:
         return self._offset

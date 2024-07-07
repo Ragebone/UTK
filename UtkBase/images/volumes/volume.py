@@ -5,7 +5,7 @@ from UtkBase.images.volumes.files.file import File
 from UtkBase.images.volumes.headers.externalVolumeHeader import ExternalVolumeHeader
 from UtkBase.images.volumes.headers.volumeHeader import VolumeHeader
 from UtkBase.utility import alignOffset, binaryIsEmpty, fillBinaryTill
-
+from utkInterfaces import Reference
 
 FILE_ALIGNMENT = 0x08
 
@@ -97,6 +97,9 @@ class Volume(ImageElement):
         self._externalHeader: ExternalVolumeHeader = externalHeader
         self._files: dict[str, File] = files                            # Key: Hex(Absolute offset from the start of the volume)
 
+        # ---
+        self._references: list[Reference] = []
+
     def getOffset(self) -> int:
         return self._offset
 
@@ -108,6 +111,12 @@ class Volume(ImageElement):
 
     def getSortedFiles(self) -> list[tuple[str, File]]:
         return sorted(self._files.items(), key=lambda item: int(item[0], 16))
+
+    def registerReference(self, reference: Reference) -> None:
+        self._references.append(reference)
+
+    def getReferences(self) -> list[Reference]:
+        return self._references
 
     def toDict(self) -> dict[str, any]:
         return {

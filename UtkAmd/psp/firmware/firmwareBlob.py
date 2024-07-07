@@ -1,7 +1,7 @@
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Header
+from utkInterfaces import Header, Reference
 
 
 class FirmwareBlob(Firmware, UtkAMD):
@@ -28,6 +28,14 @@ class FirmwareBlob(Firmware, UtkAMD):
         self._firmwareType = firmwareType
         self._binary: bytes = binary
         self._size = len(binary)
+
+        self._references: list[Reference] = []
+
+    def registerReference(self, reference: Reference) -> None:
+        self._references.append(reference)
+
+    def getReferences(self) -> list[Reference]:
+        return self._references
 
     def getSize(self) -> int:
         return self._size

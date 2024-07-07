@@ -5,6 +5,7 @@ from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directoryHeaders.pspDirectoryHeader import PspDirectoryHeader
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import DirectoryEntry, TypedDirectoryEntry
 from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHeader
+from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
@@ -92,7 +93,7 @@ class ContentDirectory(Directory):
                 continue
 
             entryOffset = dirEntry.getEntryLocation()
-
+            entryReference: ZenReference = dirEntry.getEntryReference()
             # EXPECTATION  entryOffset is a flashOffset
             if directoryOffset <= entryOffset < directoryOffset + CONTENT_OFFSET:
                 # invalid offset pointing somewhere into the non-content area of the directory.
@@ -109,7 +110,9 @@ class ContentDirectory(Directory):
 
             assert ENTRY_BINARY_SIZE == ENTRY_SIZE, f"Entry binary with size {hex(ENTRY_BINARY_SIZE)} does not match expected {hex(ENTRY_SIZE)}"
 
-            firmware = FirmwareFactory.fromBinary(dirEntry.getEntryType(), ENTRY_BINARY, RELATIVE_ENTRY_START)
+            firmware: Firmware = FirmwareFactory.fromBinary(dirEntry.getEntryType(), ENTRY_BINARY, RELATIVE_ENTRY_START)
+            entryReference.setEntry(firmware)
+            firmware.registerReference(entryReference)
             directoryContent[hex(RELATIVE_ENTRY_START)] = firmware
 
         directory = cls(directoryOffset, header, directoryEntries, directoryContent, TRAILING_BINARY)
@@ -163,6 +166,14 @@ class ContentDirectory(Directory):
         self._directoryEntries: list[DirectoryEntry] = directoryEntries
         self._content: dict[str, ImageElement] = content
         self._trailingBinary: bytes = trailingBinary
+
+        self._references: list[ZenReference] = []
+
+    def registerReference(self, reference: ZenReference) -> None:
+        self._references.append(reference)
+
+    def getReferences(self) -> list[ZenReference]:
+        return self._references
 
     def getDirectoryEntries(self) -> list[DirectoryEntry]:
         """Get copied List of directoryEntries"""
