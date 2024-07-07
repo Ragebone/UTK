@@ -1,6 +1,7 @@
 from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
+from UtkBase.images.imageElement import ImageElement
 
 
 class EntryReference(ZenReference, UtkAMD):
@@ -59,3 +60,9 @@ class EntryReference(ZenReference, UtkAMD):
             return self._offset & 0x3FFFFFFFFFFFFFFF        # Mask off the mode
 
         return self._offset & 0x00FFFFFF
+
+    def setEntry(self, entry: ImageElement) -> None:
+        self._linkedObject = entry
+
+    def getEntry(self) -> ImageElement:
+        return self._linkedObject

@@ -1,7 +1,7 @@
 import abc
 
-from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.utkAmdInterfaces import UtkAMD
+from UtkBase.images.imageElement import ImageElement
 from utkInterfaces import Reference, Serializable
 
 
@@ -35,8 +35,24 @@ class ZenReference(Reference, UtkAMD):
         """
         Get the sanitized "flash" or absolute offset.
 
-        Useful and needed to arrive at the actual thing pointed at in the image-binary
+        Useful and needed to arrive at the actual object pointed at in the image-binary
         :return: Sanitized unsigned integer that can directly be used as an offset.
+        """
+        pass
+
+    @abc.abstractmethod
+    def setEntry(self, entry: ImageElement) -> None:
+        """
+        Set the referenced entry object
+
+        """
+        pass
+
+    @abc.abstractmethod
+    def getEntry(self) -> ImageElement:
+        """
+        Get the referenced entry object
+
         """
         pass
 

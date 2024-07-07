@@ -1,5 +1,6 @@
 from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.zenReference import ZenReference
+from UtkBase.images.imageElement import ImageElement
 
 
 class EfsReference(ZenReference):
@@ -22,6 +23,8 @@ class EfsReference(ZenReference):
         self._offset = absoluteOffset
         self._addressMode = addressMode
 
+        self._linkedObject = None
+
     def getOffset(self) -> int:
         return self._offset
 
@@ -30,3 +33,9 @@ class EfsReference(ZenReference):
             return self._offset
 
         return self._offset & 0x00FFFFFF
+
+    def setEntry(self, entry: ImageElement) -> None:
+        self._linkedObject = entry
+
+    def getEntry(self) -> ImageElement:
+        return self._linkedObject
