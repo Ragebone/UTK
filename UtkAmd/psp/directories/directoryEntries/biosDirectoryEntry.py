@@ -52,6 +52,9 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
     def getEntryLocation(self) -> int:
         return self._entryReference.getAbsoluteOffset()
 
+    def getEntryReference(self) -> EntryReference:
+        return self._entryReference
+
     def setAsPointEntry(self, isPointEntry: bool = True) -> None:
         self._pointEntry = isPointEntry
 

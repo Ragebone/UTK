@@ -34,7 +34,10 @@ class ComboDirectoryEntry(PointDirectoryEntry):
     def getEntryLocation(self) -> int:
         return self._directoryReference.getAbsoluteOffset()
 
-    def getSize(self):
+    def getEntryReference(self) -> EntryReference:
+        return self._directoryReference
+
+    def getSize(self) -> int:
         return ComboDirectoryEntry._struct().size
 
     def toDict(self) -> dict[str, any]:

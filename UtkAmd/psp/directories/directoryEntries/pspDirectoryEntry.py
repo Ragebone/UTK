@@ -75,6 +75,9 @@ class PspDirectoryEntry(TypedDirectoryEntry):
     def getEntryLocation(self) -> int:
         return self._entryReference.getAbsoluteOffset()
 
+    def getEntryReference(self) -> EntryReference:
+        return self._entryReference
+
     def getEntrySize(self) -> int:
         """
         Get the 'Entries' size this directoryEntry points at.

@@ -31,6 +31,11 @@ class PointDirectoryEntry(DirectoryEntry):
         pass
 
     @abc.abstractmethod
+    def getEntryReference(self) -> ZenReference:
+        """Get the directory entries reference of the Entry"""
+        pass
+
+    @abc.abstractmethod
     def isPointEntry(self) -> bool:
         """True if the location is outside the Directory"""
         pass
