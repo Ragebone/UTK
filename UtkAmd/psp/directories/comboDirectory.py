@@ -31,10 +31,10 @@ class ComboDirectory(Directory):
             # Will assert on issues
             header = ComboDirectoryHeader.fromBinary(binary)
 
-        directoryEntries = []
+        directoryEntries: list[ComboDirectoryEntry] = []
         comboEntryOffset = header.getSize()
         for index in range(header.getEntryCount()):
-            dirEntry = ComboDirectoryEntry.fromBinary(binary[comboEntryOffset:])
+            dirEntry: ComboDirectoryEntry = ComboDirectoryEntry.fromBinary(binary[comboEntryOffset:])
 
             directoryEntries.append(dirEntry)
             comboEntryOffset += dirEntry.getSize()
