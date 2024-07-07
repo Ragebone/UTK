@@ -13,11 +13,11 @@ class ComboDirectoryEntry(PointDirectoryEntry):
     """
 
     @classmethod
-    def _struct(cls):
+    def _struct(cls) -> struct.Struct:
         return struct.Struct('<IIQ')
 
     @classmethod
-    def fromBinary(cls, binary: bytes):
+    def fromBinary(cls, binary: bytes) -> 'ComboDirectoryEntry':
         assert binary is not None, "None as binary"
         return cls(*cls._struct().unpack(binary[:cls._struct().size]))
 
@@ -27,11 +27,11 @@ class ComboDirectoryEntry(PointDirectoryEntry):
 
         self._directoryReference: EntryReference = EntryReference.fromOffset(directoryAddress)
 
-    def isPointEntry(self):
+    def isPointEntry(self) -> bool:
         """Always True because ComboDirectoryEntry"""
         return True
 
-    def getEntryLocation(self):
+    def getEntryLocation(self) -> int:
         return self._directoryReference.getAbsoluteOffset()
 
     def getSize(self):
@@ -44,5 +44,5 @@ class ComboDirectoryEntry(PointDirectoryEntry):
             "directoryReference": self._directoryReference
         }
 
-    def serialize(self):
+    def serialize(self) -> bytes:
         return ComboDirectoryEntry._struct().pack(self._idSelect, self._chipId, self._directoryReference.getOffset())
