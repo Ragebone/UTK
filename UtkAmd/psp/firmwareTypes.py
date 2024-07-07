@@ -280,7 +280,17 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x24, PSP entry points to security gasket binary
     """
-    
+
+    UNKNOWN_25 = 0x25
+    """
+    Yet unknown
+    """
+
+    UNKNOWN_28 = 0x28
+    """
+    Yet unknown
+    """
+
     KVM_ENGINE_BINARY = 0x29
     """
     ID: 0x29, PSP entry points to PSP KVM Engine binary
@@ -376,6 +386,11 @@ class FirmwareType(enum.Enum):
     Yet unknown
     """
 
+    UNKNOWN_45 = 0x45
+    """
+    Yet unknown
+    """
+
     EXTERNAL_PREMIUM_CHIPSET_PSP_BL = 0x46
     """
     ID: 0x46, PSP entry points to External Premium Chipset PSP Boot Loader
@@ -455,4 +470,9 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x63, Secure Coprocessor Enforced System Firmware
     Provides an authenticated mechanism to enable and customize system level firmware/software features.
+    """
+
+    UNKNOWN_6A = 0x6A
+    """
+    Yet unknown
     """
