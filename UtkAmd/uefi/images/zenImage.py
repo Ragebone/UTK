@@ -6,6 +6,7 @@ from UtkAmd.psp.directories.directoryEntries.comboDirectoryEntry import ComboDir
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry, PointDirectoryEntry
 from UtkAmd.psp.directories.directoryFactory import DirectoryFactory
 from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
+from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.image import Image
 from UtkBase.images.imageElement import ImageElement
@@ -75,7 +76,7 @@ def resolveDirectoryReferences(directory: Directory, imageBinary: bytes) -> list
 
         entryType = dirEntry.getEntryType()
 
-        if entryType not in [0x40, 0x70]:
+        if entryType not in [FirmwareType.PSP_DIR_LV2, FirmwareType.BIOS_DIR_LV2]:
             # Specific directory pointer types
             continue
 
@@ -121,11 +122,11 @@ def resolvePointDirectoryEntries(directory: Directory, listOfImageElements: list
             continue
 
         # psp and bios directories as well as the PEI volume
-        if dirEntry.getEntryType() in [0x40, 0x70, 0x62]:
+        if dirEntry.getEntryType() in [FirmwareType.PSP_DIR_LV2, FirmwareType.BIOS_DIR_LV2, FirmwareType.BIOS_FIRMWARE]:
             continue
 
         # TODO problematic weird directory entries who's sizes and locations don't make sense yet
-        if dirEntry.getEntryType() in [0x2A, 0x46]:
+        if dirEntry.getEntryType() in [FirmwareType.MP5_FW, FirmwareType.EXTERNAL_PREMIUM_CHIPSET_PSP_BL]:
             continue
 
         if dirEntry.getEntrySize() < 1:
