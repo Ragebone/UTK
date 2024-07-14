@@ -78,7 +78,7 @@ class Reference:
     @abc.abstractmethod
     def followReference(self) -> Serializable:
         """
-        A reference always reference something.
+        A reference always refers to something.
         This method is for getting or following this to the object.
 
         :return: Gives you the object or None if there is nothing
