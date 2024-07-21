@@ -1,6 +1,7 @@
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
+from UtkBase import utility
 from utkInterfaces import Header, Reference
 
 
@@ -20,14 +21,18 @@ class FirmwareBlob(Firmware, UtkAMD):
         NOTE the firmwareType is an unusual addition to the function.
         Firmware Type corresponds to the "Type" number defined by AMD.
         """
-        return cls(offset, binary, firmwareType)
+        #if header is not None:
+            #binary = binary[header.getSize():]
+            # TODO Limiting the binary here has some risks, Figure out where to do that better
+        return cls(offset, binary, firmwareType, header)
 
-    def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType):
+    def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType, header: Header = None):
         assert firmwareType is not None, "firmwareType can't be None"
         self._offset = offset
         self._firmwareType = firmwareType
         self._binary: bytes = binary
         self._size = len(binary)
+        self._header: Header = header
 
         self._references: list[Reference] = []
 
@@ -48,8 +53,18 @@ class FirmwareBlob(Firmware, UtkAMD):
             "offset": self._offset,
             "type": self._firmwareType,
             "size": self._size,
+            "header": self._header,
             "binary": self._binary
         }
 
     def serialize(self) -> bytes:
+
+        if self._header is not None:
+            outputBinary = bytes()
+            outputBinary += self._header.serialize()
+
+            outputBinary += self._binary[0x100:]
+
+            return outputBinary
+
         return self._binary
