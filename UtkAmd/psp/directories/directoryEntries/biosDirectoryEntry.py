@@ -39,6 +39,8 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         self._entryReference: EntryReference = EntryReference.fromOffset(location, addressMode)
         self._entryDestination = destination
 
+        self._parentDirectory: 'BiosDirectory' = None
+
         # None FW Attributes
         self._pointEntry = False
 
@@ -64,6 +66,15 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
     def getSize(self) -> int:
         """Get the size of this BiosDirectoryEntry"""
         return BiosDirectoryEntry._struct().size
+
+    def getParentDirectory(self) -> 'BiosDirectory':
+        return self._parentDirectory
+
+    def setParentDirectory(self, parentDirectory: 'BiosDirectory') -> None:
+        assert parentDirectory is not None, "None as parentDirectory"
+        from UtkAmd.psp.directories.biosDirectory import BiosDirectory
+        assert isinstance(parentDirectory, BiosDirectory), "ParentDirectory of BiosDirectoryEntries needs to be a BiosDirectory"
+        self._parentDirectory = parentDirectory
 
     def toDict(self) -> dict[str, any]:
         return {

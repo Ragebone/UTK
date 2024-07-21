@@ -27,6 +27,8 @@ class ComboDirectoryEntry(PointDirectoryEntry):
 
         self._directoryReference: EntryReference = EntryReference.fromOffset(directoryAddress)
 
+        self._parentDirectory: 'ComboDirectory' = None
+
     def isPointEntry(self) -> bool:
         """Always True because ComboDirectoryEntry"""
         return True
@@ -39,6 +41,15 @@ class ComboDirectoryEntry(PointDirectoryEntry):
 
     def getSize(self) -> int:
         return ComboDirectoryEntry._struct().size
+
+    def getParentDirectory(self) -> 'ComboDirectory':
+        return self._parentDirectory
+
+    def setParentDirectory(self, parentDirectory: 'ComboDirectory') -> None:
+        assert parentDirectory is not None, "None as parentDirectory"
+        from UtkAmd.psp.directories.comboDirectory import ComboDirectory
+        assert isinstance(parentDirectory, ComboDirectory), "ParentDirectory of ComboDirectoryEntries needs to be a ComboDirectory"
+        self._parentDirectory = parentDirectory
 
     def toDict(self) -> dict[str, any]:
         return {

@@ -20,6 +20,25 @@ class DirectoryEntry(Serializable, UtkAMD):
     def getSize(self) -> int:
         pass
 
+    @abc.abstractmethod
+    def getParentDirectory(self) -> 'Directory':
+        """
+        Get the Directory that contains this DirectoryEntry
+
+        :return: Parent Directory
+        """
+        pass
+
+    @abc.abstractmethod
+    def setParentDirectory(self, parentDirectory: 'Directory') -> None:
+        """
+        Set which Directory contains this DirectoryEntry
+
+        :param parentDirectory: Parent Directory to contain this DirectoryEntry
+        :return: None
+        """
+        pass
+
 
 class PointDirectoryEntry(DirectoryEntry):
     """
