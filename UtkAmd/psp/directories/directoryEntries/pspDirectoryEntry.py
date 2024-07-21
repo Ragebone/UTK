@@ -54,8 +54,9 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         self._writeable: Writeable = Writeable(byteGroup >> 2 & 0x1)
         self._instance = byteGroup & 0x78 >> 3
         self._reserved = byteGroup & 0xFF80
-
         self._entryReference: EntryReference = EntryReference.fromOffset(offset, addressMode)
+
+        self._parentDirectory: 'PspDirectory' = None
 
         self._pointEntry = False
 
@@ -68,6 +69,15 @@ class PspDirectoryEntry(TypedDirectoryEntry):
     def getSize(self) -> int:
         """Get structure size"""
         return PspDirectoryEntry._struct().size
+
+    def getParentDirectory(self) -> 'PspDirectory':
+        return self._parentDirectory
+
+    def setParentDirectory(self, parentDirectory: 'PspDirectory') -> None:
+        assert parentDirectory is not None, "None as parentDirectory"
+        from UtkAmd.psp.directories.pspDirectory import PspDirectory
+        assert isinstance(parentDirectory, PspDirectory), "ParentDirectory of PspDirectoryEntries needs to be a PspDirectory"
+        self._parentDirectory = parentDirectory
 
     def getEntryType(self) -> FirmwareType:
         return self._entryType
