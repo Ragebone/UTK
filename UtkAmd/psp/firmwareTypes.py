@@ -4,6 +4,7 @@ import enum
 class FirmwareType(enum.Enum):
     """
     Type value enum for PSP and BIOS directory entries
+
     """
 
     #
@@ -306,7 +307,12 @@ class FirmwareType(enum.Enum):
     ID: 0x2C, PSP entry points to TEE_WONE_NVRAM binary
     """
 
-    UNKNOWN_2 = 0x2E
+    UNKNOWN_2D = 0x2D
+    """
+    Yet unknown
+    """
+
+    UNKNOWN_2E = 0x2E
     """
     Yet unknown
     """
@@ -316,42 +322,42 @@ class FirmwareType(enum.Enum):
     ID: 0x2F, PSP entry points to External Premium Chipset MP0 FW image
     """
     
-    AGESA_BOOT_LOADER_0 = 0x30
+    AGESA_BOOT_LOADER_30 = 0x30
     """
     ID: 0x30, PSP entry points to PSP AGESA Binary 0
     """
     
-    AGESA_BOOT_LOADER_1 = 0x31
+    AGESA_BOOT_LOADER_31 = 0x31
     """
     ID: 0x31, PSP entry points to PSP AGESA Binary 1
     """
     
-    AGESA_BOOT_LOADER_2 = 0x32
+    AGESA_BOOT_LOADER_32 = 0x32
     """
     ID: 0x32, PSP entry points to PSP AGESA Binary 2
     """
     
-    AGESA_BOOT_LOADER_3 = 0x33
+    AGESA_BOOT_LOADER_33 = 0x33
     """
     ID: 0x33, PSP entry points to PSP AGESA Binary 3
     """
     
-    AGESA_BOOT_LOADER_4 = 0x34
+    AGESA_BOOT_LOADER_34 = 0x34
     """
     ID: 0x34, PSP entry points to PSP AGESA Binary 4
     """
     
-    AGESA_BOOT_LOADER_5 = 0x35
+    AGESA_BOOT_LOADER_35 = 0x35
     """
     ID: 0x35, PSP entry points to PSP AGESA Binary 5
     """
     
-    AGESA_BOOT_LOADER_6 = 0x36
+    AGESA_BOOT_LOADER_36 = 0x36
     """
     ID: 0x36, PSP entry points to PSP AGESA Binary 6
     """
     
-    AGESA_BOOT_LOADER_7 = 0x37
+    AGESA_BOOT_LOADER_37 = 0x37
     """
     ID: 0x37, PSP entry points to PSP AGESA Binary 7
     """
@@ -365,7 +371,12 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x39, PSP entry points to SEV binary
     """
-    
+
+    UNKNOWN_3C = 0x3C
+    """
+    Yet unknown
+    """
+
     PSP_DIR_LV2 = 0x40
     """
     ID: 0x40, PSP entry points to Level 2 PSP DIR
@@ -376,7 +387,7 @@ class FirmwareType(enum.Enum):
     ID: 0x42, PSP entry points to PHY binary
     """
 
-    UNKNOWN_0 = 0x43
+    UNKNOWN_43 = 0x43
     """
     Yet unknown
     """
@@ -451,6 +462,16 @@ class FirmwareType(enum.Enum):
     PSPTOOL sais BL_ROLLBACK_SPL
     """
 
+    UNKNOWN_58 = 0x58
+    """
+    Yet unknown
+    """
+
+    UNKNOWN_59 = 0x59
+    """
+    Yet unknown
+    """
+
     MSMU_BINARY_0 = 0x5A
     """
     ID: 0x5A, PSP entry points to MSMU
@@ -476,3 +497,17 @@ class FirmwareType(enum.Enum):
     """
     Yet unknown
     """
+
+
+# All the modifiable ones
+MODIFIABLE_FIRMWARE_TYPES = [
+    FirmwareType.PSP_NV_DATA,
+    FirmwareType.PSP_TOKEN_UNLOCK_DATA,
+    FirmwareType.PSP_VM_GUARD_DATA,
+    FirmwareType.BIOS_APCB_INFO,
+    FirmwareType.AMD_SFFS_BINARY,
+    FirmwareType.CORE_MCEDATA,
+    FirmwareType.BIOS_APCB_INFO_BACKUP,
+]
+
+
