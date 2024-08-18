@@ -7,9 +7,10 @@ class SectionHeaderFactory:
     @staticmethod
     def fromBinary(binary: bytes):
         # TODO make nicer !
-        try:
-            sectionHeader = ExtendedSectionHeader.fromBinary(binary)
-        except:
-            sectionHeader = SectionHeader.fromBinary(binary)
 
-        return sectionHeader
+        sectionSizeBinary = binary[:3]
+        if sectionSizeBinary == b'\xFF\xFF\xFF':
+            return ExtendedSectionHeader.fromBinary(binary)
+
+        return SectionHeader.fromBinary(binary)
+
