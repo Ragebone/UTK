@@ -8,11 +8,15 @@ from UtkAmd.psp.directories.directoryHeaders.directoryHeader import DirectoryHea
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
+
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.utility import binaryIsEmpty, fillBinaryTill
 
 # start of the directory content
 CONTENT_OFFSET = 0x400
+
+# Alignment factor for the full Directory size as a container
+DIRECTORY_MINIMUM_SIZE_BLOCK_ALIGNMENT_THINGY = 0x10000
 
 
 class Directory(ImageElement, UtkAMD):
@@ -97,6 +101,7 @@ class ContentDirectory(Directory):
             # EXPECTATION  entryOffset is a flashOffset
             if directoryOffset <= entryOffset < directoryOffset + CONTENT_OFFSET:
                 # invalid offset pointing somewhere into the non-content area of the directory.
+                # TODO logging ?
                 continue
 
             ENTRY_SIZE = dirEntry.getEntrySize()
@@ -115,7 +120,8 @@ class ContentDirectory(Directory):
             firmware.registerReference(entryReference)
             directoryContent[hex(RELATIVE_ENTRY_START)] = firmware
 
-        directory = cls(directoryOffset, header, directoryEntries, directoryContent, TRAILING_BINARY)
+        fullDirectoryBinary = binary[:header.getDirectorySize()]
+        directory = cls(directoryOffset, header, directoryEntries, directoryContent, TRAILING_BINARY, fullDirectoryBinary)
         return directory
 
     @classmethod
@@ -138,12 +144,17 @@ class ContentDirectory(Directory):
         NUMBER_OF_DIR_ENTRIES = header.getEntryCount()
         for index in range(NUMBER_OF_DIR_ENTRIES):
             DIR_ENTRY_BINARY = STRUCTURE_BINARY[offset:]
+
+            # NOTE  this is a reason : )
             dirEntry: DirectoryEntry = cls._buildDirectoryEntry(DIR_ENTRY_BINARY, DIRECTORY_ADDRESS_MODE)
 
             # NOTE this was sooo bad,  this only worked if it was an absolute offset that does not need to be masked
             if isinstance(dirEntry, TypedDirectoryEntry):
                 entryOffset = dirEntry.getEntryLocation()           # This is providing an absolute offset as this point. TODO Should be better named though
-                if not (directoryStart <= entryOffset <= directoryEnd):
+
+                dirContentStart = directoryStart + 0x400
+                assert not (directoryStart <= entryOffset < dirContentStart), "DirEntry points into its own directory header?"
+                if not (dirContentStart <= entryOffset < directoryEnd):
                     dirEntry.setAsPointEntry()
 
             directoryEntries.append(dirEntry)
@@ -156,7 +167,7 @@ class ContentDirectory(Directory):
 
         return directoryEntries, TRAILING_BINARY
 
-    def __init__(self, offset: int, header: PspDirectoryHeader, directoryEntries: list[DirectoryEntry], content: dict[str, any], trailingBinary: bytes = None):
+    def __init__(self, offset: int, header: PspDirectoryHeader, directoryEntries: list[DirectoryEntry], content: dict[str, any], trailingBinary: bytes = None, fullBinary: bytes = None):
         assert header is not None, "Header can't be None for Directory"
 
         self._offset: int = offset
@@ -168,6 +179,9 @@ class ContentDirectory(Directory):
         self._trailingBinary: bytes = trailingBinary
 
         self._references: list[ZenReference] = []
+
+        # in case of emergency
+        self._fullBinary: bytes = fullBinary
 
     def registerReference(self, reference: ZenReference) -> None:
         self._references.append(reference)
@@ -207,6 +221,8 @@ class ContentDirectory(Directory):
         }
 
     def serialize(self) -> bytes:
+        EXPECTED_DIRECTORY_SIZE = self.getHeader().getDirectorySize()
+
         outputBinary = self.getHeader().serialize()
 
         for dirEntry in self.getDirectoryEntries():
@@ -227,14 +243,24 @@ class ContentDirectory(Directory):
             # Paddings between Entries
             outputBinary = fillBinaryTill(outputBinary, elementOffset)
 
+
+            output_length = len(outputBinary)
+            assert elementOffset == output_length, "unexpected length after filling"
+
             elementBinary = imageElement.serialize()
             EXPECTED_FILE_SIZE = imageElement.getSize()
             BINARY_SIZE = len(elementBinary)
             assert BINARY_SIZE == EXPECTED_FILE_SIZE, "File size missmatch for offset {} with size {}, expected {}".format(hex(elementOffset), hex(BINARY_SIZE), hex(EXPECTED_FILE_SIZE))
+            directorySize = output_length + BINARY_SIZE
+            assert directorySize <= EXPECTED_DIRECTORY_SIZE
+
             outputBinary += elementBinary
 
         # Padding at the end of the directories content
-        outputBinary = fillBinaryTill(outputBinary, self.getHeader().getDirectorySize())
+        outputBinary = fillBinaryTill(outputBinary, EXPECTED_DIRECTORY_SIZE)
+
+        if outputBinary != self._fullBinary:
+            # TODO LOGGING
+            return self._fullBinary
 
         return outputBinary
-
