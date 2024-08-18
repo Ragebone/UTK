@@ -39,3 +39,7 @@ class EfsReference(ZenReference):
 
     def getEntry(self) -> ImageElement:
         return self._linkedObject
+
+    def followReference(self) -> Serializable:
+        return self._linkedObject
+
