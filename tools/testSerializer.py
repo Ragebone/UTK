@@ -37,6 +37,9 @@ def main():
 
             for offset, imageElement in imageContent:
                 elementBinary = imageElement.serialize()
+                expected_binary_size = imageElement.getSize()
+                assert len(elementBinary) == expected_binary_size, "Size Missmatch"
+
                 ABSOLUTE_ELEMENT_OFFSET = imageElement.getOffset() + imageOffset
                 actualBinary = BINARY[ABSOLUTE_ELEMENT_OFFSET:ABSOLUTE_ELEMENT_OFFSET + len(elementBinary)]
                 assert len(actualBinary) == len(elementBinary), "Length missmatch: {} where it should be {}".format(
