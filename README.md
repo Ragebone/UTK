@@ -1,5 +1,6 @@
 # Universal firmware Tool Kit
 
+Unrelated with [utk-web, a very cool project in a different direction to this project](https://github.com/nstarke/utk-web/tree/main)
 An object-oriented package, framework and collection of tools for and around firmware like UEFI images and bios files. 
 
 Heavily influenced by the famous [UEFITool by LongSoft](https://github.com/LongSoft/UEFITool "UEFITool Github repo") and
