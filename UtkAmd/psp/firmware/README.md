@@ -18,5 +18,3 @@ Operations on blobs for instance being signature verification and resigning.
 - [ ] Signature verification
 - [ ] Re-signing
 - [ ] Decompression
-- [ ] Decryption
-- [ ] support for emulation and further analysis
