@@ -43,7 +43,6 @@ class ComboDirectory(Directory):
         return comboDirectory
 
     def __init__(self, offset: int, header: ComboDirectoryHeader, directoryEntries: list[ComboDirectoryEntry]):
-
         self._offset = offset
         self._header = header
 

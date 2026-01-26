@@ -61,18 +61,6 @@ class GenericImage(Image):
             "content": self._contents
         }
 
-    def toString(self) -> str:
-        imageOffset = 0x00
-        outString = ""
-        for imageElement in self._contents:
-            outString += "{:<15} {:<20}\n".format("Image offset", "Type")
-            outString += "{:<15} {:<20}\n".format(hex(imageOffset), imageElement.__class__.__name__)
-
-            outString += imageElement.toString()
-            imageOffset += imageElement.getSize()
-            outString += "\n"
-        return outString
-
     def serialize(self) -> bytes:
         """ Serializable """
         imageBinary = bytes()

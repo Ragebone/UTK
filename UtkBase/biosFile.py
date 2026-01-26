@@ -15,7 +15,7 @@ class BiosFile(Serializable):
     Main entry point for using the framework with a motherboards BiosFile.
     Simply put:
         bios = BiosFile.fromFilepath('Path/to/file')
-    :or
+    or:
         bios = BiosFile.fromBinary(fileHandle.read())
 
     Serializable; Use bios.serialize() to get the original or new / changed binary back.
