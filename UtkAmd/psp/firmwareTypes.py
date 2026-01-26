@@ -444,12 +444,15 @@ class FirmwareType(enum.Enum):
 
     UNKNOWN_50 = 0x50
     """
-    Yet unknown
+    It is part of the KEY_STORE_TYPES.
+    a file containing multiple public keys
     """
 
     TOS_PUBLIC_KEY = 0x51
     """
-    PSPTOOL: TOS_PUBLIC_KEY
+    PSPTOOL calls this a TOS_PUBLIC_KEY
+    It is part of the KEY_STORE_TYPES.
+    a file containing multiple public keys
     """
 
     PSP_NVRAM = 0x54
