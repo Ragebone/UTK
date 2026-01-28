@@ -1,8 +1,6 @@
 import struct
-from ctypes import LittleEndianStructure, c_uint32, c_uint8, c_bool, c_uint16, c_char_p, c_uint64, c_uint, c_char, \
-    c_byte
+from ctypes import LittleEndianStructure, c_uint32, c_uint8, c_uint16, c_uint64, c_byte
 
-from UtkBase import utility
 from utkInterfaces import Header
 
 
@@ -39,7 +37,11 @@ class _PspHeaderStructure(LittleEndianStructure):
         ("EncryptionKey", c_byte * 16),
         ("SigningInfo", c_byte * 16),
         ("FwSpecificData", c_byte * 32),
-        ("DebugEncKey", c_byte * 16),
+        # ("DebugEncKey", c_byte * 16),          # this collides by at least 4 bytes with the sha256Checksum
+        ("DebugEncKey", c_byte * 12),            # So with that, this is probably not an encryption key
+        # ("Unknown16Byte", c_byte * 16),
+        ("Sha256Checksum", c_byte * 32),        # Definitively the checksum!
+        # ("Reserved2", c_byte * 12)            # the checksum is followed by 12 0 bytes. But putting it here like this, somehow still leaves 4 bytes. Making it 16, explodes the buffer, I call bullshit.
     ]
 
 
@@ -54,20 +56,21 @@ class PspFirmwareHeader(Header):
 
     @classmethod
     def _struct(cls) -> struct:
-        return struct.Struct("<16s 4s")     # Zeros - Magic, signedSize, encrypted
+        return struct.Struct("<16s 4s")     # Zeros - Magic:   signedSize, encrypted
 
     @classmethod
-    def fromBinary(cls, binary: bytes):
+    def fromBinary(cls, binary: bytes) -> 'PspFirmwareHeader':
         structBinary = binary[:cls._struct().size]
         trailingBinary = binary[cls._struct().size:0x100]
+
         testBinary = binary[:0x100]
         zeros, magic = cls._struct().unpack(structBinary)
         assert magic in [b'$PS1', b'\x05\x00\x00\x00'], f"Wrong or missing psp header magic, got {magic}"
 
         internalStructure = _PspHeaderStructure.from_buffer_copy(trailingBinary)
         structureSize = len(bytes(internalStructure))
-
         trailingBinary = trailingBinary[structureSize:]
+
         return cls(zeros, magic, internalStructure, trailingBinary, testBinary)
 
     def __init__(self, zeros: bytes, magic: bytes, internalStructure: _PspHeaderStructure, trailingBinary: bytes, testBinary: bytes):
@@ -80,9 +83,55 @@ class PspFirmwareHeader(Header):
 
         self._testBinary = testBinary
 
-    def getSize(self):
+    def getSize(self) -> int:
         """ fixed 256 bytes starting with 16 0es and then $PS1 """
         return 0x100
+
+    def getFirmwareSigningKeyId(self) -> str:
+        """
+        :return: KeyId as a hex, upper string
+        """
+        keyId = bytes(self._internalStructure.SignatureParameters).hex().upper()
+        return keyId
+
+    def isFirmwareSigned(self) -> bool:
+        """Is the firmware signed?"""
+        return self._internalStructure.SignatureOption == 0x01
+        sizeSignedOk = self._internalStructure.SizeSigned > 0
+        #sizeImageOk = self._internalStructure.SizeImage > 0
+        return sizeSignedOk
+
+    def isFirmwareCompressed(self) -> bool:
+        """Is the firmware compressed?"""
+        compressedImageSizeOk = self._internalStructure.CompressedImageSize > 0
+        uncompressedImageSizeOk = self._internalStructure.UncompressedImageSize > 0
+        compressionOptionsOk = self._internalStructure.CompressionOptions > 0
+        return compressedImageSizeOk and uncompressedImageSizeOk and compressionOptionsOk
+
+    def getSignedSize(self) -> int:
+        """
+        Amount of signed bytes of data
+        Does not include this headers size who needs to also be included
+        :return:
+        """
+        return self._internalStructure.SizeSigned
+
+    def getCompressedImageSize(self) -> int:
+        """
+
+        :return:
+        """
+        return self._internalStructure.CompressedImageSize
+
+    def getUncompressedImageSize(self) -> int:
+        """
+
+        :return:
+        """
+        return self._internalStructure.UncompressedImageSize
+
+    def getImageSize(self) -> int:
+        return self._internalStructure.SizeImage
 
     def toDict(self) -> dict[str, any]:
         return {
@@ -115,7 +164,7 @@ class PspFirmwareHeader(Header):
             "SigningInfo": bytes(self._internalStructure.SigningInfo),
             "FwSpecificData": bytes(self._internalStructure.FwSpecificData),
             "DebugEncKey": bytes(self._internalStructure.DebugEncKey),
-
+            "Sha256Checksum": bytes(self._internalStructure.Sha256Checksum),
             "trailingBinary": self._trailingBinary
         }
 
