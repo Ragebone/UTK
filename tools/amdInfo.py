@@ -8,9 +8,9 @@ from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.biosFile import BiosFile
 from utkInterfaces import Serializable
 from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
+from tools.common.conversions import BINARY
 
-
-def convertItemForAMD(item: any, depth: int = 0):
+def convertItemForAMD(item: any, depth: int = 0, includeBinary: BINARY = BINARY.NO):
     if isinstance(item, Serializable):
         if depth <= 0 and not isinstance(item, UtkAMD):
             return {
@@ -34,7 +34,13 @@ def convertItemForAMD(item: any, depth: int = 0):
         return newList
 
     if isinstance(item, bytes):
-        return "Binary"
+        match includeBinary:
+            case BINARY.NO:
+                return "Binary",
+            case BINARY.SOME:
+                return item[:256].hex().upper()
+            case BINARY.ALL:
+                return item.hex().upper()
 
     if isinstance(item, enum.Enum):
         return {

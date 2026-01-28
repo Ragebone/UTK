@@ -1,7 +1,13 @@
 import enum
 
-from UtkAmd.psp.zenReference import ZenReference
+from UtkAmd.utkAmdInterfaces import UtkAMD
 from utkInterfaces import Serializable, Reference
+
+
+class BINARY(enum.Enum):
+    NO = 0
+    SOME = 1
+    ALL = 2
 
 
 def recursiveToDict(dictionary: dict[str, any]) -> dict:
@@ -39,7 +45,7 @@ def recursiveToDict(dictionary: dict[str, any]) -> dict:
     return newDict
 
 
-def convertItem(item: any, depth: int = 0):
+def convertItem(item: any, depth: int = 0, includeBinary: BINARY = BINARY.ALL) -> any:
     if isinstance(item, (Serializable)):
         if depth <= 0:
             return {
@@ -62,8 +68,17 @@ def convertItem(item: any, depth: int = 0):
 
         return newList
 
+    if isinstance(item, int):
+        return hex(item)
+
     if isinstance(item, bytes):
-        return "Binary"
+        match includeBinary:
+            case BINARY.NO:
+                return "Binary",
+            case BINARY.SOME:
+                return item[:256].hex().upper()
+            case BINARY.ALL:
+                return item.hex().upper()
 
     if isinstance(item, enum.Enum):
         return {
@@ -72,8 +87,14 @@ def convertItem(item: any, depth: int = 0):
         }
 
     if isinstance(item, Reference):
+
+        if not isinstance(item, UtkAMD):
+            return {
+                "reference": "TODO"
+            }
+
         return {
-            "reference": "TODO"
+            "offset": hex(item.getOffset())
         }
     return item
 
