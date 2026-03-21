@@ -1,64 +1,104 @@
 import ctypes
 from ctypes import LittleEndianStructure
+from difflib import get_close_matches
 
-from cryptography.utils import Enum
+
+class CaseInsensitiveDict(dict):
+    """Dictionary with case-insensitive key access and typo suggestions."""
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            # Try exact match first
+            for k in self.keys():
+                if isinstance(k, str) and k.lower() == key.lower():
+                    return super().__getitem__(k)
+        return super().__getitem__(key)
+
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+    def __contains__(self, key):
+        if isinstance(key, str):
+            return any(isinstance(k, str) and k.lower() == key.lower() for k in self.keys())
+        return super().__contains__(key)
+
+    def _suggest_key(self, missing_key: str) -> str:
+        """Find and return a similar key if it exists."""
+        matches = get_close_matches(missing_key, self.keys(), n=1, cutoff=0.6)
+        if matches:
+            return matches[0]
+        return None
 
 
 class leStructure(LittleEndianStructure):
-    @classmethod
-    def _fieldToDict(cls, name: str, value: any) -> any:
-        """Convert a single field value to JSON-serializable format."""
+    """
+    Base class for ctypes LittleEndianStructure with dict conversion helpers.
+    Subclasses should implement toDict() with custom field mapping.
+    fromDict() provides case-insensitive loading with typo suggestions.
+    """
+
+    @staticmethod
+    def _fieldToValue(value: any) -> any:
+        """Convert a field value to JSON-serializable format."""
         if isinstance(value, bytes):
             return value.hex().upper()
-        if isinstance(value, (ctypes.Array,)):
+
+        if isinstance(value, ctypes.Array):
             return bytes(value).hex().upper()
+
         if isinstance(value, int):
             return hex(value)
-        if isinstance(value, Enum):
-            return {"name": value.name, "value": value.value}
-        return value
-
-    @classmethod
-    def _fieldFromDict(cls, field_type: type, value: any) -> any:
-        """Convert a dictionary value back to the correct field type."""
-        # Handle hex strings
-        if isinstance(value, str) and value.startswith('0x'):
-            if isinstance(field_type, type) and issubclass(field_type, ctypes._SimpleCData):
-                return field_type(int(value, 16))
-            return int(value, 16)
-
-        # Handle byte arrays (ctypes.Array)
-        if isinstance(value, str) and not value.startswith('0x'):
-            # Assume it's a hex string for byte arrays
-            byte_data = bytes.fromhex(value)
-            if hasattr(field_type, '_length_'):
-                return field_type.from_buffer_copy(byte_data)
-            return byte_data
 
         return value
 
-    def toDict(self) -> dict[str, any]:
-        """
-        Convert ctypes structure to dictionary with hex-encoded binary values.
-        """
-        result = {}
-        for field_name, field_type in self._fields_:
-            value = getattr(self, field_name)
-            result[field_name] = self._fieldToDict(field_name, value)
-        return result
+    @staticmethod
+    def _fieldFromValue(field_type: type, value: any) -> any:
+        """Convert a dictionary value to the correct field type."""
+        if value is None:
+            return None
+
+        if isinstance(value, str):
+            if value.startswith('0x'):
+                try:
+                    return int(value, 16)
+                except (ValueError, TypeError):
+                    return value
+            else:
+                # Try hex decode for byte arrays
+                try:
+                    byte_data = bytes.fromhex(value)
+                    if hasattr(field_type, '_length_'):
+                        return field_type.from_buffer_copy(byte_data)
+                    return byte_data
+                except (ValueError, TypeError):
+                    return value
+
+        return value
 
     @classmethod
-    def fromDict(cls, data: dict[str, any]) -> 'CtypesStructureHelper':
+    def fromDict(cls, data: dict[str, any]) -> 'leStructure':
         """
-        Reconstruct ctypes structure from dictionary.
+        Reconstruct structure from dictionary with case-insensitive keys.
+        Suggests corrections for typos in missing keys.
         """
+        data_ci = CaseInsensitiveDict(data)
         instance = cls()
+
         for field_name, field_type in cls._fields_:
-            if field_name not in data:
+            if field_name not in data_ci:
+                suggested = data_ci._suggest_key(field_name)
+                if suggested:
+                    raise KeyError(
+                        f"Field '{field_name}' not found in data. "
+                        f"Did you mean '{suggested}'?"
+                    )
                 continue
 
-            value = data[field_name]
-            converted_value = cls._fieldFromDict(field_type, value)
-            setattr(instance, field_name, converted_value)
+            value = data_ci[field_name]
+            converted = cls._fieldFromValue(field_type, value)
+            setattr(instance, field_name, converted)
 
         return instance
