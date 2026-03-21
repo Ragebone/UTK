@@ -1,14 +1,19 @@
+import json
 import struct
+from pathlib import Path
+
+from UtkCommon.implementations.structures import CaseInsensitiveDict
 
 
-def binaryIsEmpty(binary: bytes) -> bool:
+def binaryIsEmpty(binary: bytes, emptyValue: int = 0xFF) -> bool:
     """
-    True if binary consists only of 0xFF ...
+    True if binary consists only of the given emptyValue, 0xFF by default
     :param binary: The bytes to check
+    :param emptyValue: The value to set as empty, must be a single byte int
     :return: Bool
     """
     for byte in binary:
-        if byte != 0xFF:
+        if byte != emptyValue:
             return False
 
     return True
@@ -32,11 +37,24 @@ def diffBinary(binA: bytes, binB: bytes) -> bool:
             offset += 1
             continue
 
-        if BiosFile.dontHandleExceptions:
-            assert False, ""
         equals = False
-        print("Offset: {} dec: {}\nA: {}\nB: {}\n".format(hex(offset), offset, binA[:offset+8], binB[:offset+8]))
-        offset += 256
+
+        aFailBinary = binA
+        bFailBinary = binB
+
+
+        print("Offset: {} dec: {}\nA: {}\nB: {}\n".format(hex(offset), offset, aFailBinary, bFailBinary))
+
+        if BiosFile.dontHandleExceptions:
+            with open("failA.hex", "wb") as f:
+                f.write(aFailBinary)
+
+            with open("failB.hex", "wb") as f:
+                f.write(bFailBinary)
+
+            assert False
+
+        offset += 8
 
     return equals
 
@@ -110,3 +128,49 @@ def calculateChecksum16(binary):
         counter = 0xFFFF & (counter + value)
         index += 2
     return 0xFFFF & (0x10000 - counter)
+
+
+def readJson(file_path: str) -> dict:
+    """
+    Read JSON file and return as case-insensitive dictionary.
+
+    :param file_path: Path to JSON file
+    :return: Dictionary with case-insensitive key access
+    """
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    with open(path, 'r') as f:
+        data = json.load(f)
+
+    return CaseInsensitiveDict(data)
+
+
+def writeJson(file_path: str, data: dict, indent: int = 2) -> None:
+    """Write dictionary to JSON file."""
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, 'w') as f:
+        json.dump(data, f, indent=indent)
+
+
+def readBinary(file_path: str) -> bytes:
+    """Read binary file."""
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    with open(path, 'rb') as f:
+        return f.read()
+
+
+def writeBinary(file_path: str, data: bytes) -> None:
+    """Write binary data to file."""
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, 'wb') as f:
+        f.write(data)
+
