@@ -102,3 +102,13 @@ class leStructure(LittleEndianStructure):
             setattr(instance, field_name, converted)
 
         return instance
+
+    def toDict(self) -> dict[str, any]:
+        """
+        Convert structure to dictionary with hex-encoded binary values.
+        """
+        result = {}
+        for field_name, field_type in self._fields_:
+            value = getattr(self, field_name)
+            result[field_name] = self._fieldToValue(value)
+        return result
