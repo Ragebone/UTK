@@ -1,7 +1,6 @@
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from UtkBase import utility
 from utkInterfaces import Header, Reference
 
 
@@ -26,7 +25,37 @@ class FirmwareBlob(Firmware, UtkAMD):
             # TODO Limiting the binary here has some risks, Figure out where to do that better
         return cls(offset, binary, firmwareType, header)
 
+    @classmethod
+    def fromDirectory(cls, directoryPath: str, offset: int = 0, firmwareType: FirmwareType = None) -> 'FirmwareBlob':
+        """
+        Reconstruct FirmwareBlob from extracted directory structure.
+
+        Expected structure:
+            directoryPath/
+            └── binary.bin
+
+        :param directoryPath: Path to extracted firmware directory
+        :param offset: Firmware offset (default 0)
+        :param firmwareType: FirmwareType enum value (required)
+        :return: Reconstructed FirmwareBlob
+        """
+        from pathlib import Path
+        from UtkBase.utility import readBinary
+
+        dir_path = Path(directoryPath)
+
+        if not dir_path.is_dir():
+            raise FileNotFoundError(f"Directory not found: {directoryPath}")
+
+        if firmwareType is None:
+            raise ValueError("firmwareType must be provided")
+
+        binary = readBinary(str(dir_path / "binary.bin"))
+
+        return cls(offset, binary, firmwareType, None)
+
     def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType, header: Header = None):
+        super().__init__()
         assert firmwareType is not None, "firmwareType can't be None"
         self._offset = offset
         self._firmwareType = firmwareType
