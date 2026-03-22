@@ -78,28 +78,23 @@ class PspFirmwareHeader(Header):
         return cls(zeros, magic, internalStructure, trailingBinary, testBinary)
 
     @classmethod
-    def fromDirectory(cls, directoryPath: str) -> 'PspFirmwareHeader':
-        """Reconstruct from extracted JSON."""
-        from pathlib import Path
-        import json
+    def fromJson(cls, file_path: str) -> 'PspFirmwareHeader':
+        """
+        Reconstruct from JSON file.
+        Keys are matched case-insensitively with typo suggestions.
+        """
+        from UtkBase.utility import readJson
 
-        dir_path = Path(directoryPath)
-        json_path = dir_path / "PspFirmwareHeader.json"
-
-        if not json_path.exists():
-            raise FileNotFoundError(f"PspFirmwareHeader.json not found in {directoryPath}")
-
-        with open(json_path, 'r') as f:
-            data = json.load(f)
+        data = readJson(file_path)
 
         magic = bytes.fromhex(data['magic'])
         zeros = b'\x00' * 16
-        trailingBinary = bytes.fromhex(data['trailingBinary']) if data.get('trailingBinary') else b''
+        trailingBinary = bytes.fromhex(data.get('trailingBinary', '')) or b''
 
-        # Use helper to reconstruct structure
         internalStructure = _PspHeaderStructure.fromDict(data)
+        testBinary = bytes(internalStructure).ljust(0x100, b'\x00')
 
-        return cls(zeros, magic, internalStructure, trailingBinary, b'')
+        return cls(zeros, magic, internalStructure, trailingBinary, testBinary)
 
     def __init__(self, zeros: bytes, magic: bytes, internalStructure: _PspHeaderStructure, trailingBinary: bytes, testBinary: bytes):
         self._zeros = zeros
