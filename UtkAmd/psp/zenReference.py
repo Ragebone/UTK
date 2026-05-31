@@ -41,6 +41,15 @@ class ZenReference(Reference, UtkAMD):
         pass
 
     @abc.abstractmethod
+    def setAbsoluteOffset(self, absoluteOffset: int) -> None:
+        """
+
+        :param absoluteOffset:
+        :return:
+        """
+        pass
+
+    @abc.abstractmethod
     def setEntry(self, entry: ImageElement) -> None:
         """
         Set the referenced entry object
