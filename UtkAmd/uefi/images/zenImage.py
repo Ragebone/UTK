@@ -1,18 +1,24 @@
 import traceback
+from xml.dom.pulldom import PullDOM
 
+from UtkAmd.psp.directories.comboDirectory import ComboDirectory
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directory import Directory
 from UtkAmd.psp.directories.directoryEntries.comboDirectoryEntry import ComboDirectoryEntry
 from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry, PointDirectoryEntry
 from UtkAmd.psp.directories.directoryFactory import DirectoryFactory
 from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
+from UtkAmd.psp.firmware.firmwareInterface import Firmware
+from UtkAmd.psp.firmware.publicKeys.keyMap import KeyMap
+from UtkAmd.psp.firmware.publicKeys.publicKey import PublicKey
 from UtkAmd.psp.firmwareTypes import FirmwareType
+from UtkAmd.psp.zenReference import ZenReference
+from UtkAmd.uefi.images.referenceMap import ReferenceMap
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.image import Image
 from UtkBase.images.imageElement import ImageElement
 from UtkBase.images.paddings.paddingFactory import PaddingFactory
 from UtkBase.images.volumes.volumeFactory import VolumeFactory
-from utkInterfaces import Reference
 
 
 def resolveEfsToDirectories(efs: EmbeddedFirmwareStructure, imageBinary: bytes) -> list[Directory]:
@@ -32,6 +38,11 @@ def resolveEfsToDirectories(efs: EmbeddedFirmwareStructure, imageBinary: bytes) 
         if ABSOLUTE_OFFSET < 1:
             continue
 
+        if ReferenceMap.handledCollision(efsReference):
+            continue
+
+        ReferenceMap.addReference(efsReference)
+
         directoryBinary = imageBinary[ABSOLUTE_OFFSET:]
         # TODO the tuple index is not so nice here, improve?
         if not DirectoryFactory.isDirectory(directoryBinary)[0]:
@@ -40,12 +51,42 @@ def resolveEfsToDirectories(efs: EmbeddedFirmwareStructure, imageBinary: bytes) 
         try:
             directory = DirectoryFactory.fromBinary(directoryBinary, ABSOLUTE_OFFSET)
             directories.append(directory)
+
+            linkReferenceAndImageElement(efsReference, directory)
         except Exception as ex:
             from UtkBase.biosFile import BiosFile
             if BiosFile.dontHandleExceptions:
                 raise ex
             traceback.print_exception(type(ex), ex, ex.__traceback__)
             continue
+
+    return directories
+
+
+def resolveComboDirectoryReferences(comboDirectory: ComboDirectory, imageBinary: bytes) -> list[Directory]:
+    """
+
+    :param comboDirectory:
+    :param imageBinary:
+    :return:
+    """
+    assert isinstance(comboDirectory, ComboDirectory), "This method can only handle non combo directories"
+
+    directories: list[Directory] = []
+    directoryEntries: list[ComboDirectoryEntry] = comboDirectory.getDirectoryEntries()
+    for dirEntry in directoryEntries:
+        entryReference = dirEntry.getEntryReference()
+        if ReferenceMap.handledCollision(entryReference):
+            continue
+
+        ReferenceMap.addReference(entryReference)
+
+        directory = directoryFromFlashOffset(entryReference, imageBinary)
+        if directory is None:
+            continue
+
+        linkReferenceAndImageElement(entryReference, directory)
+        directories.append(directory)
 
     return directories
 
@@ -57,54 +98,60 @@ def resolveDirectoryReferences(directory: Directory, imageBinary: bytes) -> list
     :param imageBinary:
     :return:
     """
+    assert not isinstance(directory, ComboDirectory), "This method can only handle non combo directories"
+
     directories: list[Directory] = []
     directoryEntries: list[DirectoryEntry] = directory.getDirectoryEntries()
     for dirEntry in directoryEntries:
 
-        if not isinstance(dirEntry, PointDirectoryEntry):
-            continue
-
-        flashOffset = dirEntry.getEntryLocation()
-
-        if isinstance(dirEntry, ComboDirectoryEntry):
-            directoryBinary = imageBinary[flashOffset:]
-            directoryFromFlashOffset(directoryBinary, flashOffset, directories)
-
         if not isinstance(dirEntry, TypedDirectoryEntry):
-            # Soft-Fuse-Chain only?
+            # Soft-Fuse-Chain or unexpected edge cases
             continue
 
         entryType = dirEntry.getEntryType()
-
         if entryType not in [FirmwareType.PSP_DIR_LV2, FirmwareType.BIOS_DIR_LV2]:
             # Specific directory pointer types
             continue
 
-        # TODO remove redundancy
-        directoryBinary = imageBinary[flashOffset:]
-        # TODO the tuple index is not so nice here, improve?
-        if not DirectoryFactory.isDirectory(directoryBinary)[0]:
+        entryReference = dirEntry.getEntryReference()
+        if ReferenceMap.handledCollision(entryReference):
             continue
 
-        directoryFromFlashOffset(directoryBinary, flashOffset, directories)
+        ReferenceMap.addReference(entryReference)
+
+        directory = directoryFromFlashOffset(entryReference, imageBinary)
+        if directory is None:
+            continue
+
+        linkReferenceAndImageElement(entryReference, directory)
+        directories.append(directory)
 
     return directories
 
 
-def directoryFromFlashOffset(directoryBinary: bytes, flashOffset: int, foundDirectories: list[Directory]):
+def directoryFromFlashOffset(reference: ZenReference, imageBinary: bytes) -> Directory | None:
+    """
 
-    # TODO the tuple index is not so nice here, improve?
+    :param reference:
+    :param imageBinary:
+    :return:
+    """
+    flashOffset = reference.getAbsoluteOffset()
+    directoryBinary = imageBinary[flashOffset:]
+
     if not DirectoryFactory.isDirectory(directoryBinary)[0]:
-        return
+        return None
 
+    directory = None
     try:
         directory = DirectoryFactory.fromBinary(directoryBinary, flashOffset)
-        foundDirectories.append(directory)
     except Exception as ex:
         from UtkBase.biosFile import BiosFile
         if BiosFile.dontHandleExceptions:
             raise ex
         traceback.print_exception(type(ex), ex, ex.__traceback__)
+
+    return directory
 
 
 def resolvePointDirectoryEntries(directory: Directory, listOfImageElements: list[ImageElement], binary: bytes):
@@ -119,6 +166,10 @@ def resolvePointDirectoryEntries(directory: Directory, listOfImageElements: list
             continue
 
         if not dirEntry.isPointEntry:
+            continue
+
+        if dirEntry.getEntryReference().followReference() is not None:
+            # reference already populated with an Entry
             continue
 
         # psp and bios directories as well as the PEI volume
@@ -136,22 +187,43 @@ def resolvePointDirectoryEntries(directory: Directory, listOfImageElements: list
 
         # check if the firmware already exists in the imageElements
         OFFSET = dirEntry.getEntryLocation()
-        if firmwareAlreadyBuilt(listOfImageElements, OFFSET, binary):
+        entryReference = dirEntry.getEntryReference()
+
+        if ReferenceMap.handledCollision(entryReference):
+            continue
+
+        if firmwareAlreadyBuilt(listOfImageElements, OFFSET):
+            firmware: ImageElement = findFirmwareAtOffset(listOfImageElements, OFFSET)
+            if firmware is None:
+                continue
+
+            linkReferenceAndImageElement(entryReference, firmware)
             continue
 
         FIRMWARE_BINARY = binary[OFFSET: OFFSET + dirEntry.getEntrySize()]
-        firmware = FirmwareFactory.fromBinary(dirEntry.getEntryType(), FIRMWARE_BINARY, OFFSET)
+        firmware: Firmware = FirmwareFactory.fromBinary(dirEntry.getEntryType(), FIRMWARE_BINARY, OFFSET)
+        linkReferenceAndImageElement(entryReference, firmware)
         listOfImageElements.append(firmware)
 
 
-def firmwareAlreadyBuilt(listOfImageElements: list[ImageElement], OFFSET: int, binary: bytes) -> bool:
+def linkReferenceAndImageElement(reference: ZenReference, imageElement: ImageElement):
+    """
+
+    :param reference:
+    :param imageElement:
+    :return:
+    """
+    imageElement.registerReference(reference)
+    reference.setEntry(imageElement)
+
+
+def firmwareAlreadyBuilt(listOfImageElements: list[ImageElement], OFFSET: int) -> bool:
     """
     Check through listOfImageElements whether something is present starting at the Offset.
     Or where the Offset is inside.
 
-    :param binary:
-    :param OFFSET:
     :param listOfImageElements:
+    :param OFFSET:
     :return:
     """
     sortedImageItems = sorted(listOfImageElements, key=lambda item: item.getOffset())
@@ -162,10 +234,35 @@ def firmwareAlreadyBuilt(listOfImageElements: list[ImageElement], OFFSET: int, b
             break
 
         if ELEMENT_OFFSET <= OFFSET < ELEMENT_OFFSET + imageElement.getSize():
-            # Exactly at or inside something
+            # exact match or inside something
             return True
 
     return False
+
+
+def findFirmwareAtOffset(listOfImageElements: list[ImageElement], OFFSET: int) -> ImageElement | None:
+    sortedImageItems = sorted(listOfImageElements, key=lambda item: item.getOffset())
+    for imageElement in sortedImageItems:
+        ELEMENT_OFFSET = imageElement.getOffset()
+        if ELEMENT_OFFSET > OFFSET:
+            # past
+            break
+
+        if ELEMENT_OFFSET == OFFSET:
+            return imageElement
+
+    return None
+
+
+def linkImageWithImageElements(image, listOfImageElements: dict[str, ImageElement]):
+    """
+
+    :param image:
+    :param listOfImageElements:
+    :return:
+    """
+    for offset, imageElement in listOfImageElements.items():
+        imageElement.setParent(image)
 
 
 class ZenImage(Image, UtkAMD):
@@ -195,6 +292,8 @@ class ZenImage(Image, UtkAMD):
         :return: An GenericImage object
         """
 
+        # 0
+
         # 1: Getting an EFS otherwise this is not an AMD image
         if efs is None:
             pass
@@ -204,9 +303,10 @@ class ZenImage(Image, UtkAMD):
         assert efs is not None, "Must have a valid FirmwareEntryTable"
 
         # 2: Get the directories from the EFS
+        # start with unsorted lists of stuff
         listOfImageElements: list[ImageElement] = [efs]
         listOfDirectories: list[Directory] = []
-        directoriesToBeResolved = resolveEfsToDirectories(efs, binary)
+        directoriesToBeResolved: list[Directory] = resolveEfsToDirectories(efs, binary)
 
         # 3: Get directories from directories and then from those directories ...
         while len(directoriesToBeResolved) > 0:
@@ -215,8 +315,14 @@ class ZenImage(Image, UtkAMD):
 
             newList: list[Directory] = []
             for directory in directoriesToBeResolved:
-                directoryEntries: list[Directory] = resolveDirectoryReferences(directory, binary)
-                newList.extend(directoryEntries)
+
+                resolveFunction = resolveDirectoryReferences
+
+                if isinstance(directory, ComboDirectory):
+                    resolveFunction = resolveComboDirectoryReferences
+
+                foundDirectories: list[Directory] = resolveFunction(directory, binary)
+                newList.extend(foundDirectories)
 
             directoriesToBeResolved = newList
 
@@ -246,7 +352,7 @@ class ZenImage(Image, UtkAMD):
 
         # 6 TODO Resolve EFS pointers at untyped firmware
 
-        # 7: fill gaps in with paddings.
+        # 7: fill in gaps with paddings.
         sortedImageItems = sorted(listOfImageElements, key=lambda item: item.getOffset())
         paddings = []
         offset = 0
@@ -268,7 +374,9 @@ class ZenImage(Image, UtkAMD):
 
         listOfImageElements.extend(paddings)
 
-        # 8: Transfer, sort and validate everything nicely
+        # 8: Transfer, sort and validate everything nicely from the unsorted lists of stuff
+        keyMap: dict[str, PublicKey] = KeyMap.keys
+
         imageElements: dict[str, ImageElement] = {}
         sortedImageItems = sorted(listOfImageElements, key=lambda item: item.getOffset())
         for imageElement in sortedImageItems:
@@ -279,22 +387,27 @@ class ZenImage(Image, UtkAMD):
             imageElements[hex(ELEMENT_OFFSET)] = imageElement
 
         # 9: UTK setup / cleanup
-        # TODO Add a "database" for all the references
-        references = {}
+        zenImage = cls(imageElements, imageOffset, keyMap)
+        linkImageWithImageElements(zenImage, imageElements)
 
-        return cls(imageElements, references, imageOffset)
+        # clear the reference map
+        ReferenceMap.references = {}
 
-    def __init__(self, contents: dict[str, ImageElement], references: dict[str, Reference], imageOffset: int = 0):
+        # clear the old key map for new images.
+        # TODO make this nicer
+        KeyMap.keys = {}
+
+        return zenImage
+
+    def __init__(self, contents: dict[str, ImageElement], imageOffset: int = 0, keyMap: dict[str, PublicKey] = None):
         """
-        Constructor for an AMD Image
+        Constructor for a ZenImage
         :param contents: Must be a dictionary sorted ascending by the key being a hex(offset) string.
-        :param references: The dict to keep track of all existing and future references and changes
         :param imageOffset: Offset where the image is inside the Bios-File
         """
         self._offset = imageOffset
         self._contents: dict[str, ImageElement] = contents
-
-        self._references = references
+        self.keyMap: dict[str: PublicKey] = {} if keyMap is None else keyMap
 
     def getSize(self):
         """
@@ -323,6 +436,9 @@ class ZenImage(Image, UtkAMD):
         Do not use this to add or remove elements from the image
         """
         return sorted(self._contents.copy().items(), key=lambda item: int(item[0], 16))
+
+    def validate(self):
+        pass
 
     def toDict(self) -> dict[str, any]:
         return {
