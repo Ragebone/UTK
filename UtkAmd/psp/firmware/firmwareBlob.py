@@ -89,9 +89,7 @@ class FirmwareBlob(Firmware, UtkAMD):
     def serialize(self) -> bytes:
 
         if self._header is not None:
-            outputBinary = bytes()
-            outputBinary += self._header.serialize()
-
+            outputBinary = self._header.serialize()
             outputBinary += self._binary[0x100:]
 
             return outputBinary

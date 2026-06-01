@@ -6,7 +6,7 @@ from UtkAmd.psp.firmware.firmwareHeaders.pspFirmwareHeader import PspFirmwareHea
 class FirmwareHeaderFactory:
 
     @staticmethod
-    def fromBinary(binary: bytes):
+    def fromBinary(binary: bytes) -> PspFirmwareHeader | None:
         if len(binary) < 0x100:
             # TODO investigate why this would be called with just 16 bytes
             # NOTE ANSWER wrappedIKEKS
@@ -18,7 +18,7 @@ class FirmwareHeaderFactory:
         if zeroes != 16 * b'\x00':
             return None
 
-        if magic == b'PSP':
+        if magic == b'$PS1':
             return PspFirmwareHeader.fromBinary(binary)
 
         if magic == b'\x05\x00\x00\x00':
