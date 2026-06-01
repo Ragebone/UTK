@@ -37,6 +37,17 @@ class Directory(ImageElement, UtkAMD):
     def getHeader(self):
         pass
 
+    @abc.abstractmethod
+    def directoryEntryClass(self):
+        pass
+
+    def __init__(self, offset: int, header, directoryEntries: list[DirectoryEntry]):
+        super().__init__()
+        self._offset: int = offset
+
+        self._header = header
+
+        self._directoryEntries: list[DirectoryEntry] = directoryEntries
 
 class ContentDirectory(Directory):
     """
@@ -169,16 +180,14 @@ class ContentDirectory(Directory):
 
     def __init__(self, offset: int, header: PspDirectoryHeader, directoryEntries: list[DirectoryEntry], content: dict[str, any], trailingBinary: bytes = None, fullBinary: bytes = None):
         assert header is not None, "Header can't be None for Directory"
+        super().__init__(offset, header, directoryEntries)
 
-        self._offset: int = offset
-
-        self._header = header
-
-        self._directoryEntries: list[DirectoryEntry] = directoryEntries
         self._content: dict[str, ImageElement] = content
         self._trailingBinary: bytes = trailingBinary
 
         self._references: list[ZenReference] = []
+        self._parent = None
+
 
         # in case of emergency
         self._fullBinary: bytes = fullBinary

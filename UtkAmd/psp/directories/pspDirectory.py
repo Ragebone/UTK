@@ -24,3 +24,7 @@ class PspDirectory(ContentDirectory):
         if dirEntryType == 0x0B:
             return SoftFuseChain.fromBinary(binary)
         return PspDirectoryEntry.fromBinary(binary, addressMode)
+
+    @property
+    def directoryEntryClass(self):
+        return PspDirectoryEntry

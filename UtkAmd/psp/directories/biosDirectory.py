@@ -19,3 +19,7 @@ class BiosDirectory(ContentDirectory):
         Closed door - Open door; for the implementations in  Directory
         """
         return BiosDirectoryEntry.fromBinary(binary, addressMode)
+
+    @property
+    def directoryEntryClass(self):
+        return BiosDirectoryEntry
