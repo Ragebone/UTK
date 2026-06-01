@@ -1,9 +1,10 @@
 import abc
 
+from UtkCommon.implementations.child import Child
 from utkInterfaces import Serializable, Header, Reference
 
 
-class ImageElement(Serializable):
+class ImageElement(Serializable, Child):
     """
     Interface for elements contained directly within the UEFI image.
     Mainly Paddings and UEFI volumes.
@@ -44,5 +45,22 @@ class ImageElement(Serializable):
         Useful as a way to get from the ImageElement to all places that reference it by offset.
         TODO  deliberate if this should be a copy of the list and not the list itself
         :return: The list of references registered with this ImageElement
+        """
+        pass
+
+    @abc.abstractmethod
+    def getParent(self) -> any:
+        """
+
+        :return:
+        """
+        pass
+
+    @abc.abstractmethod
+    def setParent(self, parent: 'Image') -> None:
+        """
+
+        :param parent:
+        :return:
         """
         pass

@@ -2,6 +2,7 @@ from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
+from utkInterfaces import Serializable
 
 
 class EntryReference(ZenReference, UtkAMD):
@@ -43,6 +44,8 @@ class EntryReference(ZenReference, UtkAMD):
 
         self._linkedObject = None
 
+        self._parent = None
+
     def getOffset(self) -> int:
         """
         Get the offset in its original format.
@@ -66,3 +69,13 @@ class EntryReference(ZenReference, UtkAMD):
 
     def getEntry(self) -> ImageElement:
         return self._linkedObject
+
+    def setParent(self, parent) -> None:
+        self._parent = parent
+
+    def getParent(self) -> ImageElement:
+        return self._parent
+
+    def followReference(self) -> Serializable:
+        return self._linkedObject
+

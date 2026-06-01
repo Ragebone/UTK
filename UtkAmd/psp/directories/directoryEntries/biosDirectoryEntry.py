@@ -37,6 +37,7 @@ class BiosDirectoryEntry(TypedDirectoryEntry):
         self._typeAttribute: BiosTypeAttribute = typeAttribute
         self._entrySize = size
         self._entryReference: EntryReference = EntryReference.fromOffset(location, addressMode)
+        self._entryReference.setParent(self)
         self._entryDestination = destination
 
         self._parentDirectory: 'BiosDirectory' = None

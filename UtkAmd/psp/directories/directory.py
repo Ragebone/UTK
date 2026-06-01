@@ -189,6 +189,12 @@ class ContentDirectory(Directory):
     def getReferences(self) -> list[ZenReference]:
         return self._references
 
+    def getParent(self):
+        return self._parent
+
+    def setParent(self, parent: 'ZenImage') -> None:
+        self._parent = parent
+
     def getDirectoryEntries(self) -> list[DirectoryEntry]:
         """Get copied List of directoryEntries"""
         return self._directoryEntries.copy()

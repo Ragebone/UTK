@@ -85,3 +85,7 @@ class Reference:
         """
 
         pass
+
+    @abc.abstractmethod
+    def getParent(self) -> any:
+        pass

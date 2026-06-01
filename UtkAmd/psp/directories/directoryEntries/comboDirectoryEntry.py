@@ -26,6 +26,7 @@ class ComboDirectoryEntry(PointDirectoryEntry):
         self._chipId = chipId
 
         self._directoryReference: EntryReference = EntryReference.fromOffset(directoryAddress)
+        self._directoryReference.setParent(self)
 
         self._parentDirectory: 'ComboDirectory' = None
 

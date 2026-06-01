@@ -55,6 +55,7 @@ class PspDirectoryEntry(TypedDirectoryEntry):
         self._instance = byteGroup & 0x78 >> 3
         self._reserved = byteGroup & 0xFF80
         self._entryReference: EntryReference = EntryReference.fromOffset(offset, addressMode)
+        self._entryReference.setParent(self)
 
         self._parentDirectory: 'PspDirectory' = None
 
