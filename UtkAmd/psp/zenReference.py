@@ -54,6 +54,7 @@ class ZenReference(Reference, UtkAMD):
         """
         Set the referenced entry object
 
+        :param entry: Referenced ImageElement, the Entry
         """
         pass
 
@@ -61,6 +62,9 @@ class ZenReference(Reference, UtkAMD):
     def getEntry(self) -> ImageElement:
         """
         Get the referenced entry object
+        :return: Referenced entry object
+        """
+        pass
 
         """
         pass
