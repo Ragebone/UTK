@@ -1,0 +1,6 @@
+
+
+class SignatureMap:
+
+    signatures = {}
+
