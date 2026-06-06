@@ -407,7 +407,7 @@ class ZenImage(Image, UtkAMD):
         """
         self._offset = imageOffset
         self._contents: dict[str, ImageElement] = contents
-        self.keyMap: dict[str: PublicKey] = {} if keyMap is None else keyMap
+        self.keyMap: dict[str, PublicKey] = {} if keyMap is None else keyMap
 
     def getSize(self):
         """

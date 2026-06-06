@@ -2,7 +2,7 @@ import argparse
 
 from UtkBase.biosFile import BiosFile
 from UtkBase.utility import diffBinary
-from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
+from common.loggerSettings import addLoggingFlags, applyLogSettings
 
 
 def main():
