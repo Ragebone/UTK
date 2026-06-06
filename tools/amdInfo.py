@@ -93,7 +93,7 @@ def main():
             continue
 
         print("{}\n".format(path))
-        biosDict = convertItemForAMD(bios, 3)
+        biosDict = convertItemForAMD(bios, 100)
         string = json.dumps(biosDict, indent=4)
         print(string)
 
