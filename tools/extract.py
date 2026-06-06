@@ -54,7 +54,7 @@ def main():
     export(bios, outputDirectory)
 
 
-def export(element: any, elementPath: str) -> None:
+def export(element: any, elementPath: str, depth: int = 0) -> None:
     """
 
     :param element:
@@ -77,13 +77,18 @@ def export(element: any, elementPath: str) -> None:
         os.mkdir(elementPath)
 
     if isinstance(element, Serializable):
+        if depth <= 0:
+            outputPath = os.path.join(elementPath, element.__class__.__name__ + "_test.bin")
+            exportToBinaryFile(outputPath, element.serialize())
+            return
+
         dictionary = element.toDict()
-        export(dictionary, elementPath)
+        export(dictionary, elementPath, depth - 1)
         return
 
     if isinstance(element, list):
         for index, item in enumerate(element):
-            export(item, os.path.join(elementPath, f"{index}_{item.__class__.__name__}"))
+            export(item, os.path.join(elementPath, f"{index}_{item.__class__.__name__}"), depth - 1)
         return
 
     if isinstance(element, dict):
@@ -92,8 +97,11 @@ def export(element: any, elementPath: str) -> None:
             # ignore "offset" and other int values
             if isinstance(value, int):
                 continue
-
-            export(value, os.path.join(elementPath, key))
+            if isinstance(value, Serializable):
+                dirName = f"{key}_{value.__class__.__name__}"
+            else:
+                dirName = f"{key}"
+            export(value, os.path.join(elementPath, dirName), depth - 1)
         return
     return
 
