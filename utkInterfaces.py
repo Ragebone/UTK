@@ -51,7 +51,10 @@ class Header(Serializable):
 
     Intended to be the one thing all headers have in common
     """
-    pass
+    @abc.abstractmethod
+    def getSize(self) -> int:
+        """Get the headers size"""
+        pass
 
 
 class Reference:
