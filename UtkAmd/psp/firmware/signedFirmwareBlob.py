@@ -8,65 +8,8 @@ from UtkAmd.psp.firmware.publicKeys.keyMap import KeyMap
 from UtkAmd.psp.firmware.publicKeys.publicKey import PublicKey
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from UtkBase.utility import alignOffset, binaryIsEmpty, fillBinaryTill, diffBinary
-from utkInterfaces import Reference
-
-
-def getSignatureFromTrailingBinary(signature_binary: bytes, securityPatchLevel: int) -> bytes:
-    """
-
-    NOTE:
-    I could just figure out how long the signature is supposed to be.
-    But this way here is stupid enough
-
-    :param signature_binary:
-    :return:
-    """
-
-
-
-
-
-    length = len(signature_binary)
-
-    if length < 256:
-        raise ValueError(f"Signature binary too short: {length}")
-
-    if length == 256:
-        assert securityPatchLevel == 0x00, "expected signature length indicator doesn't match the detected length"
-        return signature_binary
-
-    if length == 512:
-        assert securityPatchLevel == 0x02, "expected signature length indicator doesn't match the detected length"
-        return signature_binary
-
-    if length < 512:
-        # guess 256 signature length placed at then end with 0es up front
-        trailing_padding = signature_binary[:-256]
-        if binaryIsEmpty(trailing_padding, 0x00):
-            assert securityPatchLevel == 0x00, "expected signature length indicator doesn't match the detected length"
-            return signature_binary[-256:]
-
-    if length > 512:
-        # guess 512 placed at then end with 0es up front
-        trailing_padding = signature_binary[:-512]
-        if binaryIsEmpty(trailing_padding, 0x00):
-            return signature_binary[-512:]
-
-    # Possibly a lot of 0xFF at the end.
-    sigBin = signature_binary.strip(b'\xFF')
-
-    if len(sigBin) == 256:
-        return sigBin
-
-    if len(sigBin) == 512:
-        return sigBin
-
-    # Suspect an appended entry
-    cookieOffset = signature_binary.find(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$PS1')
-
-    breakpoint()
-    raise ValueError("Ehm what is going on here?")      # TODO better error message? More info?
+from UtkBase.utility import fillBinaryTill, diffBinary
+from UtkCommon.interfaces.reference import Reference
 
 
 def verifySha256Checksum(body: bytes) -> bytes:
@@ -106,55 +49,32 @@ class SignedFirmwareBlob(Firmware, UtkAMD):
 
         assert header.isFirmwareSigned(), "Unsigned firmware passed to SignedFirmware class"
 
-        BODY_DATA_END = header.getSize() + header.getSignedSize()
+        body_data_end = header.getRomSize()
 
-        if header.isFirmwareCompressed():
-            BODY_DATA_END = header.getSize() + header.getCompressedImageSize()
+        if body_data_end == 0:
+            body_data_end = TOTAL_SIZE
 
-        assert BODY_DATA_END < TOTAL_SIZE, "More signed data then actual bytes in firmware"
-        SIGNED_BODY = binary[header.getSize():BODY_DATA_END]
+        if body_data_end > TOTAL_SIZE:
+            body_data_end = TOTAL_SIZE
 
-        ALIGNED_SIGNATURE_START = BODY_DATA_END
-        if binary[BODY_DATA_END] == 0x00:
-            ALIGNED_SIGNATURE_START = alignOffset(BODY_DATA_END, 16)
+        assert body_data_end <= TOTAL_SIZE, "More signed data then actual bytes in firmware"
 
-            assert ALIGNED_SIGNATURE_START < TOTAL_SIZE, f"Signature Start at {ALIGNED_SIGNATURE_START} exceeding total size of binary {TOTAL_SIZE}"
-
-            padding_binary = binary[BODY_DATA_END:ALIGNED_SIGNATURE_START]
-            assert binaryIsEmpty(padding_binary, 0x00), "Padding is not empty {padding_binary}"
-
-        # trailing_binary = binary[ALIGNED_SIGNATURE_START:]
-        # signature_binary = getSignatureFromTrailingBinary(trailing_binary, header.getSecurityPatchLevel())
         signatureSize = {
             0x00: 0x100,
+            0x01: 0x200,        # for a test only. 0x01 is not really defined in a sense
             0x02: 0x200,
+            0x03: 0x200,        # Found in an X570 gigabyte.TODO verify the actual size, i just guessed 0x200
         }.get(header.getSecurityPatchLevel())
 
-        signature_binary = bytes()
-        trailing_binary = bytes()
+        SIGNATURE_START = body_data_end - signatureSize
 
-        if signatureSize is not None:
-            ALIGNED_SIGNATURE_END = ALIGNED_SIGNATURE_START + signatureSize
-            signature_binary = binary[ALIGNED_SIGNATURE_START:ALIGNED_SIGNATURE_END]
+        BODY = binary[header.getSize():SIGNATURE_START]
 
-            assert len(signature_binary) in [256, 512], "Signature of unexpected size"
+        signature_binary = binary[SIGNATURE_START:]
 
-            trailing_binary = binary[ALIGNED_SIGNATURE_END:]
+        assert len(signature_binary) in [256, 512], "Signature of unexpected size"
 
-
-            # testing things from the psp tool
-
-            import struct
-            p_signature_type = struct.unpack('<I', binary[0x34:0x38])[0]
-            p_rom_size = struct.unpack('<I', binary[0x6c:0x70])[0]
-            p_sig_offset = p_rom_size - signatureSize
-            p_signature = binary[p_sig_offset:p_sig_offset + signatureSize]
-
-            if p_signature != signature_binary:
-                pass
-
-
-        return cls(binary, offset, TOTAL_SIZE, firmwareType, header, SIGNED_BODY, signature_binary, trailing_binary)
+        return cls(binary, offset, TOTAL_SIZE, firmwareType, header, BODY, signature_binary)
 
     def isSignatureValid(self) -> bool:
         """
@@ -170,17 +90,17 @@ class SignedFirmwareBlob(Firmware, UtkAMD):
         SIGNED_BINARY = self._header.serialize()
         if self._header.isFirmwareCompressed():
             try:
-                SIGNED_BINARY += zlib.decompress(self._signed_body)
+                SIGNED_BINARY += zlib.decompress(self._maybe_signed_body)
             except:
                 logging.error("Zlib decompression Failed")
                 return False
         else:
-            SIGNED_BINARY += self._signed_body
+            SIGNED_BINARY += self._maybe_signed_body
 
         valid = key.verify(self._signature_binary, SIGNED_BINARY)
         return valid
 
-    def __init__(self, binary, offset: int, total_size: int, firmwareType: FirmwareType, header: PspFirmwareHeader, signed_body: bytes, signature_binary: bytes, trailing_binary: bytes):
+    def __init__(self, binary, offset: int, total_size: int, firmwareType: FirmwareType, header: PspFirmwareHeader, body: bytes, signature_binary: bytes):
         super().__init__()
         self._binary = binary
         assert firmwareType is not None, "firmwareType can't be None"
@@ -189,10 +109,8 @@ class SignedFirmwareBlob(Firmware, UtkAMD):
         self._firmwareType = firmwareType
 
         self._header: PspFirmwareHeader = header
-        self._signed_body: bytes = signed_body
+        self._maybe_signed_body: bytes = body
         self._signature_binary: bytes = signature_binary
-
-        self._trailing_binary: bytes = trailing_binary
 
         self._references: list[Reference] = []
 
@@ -214,19 +132,13 @@ class SignedFirmwareBlob(Firmware, UtkAMD):
             "size": self._size,
             "type": self._firmwareType,
             "header": self._header,
-            "data": self._signed_body,
+            "data": self._maybe_signed_body,
             "signature": self._signature_binary
         }
 
     def serialize(self) -> bytes:
         outputBinary = self._header.serialize()
-        outputBinary += self._signed_body
-
-        length = len(outputBinary)
-        ALIGNED_LENGTH = alignOffset(length, 16)
-
-        outputBinary = fillBinaryTill(outputBinary, ALIGNED_LENGTH, b'\x00')
-
+        outputBinary += self._maybe_signed_body
         outputBinary += self._signature_binary
 
         if len(outputBinary) == self._size:

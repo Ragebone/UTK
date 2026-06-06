@@ -2,7 +2,7 @@ import struct
 from ctypes import c_uint32, c_uint8, c_uint16, c_uint64, c_byte
 
 from UtkCommon.implementations.structures import leStructure
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class _PspHeaderStructure(leStructure):

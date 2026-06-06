@@ -1,7 +1,7 @@
 from ctypes import LittleEndianStructure, c_bool, c_uint16, c_uint32, c_byte
 
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class _SecurityFeatures(LittleEndianStructure):

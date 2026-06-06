@@ -1,6 +1,6 @@
 from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
 from UtkAmd.psp.firmwareTypes import FirmwareType
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class Signature(FirmwareBlob):

@@ -1,7 +1,7 @@
 from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.zenReference import ZenReference
 from UtkBase.images.imageElement import ImageElement
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class EfsReference(ZenReference):

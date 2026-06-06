@@ -1,6 +1,6 @@
 from UtkBase.images.volumes.files.sections.sectionHeader import SectionHeader
 from UtkBase.images.volumes.files.sections.sectionHeaderFactory import SectionHeaderFactory
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class Section(Serializable):

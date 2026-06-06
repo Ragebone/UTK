@@ -1,5 +1,5 @@
 from UtkBase.images.volumes.files.fileHeader import FileHeader
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class File(Serializable):

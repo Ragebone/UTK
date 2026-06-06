@@ -1,7 +1,9 @@
 import abc
 
 from UtkCommon.implementations.child import Child
-from utkInterfaces import Serializable, Header, Reference
+from UtkCommon.interfaces.header import Header
+from UtkCommon.interfaces.reference import Reference
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class ImageElement(Serializable, Child):

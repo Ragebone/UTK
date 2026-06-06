@@ -1,7 +1,7 @@
 import abc
 
 from UtkBase.images.imageElement import ImageElement
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class Image(Serializable):

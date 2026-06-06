@@ -1,6 +1,6 @@
 import struct
 
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class UefiGuid(Serializable):

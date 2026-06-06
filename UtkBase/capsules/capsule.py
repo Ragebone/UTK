@@ -1,7 +1,7 @@
 import abc
 
 from UtkBase.capsules.headers.headerInterface import CapsuleHeader
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class Capsule(Serializable, abc.ABC):

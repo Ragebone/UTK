@@ -5,7 +5,7 @@ from UtkBase.images.volumes.files.file import File
 from UtkBase.images.volumes.headers.externalVolumeHeader import ExternalVolumeHeader
 from UtkBase.images.volumes.headers.volumeHeader import VolumeHeader
 from UtkBase.utility import alignOffset, binaryIsEmpty, fillBinaryTill
-from utkInterfaces import Reference
+from UtkCommon.interfaces.reference import Reference
 
 FILE_ALIGNMENT = 0x08
 

@@ -1,7 +1,7 @@
 import struct
 
 from UtkBase.uefiGuid import UefiGuid
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class HeaderExtension(Header):

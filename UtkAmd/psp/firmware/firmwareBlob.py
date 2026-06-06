@@ -1,7 +1,8 @@
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Header, Reference
+from UtkCommon.interfaces.header import Header
+from UtkCommon.interfaces.reference import Reference
 
 
 class FirmwareBlob(Firmware, UtkAMD):

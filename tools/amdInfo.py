@@ -6,9 +6,9 @@ import logging
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.biosFile import BiosFile
-from utkInterfaces import Serializable
-from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
-from tools.common.conversions import BINARY
+from UtkCommon.interfaces.serializable import Serializable
+from common.loggerSettings import applyLogSettings, addLoggingFlags
+from common.conversions import BINARY
 
 def convertItemForAMD(item: any, depth: int = 0, includeBinary: BINARY = BINARY.NO):
     if isinstance(item, Serializable):

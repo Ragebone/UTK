@@ -2,7 +2,7 @@ import abc
 
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
-from utkInterfaces import Reference, Serializable
+from UtkCommon.interfaces.reference import Reference
 
 
 class ZenReference(Reference, UtkAMD):
@@ -71,3 +71,4 @@ class ZenReference(Reference, UtkAMD):
 
     def followReference(self) -> Serializable:
         pass
+        """

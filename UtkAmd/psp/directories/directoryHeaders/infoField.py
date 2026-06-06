@@ -3,7 +3,7 @@ from typing import Any
 
 from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class PspDirectoryHeaderInfoField(LittleEndianStructure, Serializable, UtkAMD):

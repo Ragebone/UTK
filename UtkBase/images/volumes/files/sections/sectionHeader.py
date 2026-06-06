@@ -1,7 +1,7 @@
 import struct
 
 from UtkBase.images.volumes.files.sections.type import SectionType
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class SectionHeader(Header):

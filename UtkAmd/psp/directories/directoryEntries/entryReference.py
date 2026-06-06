@@ -2,7 +2,7 @@ from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.imageElement import ImageElement
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class EntryReference(ZenReference, UtkAMD):

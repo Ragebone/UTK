@@ -6,7 +6,7 @@ import shutil
 
 from UtkBase.biosFile import BiosFile
 from tools.common.conversions import recursiveToDict
-from utkInterfaces import Serializable, Header
+from UtkCommon.interfaces.serializable import Serializable, Header
 from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
 
 

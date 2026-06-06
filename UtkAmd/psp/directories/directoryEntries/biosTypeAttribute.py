@@ -1,7 +1,7 @@
 from ctypes import c_uint8, c_bool, LittleEndianStructure
 
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):

@@ -2,7 +2,7 @@ import struct
 
 from UtkBase.images.volumes.files.type import EfiFirmwareFileType
 from UtkBase.uefiGuid import UefiGuid
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class FileHeader(Header):

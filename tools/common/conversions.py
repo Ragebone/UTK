@@ -1,7 +1,8 @@
 import enum
 
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Serializable, Reference
+from UtkCommon.interfaces.reference import Reference
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class BINARY(enum.Enum):

@@ -1,5 +1,5 @@
 from UtkBase.images.imageElement import ImageElement
-from utkInterfaces import Reference
+from UtkCommon.interfaces.reference import Reference
 
 
 class Padding(ImageElement):

@@ -3,7 +3,7 @@ import abc
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.psp.zenReference import ZenReference
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Serializable
+from UtkCommon.interfaces.serializable import Serializable
 
 
 class DirectoryEntry(Serializable, UtkAMD):

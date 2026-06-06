@@ -2,7 +2,7 @@ import abc
 
 from UtkAmd.psp.addressMode import AddressMode
 from UtkAmd.utkAmdInterfaces import UtkAMD
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class DirectoryHeader(Header, UtkAMD):

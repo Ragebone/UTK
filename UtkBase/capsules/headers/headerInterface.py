@@ -1,6 +1,6 @@
 import abc
 
-from utkInterfaces import Header
+from UtkCommon.interfaces.header import Header
 
 
 class CapsuleHeader(Header, abc.ABC):
