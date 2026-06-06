@@ -1,0 +1,8 @@
+from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
+from UtkAmd.psp.firmwareTypes import FirmwareType
+from utkInterfaces import Header
+
+
+class KeyStore(FirmwareBlob):
+    def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType, header: Header = None):
+        super().__init__(offset, binary, firmwareType, header)
