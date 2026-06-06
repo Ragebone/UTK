@@ -43,6 +43,18 @@ class PspDirectoryHeader(DirectoryHeader):
     def getSize(self) -> int:
         return self._struct().size
 
+    def setDirectorySize(self, size: int) -> None:
+        """
+        Sets the total size of the directory including that of its container / content area.
+        This can only be #Blocks of 0x10000 with a maximum of what was it, 0x50000?
+        TODO assert on those limits
+
+        :param size:
+        :return:
+        """
+
+        self._infoField.setMaxSize(size >> 12)
+
     def getSignature(self) -> str:
         return self._signature
 
@@ -51,6 +63,9 @@ class PspDirectoryHeader(DirectoryHeader):
 
     def getAddressMode(self) -> AddressMode:
         return self._infoField.getAddressMode()
+
+    def getSpiBlockSize(self) -> int:
+        return self._infoField.getSpiBlockSize()
 
     def toDict(self) -> dict[str, any]:
         return {
