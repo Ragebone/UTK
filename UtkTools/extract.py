@@ -5,9 +5,10 @@ import os
 import shutil
 
 from UtkBase.biosFile import BiosFile
-from tools.common.conversions import recursiveToDict
-from UtkCommon.interfaces.serializable import Serializable, Header
-from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
+from UtkCommon.interfaces.header import Header
+from common.conversions import recursiveToDict
+from UtkCommon.interfaces.serializable import Serializable
+from common.loggerSettings import applyLogSettings, addLoggingFlags
 
 
 def main():
@@ -51,7 +52,7 @@ def main():
         shutil.rmtree(outputDirectory)
 
     print("Extracting {} to: {}\n".format(path, outputDirectory))
-    export(bios, outputDirectory)
+    export(bios, outputDirectory, 100)
 
 
 def export(element: any, elementPath: str, depth: int = 0) -> None:

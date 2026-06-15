@@ -4,8 +4,8 @@ import logging
 
 
 from UtkBase.biosFile import BiosFile
-from tools.common.conversions import convertItem
-from tools.common.loggerSettings import applyLogSettings, addLoggingFlags
+from UtkTools.common.conversions import convertItem
+from UtkTools.common.loggerSettings import applyLogSettings, addLoggingFlags
 
 
 def main():
