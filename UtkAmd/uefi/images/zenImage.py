@@ -1,19 +1,18 @@
 import traceback
-from xml.dom.pulldom import PullDOM
 
 from UtkAmd.psp.directories.comboDirectory import ComboDirectory
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directory import Directory
 from UtkAmd.psp.directories.directoryEntries.comboDirectoryEntry import ComboDirectoryEntry
-from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry, PointDirectoryEntry
+from UtkAmd.psp.directories.directoryEntries.directoryEntry import TypedDirectoryEntry, DirectoryEntry
 from UtkAmd.psp.directories.directoryFactory import DirectoryFactory
 from UtkAmd.psp.efs.efs import EmbeddedFirmwareStructure
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
-from UtkAmd.psp.firmware.publicKeys.keyMap import KeyMap
+from UtkAmd.psp.firmwareMap import FirmwareMap
 from UtkAmd.psp.firmware.publicKeys.publicKey import PublicKey
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.psp.zenReference import ZenReference
-from UtkAmd.uefi.images.referenceMap import ReferenceMap
+from UtkAmd.psp.referenceMap import ReferenceMap
 from UtkAmd.utkAmdInterfaces import UtkAMD
 from UtkBase.images.image import Image
 from UtkBase.images.imageElement import ImageElement
@@ -375,7 +374,9 @@ class ZenImage(Image, UtkAMD):
         listOfImageElements.extend(paddings)
 
         # 8: Transfer, sort and validate everything nicely from the unsorted lists of stuff
-        keyMap: dict[str, PublicKey] = KeyMap.keys
+        from UtkAmd.psp.keyMap import KeyMap
+        keyMap: dict[str, PublicKey] = KeyMap.ownKeyMap()
+        firmwareMap: dict[FirmwareType, list[Firmware]] = FirmwareMap.ownFirmwareMap()
 
         imageElements: dict[str, ImageElement] = {}
         sortedImageItems = sorted(listOfImageElements, key=lambda item: item.getOffset())
@@ -386,20 +387,20 @@ class ZenImage(Image, UtkAMD):
             assert elementAtOffset is None, "collision at offset {}".format(hex(ELEMENT_OFFSET))
             imageElements[hex(ELEMENT_OFFSET)] = imageElement
 
+        # 9: Validate
+        for offset in imageElements:
+            imageElement = imageElements.get(offset)
+            imageElement.validate()
+
         # 9: UTK setup / cleanup
-        zenImage = cls(imageElements, imageOffset, keyMap)
+        zenImage = cls(imageElements, imageOffset, keyMap, firmwareMap)
         linkImageWithImageElements(zenImage, imageElements)
 
         # clear the reference map
         ReferenceMap.references = {}
-
-        # clear the old key map for new images.
-        # TODO make this nicer
-        KeyMap.keys = {}
-
         return zenImage
 
-    def __init__(self, contents: dict[str, ImageElement], imageOffset: int = 0, keyMap: dict[str, PublicKey] = None):
+    def __init__(self, contents: dict[str, ImageElement], imageOffset: int = 0, keyMap: dict[str, PublicKey] = None, firmwareMap:dict[FirmwareType, list[Firmware]] = None ):
         """
         Constructor for a ZenImage
         :param contents: Must be a dictionary sorted ascending by the key being a hex(offset) string.
@@ -408,6 +409,7 @@ class ZenImage(Image, UtkAMD):
         self._offset = imageOffset
         self._contents: dict[str, ImageElement] = contents
         self.keyMap: dict[str, PublicKey] = {} if keyMap is None else keyMap
+        self.firmwareMap: dict[FirmwareType, list[Firmware]] = {} if firmwareMap is None else firmwareMap
 
     def getSize(self):
         """

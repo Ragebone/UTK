@@ -12,6 +12,7 @@ class AmdPublicKey(PublicKey):
 
     def __init__(self, offset: int, binary: bytes, firmwareType: FirmwareType, header: PublicKeyHeader = None, rsaPublicKey: rsa.RSAPublicKey = None, signature=None):
         assert firmwareType == FirmwareType.AMD_PUBLIC_KEY, "AMD Public Key is not of type 0x00; Got {}, {}".format(firmwareType.value, firmwareType.name)
+        assert header is not None, "AMD public keys must have a header"
         assert signature is None, "AMD Public keys are not supposed to be signed"
         assert header.getKeyIdString() == header.getCertifyingIdString(), "AMD Public keys KeyID must match CertifyingID"
 

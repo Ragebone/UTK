@@ -3,14 +3,19 @@ import logging
 from UtkAmd.psp.firmware.firmwareHeaders.firmwareHeaderFactory import FirmwareHeaderFactory
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
 from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
+from UtkAmd.psp.firmware.keyStore.keyStoreFile import KeyStoreFile
+from UtkAmd.psp.firmware.publicKeys.amdPublicKey import AmdPublicKey
 from UtkAmd.psp.firmware.signedFirmwareBlob import SignedFirmwareBlob
 
 from UtkAmd.psp.firmwareTypes import FirmwareType
 
+# TODO very useful for types: https://github.com/Mimoja/PSP-Entry-Types/blob/master/types.csv
 
 # TODO create a way to "dynamically" add to this
 # TODO implement handling of specific firmware like the APOB, APCB and others
 FIRMWARE_TYPE_MAPPING = {
+    FirmwareType.AMD_PUBLIC_KEY: AmdPublicKey,
+    FirmwareType.UNKNOWN_50: KeyStoreFile,
 }
 
 
@@ -31,6 +36,7 @@ class FirmwareFactory:
         :param offset: Offset the firmware is located at in the image
         :return: firmware as an ImageElement
         """
+        from UtkAmd.psp.firmwareMap import FirmwareMap
         # TODO this could take a typedDirectoryEntry instead of just the firmwareType
 
         assert firmwareType is not None, "FirmwareType must not be None"
@@ -45,6 +51,8 @@ class FirmwareFactory:
         if firmwareClass is not None:
             try:
                 firmware = firmwareClass.fromBinary(binary, header, offset, firmwareType)
+
+                FirmwareMap.addType(firmwareType, firmware)
                 return firmware
 
             except Exception as ex:
@@ -56,14 +64,19 @@ class FirmwareFactory:
 
         # More generic handling of firmware
         if header is None:
-            return FirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+            firmware = FirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+            FirmwareMap.addType(firmwareType, firmware)
+            return firmware
 
         IS_NOT_SIGNED = not header.isFirmwareSigned()
         if IS_NOT_SIGNED:
-            return FirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+            firmware = FirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+            FirmwareMap.addType(firmwareType, firmware)
+            return firmware
 
         try:
             signedFirmwareBlob = SignedFirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+            FirmwareMap.addType(firmwareType, signedFirmwareBlob)
             return signedFirmwareBlob
 
         except Exception as ex:
@@ -77,4 +90,5 @@ class FirmwareFactory:
         # TODO logging that this is a fall-back option.
         logging.info("Fallback for Signed firmware")
         firmware = FirmwareBlob.fromBinary(binary, header, offset, firmwareType)
+        FirmwareMap.addType(firmwareType, firmware)
         return firmware

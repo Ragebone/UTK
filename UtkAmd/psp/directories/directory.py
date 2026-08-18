@@ -41,6 +41,10 @@ class Directory(ImageElement, UtkAMD):
     def directoryEntryClass(self):
         pass
 
+    @abc.abstractmethod
+    def validate(self) -> bool:
+        pass
+
     def __init__(self, offset: int, header, directoryEntries: list[DirectoryEntry]):
         super().__init__()
         self._offset: int = offset
@@ -191,6 +195,9 @@ class ContentDirectory(Directory):
 
         # in case of emergency
         self._fullBinary: bytes = fullBinary
+
+    def validate(self) -> bool:
+        return True
 
     def registerReference(self, reference: ZenReference) -> None:
         self._references.append(reference)

@@ -4,7 +4,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
 from UtkAmd.psp.firmware.firmwareBlob import FirmwareBlob
-from UtkAmd.psp.firmware.publicKeys.keyMap import KeyMap
 from UtkAmd.psp.firmware.publicKeys.publicKeyHeader import PublicKeyHeader
 from UtkAmd.psp.firmwareTypes import FirmwareType
 
@@ -14,18 +13,13 @@ class PublicKey(FirmwareBlob):
     Class for AMD Public keys as they are type 0x00 in PSP firmware structures.
     """
 
-    def getParent(self) -> any:
-        pass
-
-    def setParent(self, parent: 'Image') -> None:
-        pass
-
     @classmethod
     def fromBinary(cls, binary: bytes, header: PublicKeyHeader = None, offset: int = 0, firmwareType: FirmwareType = None) -> 'PublicKey':
         """
         Construct a UtkAmd related PSP Public key from the given binary.
         """
         assert firmwareType is not None, "FirmwareType must not be None"
+        from UtkAmd.psp.keyMap import KeyMap
 
         header = PublicKeyHeader.fromBinary(binary[:0x40])
 
@@ -45,8 +39,9 @@ class PublicKey(FirmwareBlob):
         publicKeyModulus = int.from_bytes(modulusBinary, "little")
         assert publicKeyExponent == 0x10001, "Unexpected public key exponent {}".format(hex(publicKeyExponent))
 
-        # TODO  if there is anything left in the binary behind the exponent and modulus, that is then the signature
-        # TODO signature must be of sizes 0x100 or 0x200
+        # TODO if there is anything left in the binary behind the exponent and modulus, that is then the signature
+        # TODO Check the left over bits that are likely the signature; they must likely be of sizes 0x100 or 0x200
+        # TODO Check the length of the Modulus bits, they probably have to match some length?
 
         rsaPublicKey: RSAPublicKey = rsa.RSAPublicNumbers(publicKeyExponent, publicKeyModulus).public_key()
 
@@ -76,7 +71,7 @@ class PublicKey(FirmwareBlob):
         :param signedBinary:
         :return:
         """
-        # TODO key_sizemight be shifted and hence needs to be shifted back for serialization
+        # TODO key_size might be shifted and hence needs to be shifted back for serialization
         keySize = self._rsaPublicKey.key_size
         if keySize == 2048:
             saltLength = 32
@@ -106,6 +101,7 @@ class PublicKey(FirmwareBlob):
     def validate(self, keyMap: dict[str, 'PublicKey']) -> bool:
         """
         Get what's needed for Validation of this Key
+        TODO continue development and testing here
         :return:
         """
         certifyingId = self._header.getCertifyingIdString()

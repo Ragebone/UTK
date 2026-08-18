@@ -37,3 +37,7 @@ class EmbeddedFirmwareStructure(ImageElement, UtkAMD):
         :return: List of References to possible firmware
         """
         pass
+
+    @abc.abstractmethod
+    def validate(self) -> bool:
+        pass

@@ -66,3 +66,11 @@ class ImageElement(Serializable, Child):
         :return:
         """
         pass
+
+    @abc.abstractmethod
+    def validate(self) -> bool:
+        """
+
+        :return: Bool
+        """
+        pass

@@ -14,6 +14,9 @@ class Padding(ImageElement):
 
         self._references: list[Reference] = []
 
+    def validate(self) -> bool:
+        return True
+
     def registerReference(self, reference: Reference) -> None:
         self._references.append(reference)
 

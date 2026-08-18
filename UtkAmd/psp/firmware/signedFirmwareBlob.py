@@ -4,7 +4,6 @@ import zlib
 from UtkAmd.psp.firmware.firmwareHeaders.firmwareHeaderFactory import FirmwareHeaderFactory
 from UtkAmd.psp.firmware.firmwareHeaders.pspFirmwareHeader import PspFirmwareHeader
 from UtkAmd.psp.firmware.firmwareInterface import Firmware
-from UtkAmd.psp.firmware.publicKeys.keyMap import KeyMap
 from UtkAmd.psp.firmware.publicKeys.publicKey import PublicKey
 from UtkAmd.psp.firmwareTypes import FirmwareType
 from UtkAmd.utkAmdInterfaces import UtkAMD
@@ -74,13 +73,18 @@ class SignedFirmwareBlob(Firmware, UtkAMD):
 
         assert len(signature_binary) in [256, 512], "Signature of unexpected size"
 
-        return cls(binary, offset, TOTAL_SIZE, firmwareType, header, BODY, signature_binary)
+        return cls.continue_with_body(binary, offset, TOTAL_SIZE, firmwareType, header, BODY, signature_binary)
+
+    @classmethod
+    def continue_with_body(cls, binary, offset: int, total_size: int, firmwareType: FirmwareType, header: PspFirmwareHeader, body: bytes, signature_binary: bytes):
+        return cls(binary, offset, total_size, firmwareType, header, body, signature_binary)
 
     def isSignatureValid(self) -> bool:
         """
 
         :return:
         """
+        from UtkAmd.psp.keyMap import KeyMap
         keys = KeyMap.keys
         usedKeyId = self._header.getFirmwareSigningKeyId()
         key: PublicKey = keys.get(usedKeyId, None)

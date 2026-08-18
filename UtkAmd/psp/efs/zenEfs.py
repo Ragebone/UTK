@@ -69,6 +69,9 @@ class ZenEfs(EmbeddedFirmwareStructure):
 
         self._unknownTrailingBinary = unknownTrailingBinary
 
+    def validate(self) -> bool:
+        return True
+
     def getSize(self) -> int:
         return self._struct().size
 
