@@ -1,3 +1,6 @@
+from typing import Any
+
+from UtkAmd.psp.firmware.publicKeys.publicKey import PublicKey
 
 
 class KeyMap:
@@ -5,7 +8,7 @@ class KeyMap:
     keys = {}
 
     @staticmethod
-    def addKey(keyId: str, publicKey: 'PublicKey') -> None:
+    def addKey(keyId: str, publicKey: Any) -> None:
         """
 
 
