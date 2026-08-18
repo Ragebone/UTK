@@ -27,7 +27,12 @@ class FirmwareType(enum.Enum):
     Difference being the location, this type is used in BiosDirectory Entries
     where as V1 is being used in PspDirectoryEntries of older ZEN CPUs. 
     """
-    
+
+    UNKNOWN_51 = 0x51
+    """
+    So far unknown
+    """
+
     MAN_OS = 0x5C
     """
     PSP entry points to manageability OS binary
