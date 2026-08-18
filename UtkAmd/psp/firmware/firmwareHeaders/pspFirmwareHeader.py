@@ -13,7 +13,7 @@ class _PspHeaderStructure(leStructure):
     total of 188 / 0xBC bytes + 48 padding at the end
     """
     _fields_ = [                                        # decimal
-        ("SizeSigned", c_uint32),
+        ("SizeSigned", c_uint32),                       # KeyStoreHeader body_size
         ("EncryptionOptions", c_uint32),
         ("IKEKType", c_uint8),
         ("Reserved0", c_byte * 3),
@@ -23,7 +23,7 @@ class _PspHeaderStructure(leStructure):
         ("UnkownSignatureParameters", c_byte * 12),     # 36
         ("Signed", c_uint32),                           # 48
         ("CompressionOptions", c_uint32),               # 52        signature type
-        ("SecurityPatchLevel", c_uint32),               # 56        signature fingerprint
+        ("SecurityPatchLevel", c_uint32),               # 56        signature fingerprint keyStoreHeader: certifying_id
         ("UncompressedImageSize", c_uint32),            # 60
         ("CompressedImageSize", c_uint32),              # 64
         ("CompressionParameters", c_uint64),            # 68        at 72 compressed uint32
@@ -37,9 +37,9 @@ class _PspHeaderStructure(leStructure):
         ("FwType", c_uint8),                            # 104
         ("FwSubType", c_uint8),                         # 105
         ("Reserved1", c_uint16),                        # 106
-        ("RomSize", c_uint32),                          # 108
+        ("RomSize", c_uint32),                          # 108       KeyStoreHeader: packed_size
         ("EncryptionKey", c_byte * 12),                 # 112
-        ("SigningInfo", c_byte * 16),                   # 124
+        ("SigningInfo", c_byte * 16),                   # 124       KeyStoreHader: 4bytes keystore_type either 0 or [0x50, 0x51]
         ("FwSpecificData", c_byte * 32),                #
         # ("DebugEncKey", c_byte * 16),                 # this collides by at least 4 bytes with the sha256Checksum
         ("DebugEncKey", c_byte * 12),                   # So with that, this is probably not an encryption key
