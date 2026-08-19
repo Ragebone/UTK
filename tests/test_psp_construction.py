@@ -59,7 +59,7 @@ def test_create_psp_directory_entry_from_scratch():
         # Try to create entry with minimal args
         # Constructor signature: (entryType, subProgram, byteGroup, entrySize, offset, addressMode=None)
         entry = PspDirectoryEntry(
-            entryType=FirmwareType.PSP_PUBKEY.value,  # 0x00
+            entryType=FirmwareType.AMD_PUBLIC_KEY.value,  # 0x00 - Public key
             subProgram=0,
             byteGroup=0,
             entrySize=0x1000,  # 4KB
@@ -97,7 +97,7 @@ def test_create_psp_directory_from_scratch():
         
         # Create entry
         entry = PspDirectoryEntry(
-            entryType=FirmwareType.PSP_PUBKEY.value,
+            entryType=FirmwareType.AMD_PUBLIC_KEY.value,
             subProgram=0,
             byteGroup=0,
             entrySize=0x1000,
@@ -138,7 +138,7 @@ def test_link_firmware_to_entry():
     
     try:
         entry = PspDirectoryEntry(
-            entryType=FirmwareType.PSP_PUBKEY.value,
+            entryType=FirmwareType.AMD_PUBLIC_KEY.value,
             subProgram=0,
             byteGroup=0,
             entrySize=0x1000,
