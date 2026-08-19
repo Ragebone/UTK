@@ -34,13 +34,25 @@ class PspDirectoryHeaderInfoField(LittleEndianStructure, Serializable, UtkAMD):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # NOTE this will not be executed when calling "fromBinary()"
         super().__init__(*args, **kwargs)
-        self._addressMode: AddressMode
+        # Initialize _addressMode with sensible default for construction support
+        self._addressMode: AddressMode = AddressMode.PhysicalX86
 
     def getAddressMode(self) -> AddressMode:
         return self._addressMode
 
+    def setAddressMode(self, addressMode: AddressMode) -> None:
+        """Set the address mode for this directory header info field"""
+        assert isinstance(addressMode, AddressMode), "addressMode must be an AddressMode enum"
+        self._addressMode = addressMode
+
     def getMaxSize(self) -> int:
         return self._maxSize
+
+    def setMaxSize(self, size: int) -> None:
+        """Set the maximum size of the directory (in 4KB blocks)"""
+        assert isinstance(size, int), "size must be an integer"
+        assert 0 <= size <= 0x3FF, "size must fit in 10 bits (0-1023)"
+        self._maxSize = size
 
     def getSpiBlockSize(self) -> int:
         return self._spiBlockSize
