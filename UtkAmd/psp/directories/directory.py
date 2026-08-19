@@ -367,9 +367,4 @@ class ContentDirectory(Directory):
 
         # Padding at the end of the directories content
         outputBinary = fillBinaryTill(outputBinary, EXPECTED_DIRECTORY_SIZE)
-
-        if outputBinary != self._fullBinary:
-            # TODO LOGGING
-            return self._fullBinary
-
         return outputBinary
