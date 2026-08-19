@@ -53,6 +53,57 @@ class Directory(ImageElement, UtkAMD):
 
         self._directoryEntries: list[DirectoryEntry] = directoryEntries
 
+    def append(self, directoryEntry) -> None:
+        """
+
+        :param directoryEntry:
+        :return:
+        """
+        assert directoryEntry is not None, "DirectoryEntry must not be None"
+        assert isinstance(directoryEntry, DirectoryEntry), "DirectoryEntry must be of type DirectoryEntry"
+        self._directoryEntries.append(directoryEntry)
+        # TODO size check and content rebuilding
+
+    def insert(self, index: int, directoryEntry) -> None:
+        """
+
+        :param index:
+        :param directoryEntry:
+        :return:
+        """
+        assert index is not None, "Index must be None"
+        assert directoryEntry is not None, "DirectoryEntry must not be None"
+        assert isinstance(directoryEntry, DirectoryEntry), "DirectoryEntry must be of type DirectoryEntry"
+        self._directoryEntries.insert(index, directoryEntry)
+        # TODO size check and content rebuilding
+
+    def remove(self, directoryEntry) -> None:
+        """
+
+        :param directoryEntry:
+        :return:
+        """
+        assert directoryEntry is not None, "DirectoryEntry must not be None"
+        assert isinstance(directoryEntry, DirectoryEntry), "DirectoryEntry must be of type DirectoryEntry"
+        self._directoryEntries.remove(directoryEntry)
+        # TODO size check and content rebuilding
+
+    def replace(self, index: int, directoryEntry) -> DirectoryEntry:
+        """
+
+        :param index:
+        :param directoryEntry:
+        :return: replaced DirectoryEntry
+        """
+        assert index is not None, "Index must be None"
+        assert directoryEntry is not None, "DirectoryEntry must not be None"
+        assert isinstance(directoryEntry, DirectoryEntry), "DirectoryEntry must be of type DirectoryEntry"
+        oldDirectoryEntry = self._directoryEntries.pop(index)
+        self._directoryEntries.insert(index, directoryEntry)
+
+        return oldDirectoryEntry
+
+
 class ContentDirectory(Directory):
     """
     Interface and partial implementation for psp and bios -directories that also act as a container.
@@ -192,6 +243,8 @@ class ContentDirectory(Directory):
         self._references: list[ZenReference] = []
         self._parent = None
 
+        self._uncommitedDirectoryEntries: list[DirectoryEntry] = None
+        self._buildStrategy: 'BuildStrategy' = None
 
         # in case of emergency
         self._fullBinary: bytes = fullBinary
@@ -214,6 +267,40 @@ class ContentDirectory(Directory):
     def getDirectoryEntries(self) -> list[DirectoryEntry]:
         """Get copied List of directoryEntries"""
         return self._directoryEntries.copy()
+
+    def appendDirectoryEntry(self, directoryEntry: DirectoryEntry, dontRebuildContentStructure: bool = False) -> None:
+            """
+
+            :param directoryEntry:
+            :param dontRebuildContentStructure:
+            :return:
+            """
+            self._uncommitedDirectoryEntries.append(directoryEntry)
+
+    def insertDirectoryEntry(self, index: int, directoryEntry: DirectoryEntry, dontRebuildContentStructure: bool = False) -> None:
+        # TODO more error printing
+        assert isinstance(directoryEntry, self.directoryEntryClass), "Directory Entry does not fit to Directory"
+
+        if self._uncommitedContent is None:
+            self._uncommitedContent = self._content.copy()
+
+        self._uncommitedContent.insert(index, directoryEntry)
+
+    def removeDirectoryEntry(self, directoryEntry: DirectoryEntry, dontRebuildContentStructure: bool = False) -> None:
+        if self._uncommitedContent is None:
+            self._uncommitedContent = self._content.copy()
+
+        self._uncommitedContent.remove(directoryEntry)
+
+        if dontRebuildContentStructure:
+            return
+
+        self._buildStrategy.buildDirectoryContent()
+
+    def replaceDirectoryEntry(self, index: int, directoryEntry: DirectoryEntry, dontRebuildContentStructure: bool = False) -> None:
+        # TODO more error printing
+        assert isinstance(directoryEntry, self.directoryEntryClass), "Directory Entry does not fit to Directory"
+        # TODO implement replacement function
 
     def getHeader(self) -> PspDirectoryHeader:
         """Get Reference of DirectoryHeader"""
