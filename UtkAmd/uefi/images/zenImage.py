@@ -299,7 +299,7 @@ class ZenImage(Image, UtkAMD):
             # TODO search for the EFS
             # efs =
 
-        assert efs is not None, "Must have a valid FirmwareEntryTable"
+        assert efs is not None, "Must have a valid FirmwareEntryTable / Embedded Firmware Structure"
 
         # 2: Get the directories from the EFS
         # start with unsorted lists of stuff
