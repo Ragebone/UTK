@@ -107,7 +107,21 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x76, PSP entry points to RIB FW
     """
-    
+
+    DRPHY_PCU_FW = 0x77
+    """
+    """
+
+    MPRAS_TRUSTRED_APP_IMG = 0x7B
+    """
+    """
+
+    OC_SWEET_SPOT_PROFILE = 0x7C
+    """
+    Type 0x7c is a BIOS entry for OC sweet spot profile
+    Headerless
+    """
+
     PSP_BOOT_OEM_TRUSTLET = 0x80
     """
     ID: 0x80, PSP entry points to boot-loaded OEM trustlet binary
@@ -153,7 +167,12 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x92, PSP entry points to GMI FW
     """
-    
+
+    CPU_FEAT_CONFIG_TBL = 0x98
+    """
+    Headerless, maybe used by Coreboot
+    """
+
     PMF_BINARY = 0x99
     """
     ID: 0x99, Binary that contains PMF policy
