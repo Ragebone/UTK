@@ -10,6 +10,8 @@ class BiosTypeAttribute(LittleEndianStructure, Serializable, UtkAMD):
 
     Source of this extensive and specific structure in the OpenSIL AGCL-R:
     https://github.com/openSIL/AGCL-R/blob/c1789df006acab5e1ac1c52ec114c3de2230f54b/AgesaPkg/Include/AmdPspDirectory.h#L268
+
+    TODO isCompressed needs to be checked and synced with the actual entry
     """
 
     _fields_ = [
