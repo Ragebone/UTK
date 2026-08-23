@@ -103,6 +103,11 @@ class FirmwareType(enum.Enum):
     Discrete USB4 Firmware volumes
     """
 
+    UNKNOWN_73 = 0x73
+    """
+    Unknown, encountered on Strix Halo
+    """
+
     PSP_RIB = 0x76
     """
     ID: 0x76, PSP entry points to RIB FW
@@ -157,7 +162,17 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x8C, PSP entry points to TigerFish MMPDMA FW.
     """
-    
+
+    UNKNOWN_8D = 0x8D
+    """
+    Unknown encountered on Strix Halo
+    """
+
+    UNKNOWN_8E = 0x8E
+    """
+    Unknown encountered on Strix Halo
+    """
+
     PSP_GMI = 0x91
     """
     ID: 0x91, PSP entry points to MPDMA Page Migration FW
@@ -168,6 +183,16 @@ class FirmwareType(enum.Enum):
     ID: 0x92, PSP entry points to GMI FW
     """
 
+    UNKNOWN_94 = 0x94
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_95 = 0x95
+    """
+    Unknown, encountered on Strix Halo
+    """
+
     CPU_FEAT_CONFIG_TBL = 0x98
     """
     Headerless, maybe used by Coreboot
@@ -176,6 +201,46 @@ class FirmwareType(enum.Enum):
     PMF_BINARY = 0x99
     """
     ID: 0x99, Binary that contains PMF policy
+    """
+
+    UNKNOWN_9A = 0x9A
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_9B = 0x9B
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_9C = 0x9C
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_9D = 0x9D
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_A0 = 0xA0
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_A4 = 0xA4
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_A5 = 0xA5
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_A6 = 0xA6
+    """
+    Unknown, encountered on Strix Halo
     """
 
     #
@@ -275,12 +340,37 @@ class FirmwareType(enum.Enum):
     """
     ID: 0x13, PSP entry points to PSP early secure unlock debug image
     """
-    
+
+    UNKNOWN_15 = 0x15
+    """
+    Unknown, encountered on Strix Halo
+    """
+
     PSP_S3_NV_DATA = 0x1A
     """
     ID: 0x1A, PSP entry pointer to S3 Data Blob
     """
-    
+
+    UNKNOWN_1B = 0x1B
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_1C = 0x1C
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_1D = 0x1D
+    """
+    Unknown, encountered on Strix Halo
+    """
+
+    UNKNOWN_1F = 0x1F
+    """
+    Unknown, encountered on Strix Halo
+    """
+
     HW_IP_CONFIG_FILE = 0x20
     """
     ID: 0x20, PSP entry points to HW IP configuration file
@@ -524,6 +614,8 @@ class FirmwareType(enum.Enum):
     """
     Yet unknown
     """
+
+
 
 
 # All the modifiable ones
