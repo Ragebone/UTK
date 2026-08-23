@@ -2,7 +2,11 @@ from UtkAmd.psp.zenReference import ZenReference
 
 
 class ReferenceMap:
-    references = {}
+
+    """
+    Mapping of absolute offset to the references that point at it.
+    """
+    references: dict[str, ZenReference] = {}
 
     @staticmethod
     def handledCollision(reference: ZenReference) -> bool:
@@ -12,7 +16,7 @@ class ReferenceMap:
         :return:
         """
         OFFSET = reference.getAbsoluteOffset()
-        collidingReference = ReferenceMap.references.get(hex(OFFSET))
+        collidingReference: ZenReference | None = ReferenceMap.references.get(hex(OFFSET))
         if collidingReference is None:
             return False
 
