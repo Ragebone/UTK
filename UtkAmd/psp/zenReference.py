@@ -65,10 +65,3 @@ class ZenReference(Reference, UtkAMD):
         :return: Referenced entry object
         """
         pass
-
-        """
-        pass
-
-    def followReference(self) -> Serializable:
-        pass
-        """
