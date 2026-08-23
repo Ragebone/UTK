@@ -20,7 +20,7 @@ class ReferenceMap:
         if collidingReference is None:
             return False
 
-        entry = collidingReference.followReference()
+        entry = collidingReference.getEntry()
         if entry is not None:
             reference.setEntry(entry)
             entry.registerReference(reference)
