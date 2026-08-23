@@ -1,5 +1,6 @@
 import traceback
 
+from UtkAmd.psp.directories.abHeader import A_B_Header
 from UtkAmd.psp.directories.comboDirectory import ComboDirectory
 from UtkAmd.psp.firmware.firmwareFactory import FirmwareFactory
 from UtkAmd.psp.directories.directory import Directory
@@ -108,6 +109,34 @@ def resolveDirectoryReferences(directory: Directory, imageBinary: bytes) -> list
             continue
 
         entryType = dirEntry.getEntryType()
+
+        if entryType in [FirmwareType.PSP_REGION_A_DIR, FirmwareType.PSP_REGION_B_DIR]:
+            # TODO handle A/B regions
+
+            entryReference = dirEntry.getEntryReference()
+            if ReferenceMap.handledCollision(entryReference):
+                continue
+
+            ReferenceMap.addReference(entryReference)
+
+            bodyStart = entryReference.getAbsoluteOffset()
+            bodyEnd = bodyStart + 32
+            abHeaderBinary = imageBinary[bodyStart:bodyEnd]
+            abHead: A_B_Header = A_B_Header.fromBinary(abHeaderBinary, bodyStart)
+
+            linkReferenceAndImageElement(entryReference, abHead)
+
+            # TODO abHead must have some kind of reference for the new directory.
+            directoryRef = abHead.getDirectoryReference()
+
+            directory = directoryFromFlashOffset(directoryRef, imageBinary)
+            if directory is None:
+                continue
+
+            linkReferenceAndImageElement(entryReference, directory)
+            directories.append(directory)
+            continue
+
         if entryType not in [FirmwareType.PSP_DIR_LV2, FirmwareType.BIOS_DIR_LV2]:
             # Specific directory pointer types
             continue
@@ -148,6 +177,10 @@ def directoryFromFlashOffset(reference: ZenReference, imageBinary: bytes) -> Dir
         from UtkBase.biosFile import BiosFile
         if BiosFile.dontHandleExceptions:
             raise ex
+
+        if isinstance(ex, ValueError):
+            raise ex
+
         traceback.print_exception(type(ex), ex, ex.__traceback__)
 
     return directory
