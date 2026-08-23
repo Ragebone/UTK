@@ -36,6 +36,10 @@ class ImageFactory:
             from UtkBase.biosFile import BiosFile
             if BiosFile.dontHandleExceptions:
                 raise ex
+
+            if isinstance(ex, ValueError):
+                raise ex
+
             # TODO error / issue reporting?
 
         IMAGE_LENGTH = len(binary)
